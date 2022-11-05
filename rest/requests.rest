@@ -1,0 +1,25 @@
+@BASE_API_URL = http://0.0.0.0:3000/api
+
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWNhcyIsImNsaWVudF9pZCI6ImFjYXMiLCJzY2hlbWEiOiJhY2FzIiwiaWF0IjoxNjY2MDI3Njc2LCJleHAiOjE2NjYxMTQwNzZ9.UzyoaDqVl0BtMsia56pAK7TjyQmAaUhyM8kOqRdbRMQ
+
+###
+POST {{BASE_API_URL}}/sign-in
+Content-Type: application/json
+Accept: application/json
+
+{
+    "user_id": "userid",
+    "password": "password"
+}
+
+###
+GET {{BASE_API_URL}}/sign-out
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+###
+GET {{BASE_API_URL}}/get-user-info
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{}
