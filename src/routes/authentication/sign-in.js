@@ -54,7 +54,7 @@ const handle_request = async (request, h) => {
         expiresIn: process.env.ACCESS_TOKEN_SECRET_EXPIRE,
         algorithm: "HS256",
     })
-    await Dao.set_token(request.redis_db, token, JSON.stringify(data), process.env.ACCESS_TOKEN_SECRET_EXPIRE)
+    // await Dao.set_token(request.redis_db, token, JSON.stringify(data), process.env.ACCESS_TOKEN_SECRET_EXPIRE)
     await save_data(request, token)
     log.info(`[${request.payload["user_id"]}] - signin`)
     return { status: true, code: 200, token: { access_token: token }, mesage: 'Successfully sign in' }
@@ -64,8 +64,10 @@ const get_data = async (request) => {
     let data = null
     let sql = {
         /* get data from the table user info stored */
+        // text: `select * from ${TABLE.LOGIN}
+        //     where 1 = 1 and user_id = $1 and password = $2`,
         text: `select * from ${TABLE.LOGIN}
-            where 1 = 1 and user_id = $1 and password = $2`,
+            where 1 = 1 and loginid = $1 and password = $2`,
         values: [request.payload["user_id"], request.payload["password"]]
     }
     try {
