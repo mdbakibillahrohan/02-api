@@ -2,9 +2,9 @@
 
 const ms = require("ms");
 const log = require("./log");
-
 const get_data = async (pool, query) => {
-    const client = await pool.connect();
+    // const client = await pool.connect();
+    const client = await pool;
     try {
         const res = await client.query(query);
         return res.rows;
@@ -12,12 +12,12 @@ const get_data = async (pool, query) => {
         log.error("Unable to execute statement in database: ", e);
         throw e;
     } finally {
-        client.release();
+        // client.release();
     }
 };
 
 const execute_value = async (pool, query) => {
-    const client = await pool.connect();
+    const client = await pool;
     try {
         await client.query("BEGIN");
         await client.query(query);
@@ -32,7 +32,7 @@ const execute_value = async (pool, query) => {
 };
 
 const execute_values = async (pool, query) => {
-    const client = await pool.connect();
+    const client = await pool;
     try {
         await client.query("BEGIN");
         for (let q of query) await client.query(q);
