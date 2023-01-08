@@ -64,13 +64,11 @@ const start_server = async () => {
         },
         validate: async (decoded, request, h) => {
             let access_token = (request.headers.authorization).split(" ")[1];
-            // let r_token = await Dao.get_value(request.redis_db, access_token)
-            // if (r_token == null) {
-            //     log.warn(`Invalid token - ${access_token}`)
-            //     return { isValid: false, credentials: decoded };
-            // }
-            console.log(access_token);
-            console.log(decoded);
+            let r_token = await Dao.get_value(request.redis_db, access_token)
+            if (r_token == null) {
+                log.warn(`Invalid token - ${access_token}`)
+                return { isValid: false, credentials: decoded };
+            }
             return { isValid: true, credentials: decoded };
         },
     })

@@ -6,7 +6,7 @@ const Joi = require("@hapi/joi")
 const log = require("../../util/log")
 const Dao = require("../../util/dao")
 const JWT = require("jsonwebtoken")
-const { API, TABLE } = require("../../util/constant")
+const { API, TABLE, TEXT } = require("../../util/constant")
 const { default: ms } = require("ms")
 
 const payload_scheme = Joi.object({
@@ -49,13 +49,15 @@ const handle_request = async (request, h) => {
         log.warn(`[${request.payload["user_id"]}] - is not active`)
         return { status: false, code: 201, message: `User is not active` }
     }
-    let user = _.pick(data, 'user_id')
+    let user = _.pick(data, 'loginid')
     let token = JWT.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: process.env.ACCESS_TOKEN_SECRET_EXPIRE,
-        algorithm: "HS256",
+        // algorithm: "HS256",
+        algorithm:TEXT.ALGORITHM 
     })
     // await Dao.set_token(request.redis_db, token, JSON.stringify(data), process.env.ACCESS_TOKEN_SECRET_EXPIRE)
-    await save_data(request, token)
+    await Dao.set_value(request.redis_db, token, JSON.stringify(data), process.env.ACCESS_TOKEN_SECRET_EXPIRE);
+    await save_data(request, token);
     log.info(`[${request.payload["user_id"]}] - signin`)
     return { status: true, code: 200, token: { access_token: token }, mesage: 'Successfully sign in' }
 }
