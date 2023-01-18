@@ -5,7 +5,8 @@
     "main": "server.js",
     "scripts": {
         "loc": "NODE_ENV=loc nodemon ./src/server.js",
-        "start": "nodemon ./src/server.js",
+
+        "start": "NODE_ENV=loc nodemon ./src/server.js",
         "delete": "del-cli --force ./test_report",
         "test": "npm run delete && NODE_ENV=loc node_modules/mocha/bin/mocha 'test/**/*.js' --timeout 1000 --reporter mochawesome --reporter-options reportDir=test_report,reportFilename=test_report_$(date +%Y%m%d_%H%M%S),json=false --exit"
     },

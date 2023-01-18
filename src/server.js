@@ -1,6 +1,6 @@
 "use strict";
 
-const pg = require("pg")
+const { Client } = require("pg")
 const Path = require("path")
 var moment = require("moment")
 const log = require("./util/log");
@@ -11,15 +11,14 @@ let Bluebird = require("bluebird")
 Bluebird.promisifyAll(Redis.RedisClient.prototype)
 Bluebird.promisifyAll(Redis.Multi.prototype)
 const { TEXT } = require("./util/constant")
-// require("dotenv").config({ path: `./src/env/.env.${process.env.NODE_ENV}` })
-require("dotenv").config({ path: `./src/env/.env.loc` })
+require("dotenv").config({ path: `./src/env/.env.${process.env.NODE_ENV}` })
 
 let server, pool, redis_db;
 
 const init_db = () => {
-    const pool = new pg.Pool({
-        user: process.env.DB_USER,
+    const pool = new Client({
         host: process.env.DB_HOST,
+        user: process.env.DB_USER,
         database: process.env.DB_NAME,
         password: process.env.DB_PASSWORD,
         port: process.env.DB_PORT,
@@ -58,14 +57,19 @@ const start_server = async () => {
         complete: true,
         tokenType: TEXT.BEARER,
         key: process.env.ACCESS_TOKEN_SECRET,
-        verifyOptions: { ignoreExpiration: false, algorithms: [TEXT.ALGORITHM] },
+        verifyOptions: {
+            ignoreExpiration: false,
+            algorithms: [TEXT.ALGORITHM]
+        },
         validate: async (decoded, request, h) => {
             let access_token = (request.headers.authorization).split(" ")[1];
-            let r_token = await Dao.get_value(request.redis_db, access_token)
-            if (r_token == null) {
-                log.warn(`Invalid token - ${access_token}`)
-                return { isValid: false, credentials: decoded };
-            }
+            // let r_token = await Dao.get_value(request.redis_db, access_token)
+            // if (r_token == null) {
+            //     log.warn(`Invalid token - ${access_token}`)
+            //     return { isValid: false, credentials: decoded };
+            // }
+            console.log(access_token);
+            console.log(decoded);
             return { isValid: true, credentials: decoded };
         },
     })
@@ -112,12 +116,14 @@ const start_server = async () => {
     })
 
     server.events.on("start", () => {
-        // redis_db = init_redis(process.env.REDIS_DB)
-        //     .on("connect", () => {  log.info(`Redis connected`); })
-        //     .on("error", (error) => { log.error(error); });
+        redis_db = init_redis(process.env.REDIS_DB)
+            .on("connect", () => {  log.info(`Redis connected`); })
+            .on("error", (error) => { log.error(error); });
 
         pool = init_db()
-        pool.connect().then((err, client, release) => log.info(`Postgres connected`))
+        pool.connect().then((err, client) => log.info(`Postgres connected`))
+
+        
         pool.on("error", (err) => log.error(`Postgres bad has happened!`, err.stack))
 
         log.info(`Hapi js(${server.version}) running on ${server.info.uri}`)

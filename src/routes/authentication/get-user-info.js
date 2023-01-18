@@ -29,6 +29,7 @@ const route_controller = {
          }
     },
     handler: async (request, h) => {
+        console.log("in handler ",request)
         log.debug(`Request received - ${JSON.stringify(request.payload)}`)
         const response = await handle_request(request)
         log.debug(`Response sent - ${JSON.stringify(response)}`)
@@ -50,7 +51,7 @@ const get_data = async (request) => {
     let data = null
     let sql = {
         text: `select  * from ${TABLE.LOGIN} l
-            where 1 = 1 and l.user_id = $1`,
+            where 1 = 1 and loginid = $1`,
         values: [request.auth.credentials["user_id"]]
     }
     try {
