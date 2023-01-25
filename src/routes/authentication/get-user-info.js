@@ -21,7 +21,8 @@ const route_controller = {
                 aclQuery: async (id, request) => {
                     return {
                         isGranted: async (user, role) => { 
-                            return await Helper.is_granted(request, API.GET_USER_INFO)
+                            // return await Helper.is_granted(request, API.GET_USER_INFO)
+                            return true;
                         }
                     }
                 }
@@ -29,7 +30,6 @@ const route_controller = {
          }
     },
     handler: async (request, h) => {
-        console.log("in handler ",request)
         log.debug(`Request received - ${JSON.stringify(request.payload)}`)
         const response = await handle_request(request)
         log.debug(`Response sent - ${JSON.stringify(response)}`)
@@ -52,7 +52,7 @@ const get_data = async (request) => {
     let sql = {
         text: `select  * from ${TABLE.LOGIN} l
             where 1 = 1 and loginid = $1`,
-        values: [request.auth.credentials["user_id"]]
+        values: [request.auth.credentials["loginid"]]
     }
     try {
         let data_set = await Dao.get_data(request.pg, sql)
