@@ -7,7 +7,7 @@
  */
 'use strict'
 
-// Required Module File
+// // Dependencies 
 const  Joi = require('joi')
 
 // Passport Schema 

@@ -7,7 +7,7 @@
  */
 'use strick'
 
-// required file module
+// Dependencies 
 
 const log = require("../../util/log");
 const Dao = require("../../util/dao");
@@ -51,7 +51,8 @@ const create_new_passport = async ( request ) => {
     }
     for(let key of Object.keys( request.payload )){
 
-        console.log( request.payload[ key ] )
+        console.log( request.payload[ key ] );
+
     }
 }
 // Router Controller Object Export

@@ -7,7 +7,8 @@
 
 "use strict"
 
-// required file module 
+// Dependencies 
+
 const log = require("../../util/log")
 const Dao = require("../../util/dao")
 const Helper = require("../../util/helper")
@@ -60,5 +61,5 @@ const get_passport_data = async (request)  => {
     return data
 }
 
-// route controller object export
+// Route controller object export
 module.exports = route_controller;
