@@ -1,0 +1,24 @@
+variables:
+    IMAGE_NAME: 'gds-04-api'
+    SERVICE_NAME: 'gds_04_api'
+    NETWORK: 'app_net'
+
+stages:
+    - dev
+
+dev-docker:
+    stage: dev
+    only:
+        - dev
+    tags:
+        - dev
+    script:
+        - export VERSION=$(date +%Y%m%d_%H%M%S)
+        - docker build --tag=${IMAGE_NAME}:${VERSION} --build-arg NODE_ENV=dev .
+        - S_NAME=$(echo `docker service ls --filter name="${SERVICE_NAME}" --format "{{.Name}}"`)
+        - >
+            if [ ! -z "${S_NAME}" ]; then
+                docker service update --image ${IMAGE_NAME}:${VERSION} ${SERVICE_NAME}
+            else
+                docker service create --name ${SERVICE_NAME} --replicas 1 --mount type=volume,source=gds_log_data,destination=/app/log --network ${NETWORK} ${IMAGE_NAME}:${VERSION}
+            fi
