@@ -1,6 +1,6 @@
 variables:
     PRODUCT_NAME: 'gds'
-    APP_NAME: '04-api'
+    APP_NAME: '04_api'
     NETWORK: 'app_net'
 
 stages:
@@ -14,9 +14,9 @@ dev-docker:
         - dev
     script:
         - export VERSION=$(date +%Y%m%d_%H%M%S)
-        - IMAGE_NAME=${PRODUCT_NAME}-${CI_JOB_STAGE}-${APP_NAME}
+        - IMAGE_NAME=${PRODUCT_NAME}_${CI_JOB_STAGE}_${APP_NAME}
         - SERVICE_NAME=${PRODUCT_NAME}_${CI_JOB_STAGE}_${APP_NAME}
-        - docker build --tag=${IMAGE_NAME}:${VERSION} --build-arg NODE_ENV=dev .
+        - docker build --tag=${IMAGE_NAME}:${VERSION} --build-arg NODE_ENV=${CI_JOB_STAGE} .
         - S_NAME=$(echo `docker service ls --filter name="${SERVICE_NAME}" --format "{{.Name}}"`)
         - >
             if [ ! -z "${S_NAME}" ]; then
