@@ -14,11 +14,11 @@ dev-docker:
         - dev
     script:
         - export VERSION=$(date +%Y%m%d_%H%M%S)
-        - docker build --tag=${IMAGE_NAME}:${VERSION} --build-arg NODE_ENV=dev .
-        - S_NAME=$(echo `docker service ls --filter name="${SERVICE_NAME}" --format "{{.Name}}"`)
+        - docker build --tag=${IMAGE_NAME}-dev:${VERSION} --build-arg NODE_ENV=dev .
+        - S_NAME=$(echo `docker service ls --filter name="${SERVICE_NAME}_dev" --format "{{.Name}}"`)
         - >
             if [ ! -z "${S_NAME}" ]; then
-                docker service update --image ${IMAGE_NAME}:${VERSION} ${SERVICE_NAME}
+                docker service update --image ${IMAGE_NAME}-dev:${VERSION} ${SERVICE_NAME}_dev
             else
-                docker service create --name ${SERVICE_NAME} --replicas 1 --mount type=volume,source=gds_log_data,destination=/app/log --network ${NETWORK} ${IMAGE_NAME}:${VERSION}
+                docker service create --name ${SERVICE_NAME}_dev --replicas 1 --mount type=volume,source=gds_log_data,destination=/app/log --network ${NETWORK} ${IMAGE_NAME}-dev:${VERSION}
             fi
