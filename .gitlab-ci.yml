@@ -1,6 +1,6 @@
 variables:
     PRODUCT_NAME: 'gds'
-    APP_NAME: '04_api'
+    APP_NAME: '02_api'
     NETWORK: 'app_net'
 
 stages:
