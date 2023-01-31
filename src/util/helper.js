@@ -1,5 +1,6 @@
 "use strict";
 
+const { TABLE } = require("./constant");
 const Dao = require("./dao")
 
 const is_granted = async (request, api) => {
@@ -9,6 +10,17 @@ const is_granted = async (request, api) => {
     return access_api.includes(api)
 }
 
+const autheticatedUserInfo = async (request) => {
+    const loginId = request.auth.credentials['loginid'];
+    const sql = {
+        text: `SELECT oid, name, email, companyoid FROM ${TABLE.LOGIN} WHERE loginid = $1`,
+        values: [loginId]
+    }
+    const userInfo = await Dao.get_data(request.pg, sql);
+    return userInfo[0];
+}
+
 module.exports = {
-    is_granted: is_granted
+    is_granted: is_granted,
+    autheticatedUserInfo: autheticatedUserInfo
 };
