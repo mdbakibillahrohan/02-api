@@ -9,7 +9,7 @@ module.exports = {
     },
     TABLE: {
         LOGIN: "login",
-        LOGIN_LOG: "login_log",
+        LOGIN_LOG: "loginlog",
         ROLE: "role",
         CUSTOMER: "customer",
         TICKET: "ticket",

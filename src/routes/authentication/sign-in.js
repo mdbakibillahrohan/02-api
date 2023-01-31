@@ -6,6 +6,7 @@ const Joi = require("@hapi/joi")
 const log = require("../../util/log")
 const Dao = require("../../util/dao")
 const JWT = require("jsonwebtoken")
+const requestIp = require('request-ip')
 const { API, TABLE, TEXT } = require("../../util/constant")
 const { default: ms } = require("ms")
 
@@ -52,12 +53,11 @@ const handle_request = async (request, h) => {
     let user = _.pick(data, 'loginid')
     let token = JWT.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: process.env.ACCESS_TOKEN_SECRET_EXPIRE,
-        // algorithm: "HS256",
         algorithm:TEXT.ALGORITHM 
     })
     // await Dao.set_token(request.redis_db, token, JSON.stringify(data), process.env.ACCESS_TOKEN_SECRET_EXPIRE)
     await Dao.set_value(request.redis_db, token, JSON.stringify(data), process.env.ACCESS_TOKEN_SECRET_EXPIRE);
-    await save_data(request, token);
+    await save_data(request, data['oid']);
     log.info(`[${request.payload["user_id"]}] - signin`)
     return { status: true, code: 200, token: { access_token: token }, mesage: 'Successfully sign in' }
 }
@@ -65,9 +65,6 @@ const handle_request = async (request, h) => {
 const get_data = async (request) => {
     let data = null
     let sql = {
-        /* get data from the table user info stored */
-        // text: `select * from ${TABLE.LOGIN}
-        //     where 1 = 1 and user_id = $1 and password = $2`,
         text: `select * from ${TABLE.LOGIN}
             where 1 = 1 and loginid = $1 and password = $2`,
         values: [request.payload["user_id"], request.payload["password"]]
@@ -81,11 +78,11 @@ const get_data = async (request) => {
     return data
 }
 
-const save_data = async (request, token) => {
+const save_data = async (request, login_oid) => {
     let oid = uuid.v4()
-    let cols = ['oid', 'access_token', 'status', 'user_id', 'signin_on', 'signout_on']
-    let params = ['$1', '$2', '$3', '$4', 'clock_timestamp()', `clock_timestamp() + interval '${ms(process.env.ACCESS_TOKEN_SECRET_EXPIRE)} millisecond'`]
-    let data = [oid, token, 'Signin', request.payload["user_id"]]
+    let cols = ['oid', 'ipaddress', 'loginOid', 'loginTime', 'logoutTime', 'status']
+    let params = ['$1', '$2', '$3', 'clock_timestamp()', `clock_timestamp() + interval '${ms(process.env.ACCESS_TOKEN_SECRET_EXPIRE)/(1000*60*60*24)} days'`, '$4']
+    let data = [oid, requestIp.getClientIp(request), login_oid, 'Login']
     let col = cols.join(', ')
     let param = params.join(', ')
     let query = `insert into ${TABLE.LOGIN_LOG} (${col}) values (${param})`
