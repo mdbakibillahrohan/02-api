@@ -70,7 +70,6 @@ const get_data = async (request) => {
     }
     try {
         let data_set = await Dao.get_data(request.pg, sql)
-        console.log(data_set);
         data = data_set.length > 0 ? data_set : null
     } catch (e) {
         log.error(`An exception occurred while getting user data: ${e?.message}`)

@@ -101,7 +101,7 @@ const start_server = async () => {
 
     server.ext("onCredentials", function (request, h) {
         // console.log(`${JSON.stringfy(request.auth.credentials)}`)
-        request.config = 'Taj'
+        // request.config = 'Taj'
         // let token = (request.headers.authorization).split(" ")[1]
         // let access_api = await Dao.get_value(request.redis_wdb, token)
         // access_api = JSON.parse(access_api)

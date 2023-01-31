@@ -22,7 +22,6 @@ const execute_value = async (pool, query) => {
         await client.query("BEGIN");
         const executedQuery = await client.query(query);
         await client.query("COMMIT");
-        console.log(executedQuery);
         return executedQuery;
     } catch (e) {
         await client.query("ROLLBACK");

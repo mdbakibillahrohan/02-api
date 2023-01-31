@@ -78,7 +78,6 @@ const route_controller = {
 // Handling the request 
 const handle_request = async (request) => {
     let data = await insert_data(request)
-    console.log(data);
     if (!data) {
         log.info(`Customer insertion failed`)
         return { status: true, code: 400, message: 'Customer Insertion Failed' }
