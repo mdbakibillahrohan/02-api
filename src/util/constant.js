@@ -12,6 +12,8 @@ module.exports = {
         LOGIN_LOG: "login_log",
         ROLE: "role",
         PASSPORT: "passport",
+        AIRLINE: "airline",
+        AIRPORT: "airport"
     },
 
     API: {
@@ -22,7 +24,14 @@ module.exports = {
 
         // passport enpoint
         GET_PASSPORT: "/v1/get-passport",
-        CREATE_PASSPORT: "/v1/create-passport"
+        CREATE_PASSPORT: "/v1/create-passport",
+        
+
+        // Airline enpoint
+        GET_AIRLINE: "/v1/get-airline",
+
+        // Airport enpoint
+        GET_AIRPORT: "/v1/get-airport",
 
     }
 };
