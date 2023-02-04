@@ -11,7 +11,6 @@ let Bluebird = require("bluebird")
 Bluebird.promisifyAll(Redis.RedisClient.prototype)
 Bluebird.promisifyAll(Redis.Multi.prototype)
 const { TEXT } = require("./util/constant")
-
 require("dotenv").config({ path: `./src/env/.env.${process.env.NODE_ENV}` })
 
 let server, pool, redis_db;
@@ -116,7 +115,7 @@ const start_server = async () => {
 
     server.events.on("start", () => {
         redis_db = init_redis(process.env.REDIS_DB)
-            .on("connect", () => { log.info(`Redis connected`); })
+            .on("connect", () => {  log.info(`Redis connected`); })
             .on("error", (error) => { log.error(error); });
         pool = init_db()
         pool.connect().then((err, client) => log.info(`Postgres connected`))
