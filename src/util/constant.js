@@ -9,11 +9,20 @@ module.exports = {
     },
     TABLE: {
         LOGIN: "login",
-        LOGIN_LOG: "login_log",
+        LOGIN_LOG: "loginlog",
         ROLE: "role",
+        
         PASSPORT: "passport",
         AIRLINE: "airline",
-        AIRPORT: "airport"
+        AIRPORT: "airport",
+
+        CUSTOMER: "customer",
+        TICKET: "ticket",
+        VENDOR: "supplier",
+        ACCOUNT: "account",
+        EMPLOYEE: "employee",
+        DEPARTMENT: "department",
+
     },
 
     API: {
@@ -32,6 +41,26 @@ module.exports = {
 
         // Airport enpoint
         GET_AIRPORT: "/v1/get-airport",
+
+        // Customer Endpoints
+        GET_CUSTOMER_LIST: "/v1/customer/get-list",
+        SAVE_CUSTOMER: "/v1/customer/save",
+        UPDATE_CUSTOMER: "/v1/customer/update",
+
+        // Ticket Endpoints 
+        GET_TICKET_LIST: "/v1/ticket/get-list",
+
+        // Vendor Endpoints 
+        GET_VENDOR_LIST: "/v1/vendor/get-list",
+
+        // Account Enpoints 
+        GET_ACCOUNT_LIST: "/v1/account/get-list",
+
+        // Employee Endpoints
+        GET_EMPLOYEE_LIST: "/v1/employee/get-list",
+
+        // Department Endpoints 
+        GET_DEPARTMENT_LIST: "/v1/department/get-list",
 
     }
 };

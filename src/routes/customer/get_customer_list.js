@@ -1,3 +1,13 @@
+
+/**
+ * Title: Get Customer
+ * Description: This endpoint is for handing the get customer request and serve the data of corresponding request
+ * RequiredAuthentication: true
+ * Authentication Strategy: jwt
+ * File Path: src/routes/get_customer.js
+ * Author: Md Bakibillah (Rohan)
+ */
+
 "use strict"
 
 const log = require("../../util/log")
@@ -5,15 +15,17 @@ const Dao = require("../../util/dao")
 const Helper = require("../../util/helper")
 const { API, TABLE } = require("../../util/constant")
 
+
+// Route controller for get customer 
 const route_controller = {
     method: "GET",
-    path: API.CONTEXT + API.GET_USER_INFO,
+    path: API.CONTEXT + API.GET_CUSTOMER_LIST,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "User info",
+        description: "Get Customers",
         plugins: {
             hapiAuthorization: {
                 validateEntityAcl: true,
@@ -37,31 +49,33 @@ const route_controller = {
     }
 }
 
+// Handling the request 
 const handle_request = async (request) => {
     let data = await get_data(request)
     if (!data) {
-        log.info(`User data not found`)
-        return { status: true, code: 201, message: 'User data not found' }
+        log.info(`Customer data not found`)
+        return { status: true, code: 206, message: 'Customer data not found' }
     }
-    log.info(`User data found`)
+    log.info(`Customer data found`)
     return { status: true, code: 200, data: data }
 }
 
+// Get data from the database 
 const get_data = async (request) => {
     let data = null
+    const UserInfo = await Helper.autheticatedUserInfo(request);
     let sql = {
-        text: `select  * from ${TABLE.LOGIN} l
-            where 1 = 1 and loginid = $1`,
-        values: [request.auth.credentials["loginid"]]
+        text: `select  * from ${TABLE.CUSTOMER} WHERE companyoid = $1`,
+        values: [UserInfo.companyoid]
     }
     try {
         let data_set = await Dao.get_data(request.pg, sql)
-        data = data_set.length > 0 ? data_set[0] : null
+        data = data_set.length > 0 ? data_set : null
     } catch (e) {
         log.error(`An exception occurred while getting user data: ${e?.message}`)
     }
     return data
 }
 
-
+// exporting the modules for using in another file 
 module.exports = route_controller

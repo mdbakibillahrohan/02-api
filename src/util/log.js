@@ -7,7 +7,7 @@ const PROJECT_ROOT = path.join(__dirname, "..");
 const transports = [];
 
 let info = {
-    filename: `log/info/archived/02-api/02-api__%DATE%.log`,
+    filename: `log/info/archived/02-api/02-api-${process.env.NODE_ENV}__%DATE%.log`,
     datePattern: "YYYY-MM-DD",
     zippedArchive: true,
     level: "info",
@@ -17,12 +17,12 @@ let info = {
         winston.format.printf((info) => {
             return `${info.timestamp} ${info.level.toUpperCase()} - ${info.message} `;
         }),
-        winston.format.colorize({ all: true })
+        winston.format.colorize({ all: false })
     ),
 };
 
 let debug = {
-    filename: `log/debug/archived/02-api/02-api__%DATE%.log`,
+    filename: `log/debug/archived/02-api/02-api-${process.env.NODE_ENV}__%DATE%.log`,
     datePattern: "YYYY-MM-DD",
     zippedArchive: true,
     level: "debug",
@@ -32,7 +32,7 @@ let debug = {
         winston.format.printf((info) => {
             return `${info.timestamp} ${info.level.toUpperCase()} - ${info.message} `;
         }),
-        winston.format.colorize({ all: true })
+        winston.format.colorize({ all: false })
     ),
 }
 

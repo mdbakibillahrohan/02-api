@@ -35,7 +35,7 @@ const init_redis = (db) => {
         host: process.env.REDIS_HOST,
         port: process.env.REDIS_PORT,
         db: db,
-        // password: process.env.REDIS_PASSWORD,
+        password: process.env.REDIS_PASSWORD,
     })
     return redis_client;
 };
@@ -63,13 +63,11 @@ const start_server = async () => {
         },
         validate: async (decoded, request, h) => {
             let access_token = (request.headers.authorization).split(" ")[1];
-            // let r_token = await Dao.get_value(request.redis_db, access_token)
-            // if (r_token == null) {
-            //     log.warn(`Invalid token - ${access_token}`)
-            //     return { isValid: false, credentials: decoded };
-            // }
-            console.log(access_token);
-            console.log(decoded);
+            let r_token = await Dao.get_value(request.redis_db, access_token)
+            if (r_token == null) {
+                log.warn(`Invalid token - ${access_token}`)
+                return { isValid: false, credentials: decoded };
+            }
             return { isValid: true, credentials: decoded };
         },
     })
@@ -102,7 +100,7 @@ const start_server = async () => {
 
     server.ext("onCredentials", function (request, h) {
         // console.log(`${JSON.stringfy(request.auth.credentials)}`)
-        request.config = 'Taj'
+        // request.config = 'Taj'
         // let token = (request.headers.authorization).split(" ")[1]
         // let access_api = await Dao.get_value(request.redis_wdb, token)
         // access_api = JSON.parse(access_api)
@@ -119,13 +117,9 @@ const start_server = async () => {
         redis_db = init_redis(process.env.REDIS_DB)
             .on("connect", () => {  log.info(`Redis connected`); })
             .on("error", (error) => { log.error(error); });
-
         pool = init_db()
         pool.connect().then((err, client) => log.info(`Postgres connected`))
-
-        
         pool.on("error", (err) => log.error(`Postgres bad has happened!`, err.stack))
-
         log.info(`Hapi js(${server.version}) running on ${server.info.uri}`)
     })
     await server.start()
