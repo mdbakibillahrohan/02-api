@@ -23,6 +23,9 @@ module.exports = {
         EMPLOYEE: "employee",
         DEPARTMENT: "department",
 
+        PASSPORT: "passport",
+        AIRLINE: "airline",
+        AIRPORT: "airport"
     },
 
     API: {
@@ -61,6 +64,16 @@ module.exports = {
 
         // Department Endpoints 
         GET_DEPARTMENT_LIST: "/v1/department/get-list",
+        // passport enpoint
+        GET_PASSPORT: "/v1/get-passport",
+        CREATE_PASSPORT: "/v1/create-passport",
+        
+
+        // Airline enpoint
+        GET_AIRLINE: "/v1/get-airline",
+
+        // Airport enpoint
+        GET_AIRPORT: "/v1/get-airport",
 
     }
 };
