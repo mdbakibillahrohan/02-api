@@ -11,7 +11,7 @@ module.exports = {
         LOGIN: "login",
         LOGIN_LOG: "loginlog",
         ROLE: "role",
-        
+
         PASSPORT: "passport",
         AIRLINE: "airline",
         AIRPORT: "airport",
@@ -37,7 +37,7 @@ module.exports = {
         // passport enpoint
         GET_PASSPORT: "/v1/get-passport",
         CREATE_PASSPORT: "/v1/create-passport",
-        
+
 
         // Airline enpoint
         GET_AIRLINE: "/v1/get-airline",
@@ -61,13 +61,14 @@ module.exports = {
 
         // Employee Endpoints
         GET_EMPLOYEE_LIST: "/v1/employee/get-list",
+        SAVE_EMPLOYEE: "/v1/employee/save",
 
         // Department Endpoints 
         GET_DEPARTMENT_LIST: "/v1/department/get-list",
         // passport enpoint
         GET_PASSPORT: "/v1/get-passport",
         CREATE_PASSPORT: "/v1/create-passport",
-        
+
 
         // Airline enpoint
         GET_AIRLINE: "/v1/get-airline",
@@ -75,5 +76,9 @@ module.exports = {
         // Airport enpoint
         GET_AIRPORT: "/v1/get-airport",
 
+    },
+    MESSAGE: {
+        SUCCESS_SAVE: "Successfully save data into database",
+        INTERNAL_SERVER_ERROR: "Internal server error"
     }
 };

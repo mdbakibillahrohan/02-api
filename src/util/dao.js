@@ -1,4 +1,4 @@
- "use strict";
+"use strict";
 
 const ms = require("ms");
 const log = require("./log");
