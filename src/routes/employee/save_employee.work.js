@@ -43,7 +43,7 @@ const save_controller = {
             mode: "required",
             strategy: "jwt",
         },
-        description: "save",
+        description: "Save Employee",
         plugins: { hapiAuthorization: false },
         validate: {
             payload: payload_scheme,

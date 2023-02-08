@@ -52,9 +52,11 @@ module.exports = {
 
         // Ticket Endpoints 
         GET_TICKET_LIST: "/v1/ticket/get-list",
+        SAVE_TICKET: "/v1/ticket/save",
 
         // Vendor Endpoints 
         GET_VENDOR_LIST: "/v1/vendor/get-list",
+        SAVE_VENDOR: "/v1/vendor/save",
 
         // Account Enpoints 
         GET_ACCOUNT_LIST: "/v1/account/get-list",
