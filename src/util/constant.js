@@ -35,8 +35,8 @@ module.exports = {
         SIGN_OUT: "/v1/sign-out",
 
         // passport enpoint
-        GET_PASSPORT: "/v1/get-passport",
-        CREATE_PASSPORT: "/v1/create-passport",
+        GET_PASSPORT_LIST: "/v1/passport/get-list",
+        SAVE_PASSPORT: "/v1/passport/save",
 
 
         // Airline enpoint
@@ -67,9 +67,7 @@ module.exports = {
 
         // Department Endpoints 
         GET_DEPARTMENT_LIST: "/v1/department/get-list",
-        // passport enpoint
-        GET_PASSPORT: "/v1/get-passport",
-        CREATE_PASSPORT: "/v1/create-passport",
+
 
 
         // Airline enpoint
