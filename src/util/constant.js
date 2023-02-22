@@ -35,12 +35,12 @@ module.exports = {
         SIGN_OUT: "/v1/sign-out",
 
         // passport enpoint
-        GET_PASSPORT: "/v1/get-passport",
-        CREATE_PASSPORT: "/v1/create-passport",
+        GET_PASSPORT: "/v1/passport/get-list",
+        save_PASSPORT: "/v1/passport/save",
         
 
         // Airline enpoint
-        GET_AIRLINE: "/v1/get-airline",
+        GET_AIRLINE: "/v1/airline/get-list",
 
         // Airport enpoint
         GET_AIRPORT: "/v1/get-airport",
@@ -64,16 +64,12 @@ module.exports = {
 
         // Department Endpoints 
         GET_DEPARTMENT_LIST: "/v1/department/get-list",
-        // passport enpoint
-        GET_PASSPORT: "/v1/get-passport",
-        CREATE_PASSPORT: "/v1/create-passport",
-        
 
         // Airline enpoint
-        GET_AIRLINE: "/v1/get-airline",
+        GET_AIRLINE: "/v1/airline/get-list",
 
         // Airport enpoint
-        GET_AIRPORT: "/v1/get-airport",
+        GET_AIRPORT: "/v1/airport/get-list",
 
     }
 };
