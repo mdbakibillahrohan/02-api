@@ -23,9 +23,6 @@ module.exports = {
         EMPLOYEE: "employee",
         DEPARTMENT: "department",
 
-        PASSPORT: "passport",
-        AIRLINE: "airline",
-        AIRPORT: "airport"
     },
 
     API: {
