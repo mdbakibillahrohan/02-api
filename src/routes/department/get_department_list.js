@@ -33,14 +33,14 @@ const route_controller = {
                 validateAclMethod: 'isGranted',
                 aclQuery: async (id, request) => {
                     return {
-                        isGranted: async (user, role) => { 
+                        isGranted: async (user, role) => {
                             // return await Helper.is_granted(request, API.GET_USER_INFO)
                             return true;
                         }
                     }
                 }
             }
-         }
+        }
     },
     handler: async (request, h) => {
         log.debug(`Request received - ${JSON.stringify(request.payload)}`)
@@ -66,7 +66,7 @@ const get_data = async (request) => {
     let data = null
     const UserInfo = await Helper.autheticatedUserInfo(request);
     let sql = {
-        text: `SELECT * FROM ${TABLE.EMPLOYEE} WHERE companyoid = $1`,
+        text: `SELECT * FROM ${TABLE.DEPARTMENT} WHERE companyoid = $1`,
         values: [UserInfo.companyoid]
     }
     try {

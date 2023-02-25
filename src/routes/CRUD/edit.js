@@ -8,12 +8,12 @@ const { API, TABLE, MESSAGE } = require("../../util/constant");
 
 const payload_scheme = Joi.object({
     status: Joi.string().trim().min(1).max(32).required(),
-    oid: Joi.string().trim().min(1).max(128).required()
+    oid: Joi.string().trim().min(1).max(128).required(),
 });
 
 const update_controller = {
     method: "POST",
-    path: API.CONTEXT + '/update',
+    path: API.CONTEXT + "/update",
     options: {
         auth: {
             mode: "required",
@@ -27,7 +27,9 @@ const update_controller = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 400, status: false, message: err?.message }).takeover();
+                return h
+                    .response({ code: 400, status: false, message: err?.message })
+                    .takeover();
             },
         },
     },
@@ -41,7 +43,7 @@ const update_controller = {
 
 const handle_request = async (request) => {
     try {
-        await update_data(request)
+        await update_data(request);
         log.info(`Successfully update`);
         return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };
     } catch (err) {
@@ -50,21 +52,20 @@ const handle_request = async (request) => {
     }
 };
 
-
 const update_data = async (request) => {
-    let data = [request.payload['status'], request.auth.credentials['userId']]
-    let query = `update table_name set status = $1, editedby = $2, editedon = clock_timestamp()`
+    let data = [request.payload["status"], request.auth.credentials["userId"]];
+    let query = `update table_name set status = $1, editedby = $2, editedon = clock_timestamp()`;
     let idx = 3;
-    if (request.payload['status'] == 'Submitted') {
-        query += `, submittedOn = clock_timestamp()`
+    if (request.payload["status"] == "Submitted") {
+        query += `, submittedOn = clock_timestamp()`;
     }
-    query += `where oid = $${idx++}`
-    data.push(request.payload['oid'])
+    query += `where oid = $${idx++}`;
+    data.push(request.payload["oid"]);
     let sql = {
         text: query,
-        values: data
-    }
-    await Dao.execute_value(sql)
+        values: data,
+    };
+    await Dao.execute_value(sql);
 };
 
 module.exports = update_controller;
