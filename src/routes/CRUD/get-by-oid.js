@@ -11,7 +11,7 @@ const query_scheme = Joi.object({
 
 const get_by_oid = {
     method: "GET",
-    path: API.CONTEXT + '/get-by-oid',
+    path: API.CONTEXT + 'get-by-oid',
     options: {
         auth: {
             mode: "required",

@@ -11,7 +11,7 @@ const query_scheme = Joi.object({
 
 const delete_by_oid = {
     method: "GET",
-    path: API.CONTEXT + '/delete-by-oid',
+    path: API.CONTEXT + 'delete-by-oid',
     options: {
         auth: {
             mode: "required",

@@ -12,7 +12,7 @@ const payload_scheme = Joi.object({
 
 const save_controller = {
     method: "POST",
-    path: API.CONTEXT + '/save',
+    path: API.CONTEXT + 'save',
     options: {
         auth: {
             mode: "required",
