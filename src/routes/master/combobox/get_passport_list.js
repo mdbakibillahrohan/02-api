@@ -6,21 +6,17 @@ const Dao = require("../../../util/dao");
 const { API, MESSAGE, TABLE } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
-const query_scheme = Joi.object({
-    searchText: Joi.string().trim().allow(null, '').max(128).optional(),
-    offset: Joi.number().allow(null, '').max(99999999).optional(),
-    limit: Joi.number().allow(null, '').max(99999999).optional(),
-});
+const query_scheme = Joi.object({});
 
 const get_list = {
     method: "GET",
-    path: API.CONTEXT + API.COMBOBOX_GET_SUPPLIER_LIST,
+    path: API.CONTEXT + API.COMBOBOX_GET_PASSPORT_LIST,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "Combobox supplier list",
+        description: "Combobox passport list",
         plugins: { hapiAuthorization: false },
         validate: {
             query: query_scheme,
@@ -59,7 +55,7 @@ const handle_request = async (request) => {
             count: count
         };
     } catch (err) {
-        log.error(`An exception occurred while getting supplier list data : ${err?.message}`);
+        log.error(`An exception occurred while getting passport list data : ${err?.message}`);
         return {
             status: false,
             code: 500,
@@ -72,22 +68,12 @@ const get_count = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let count = 0;
     let data = [];
-    let query = `select count(*)::int4 as total from ${TABLE.VENDOR} where 1 = 1`;
+    let query = `select count(*)::int4 as total from ${TABLE.PASSPORT} where 1 = 1`;
     let idx = 1;
-
     query += ` and companyoid = $${idx}`;
     idx++;
     data.push(userInfo.companyoid);
-    if (request.query['searchText']) {
-        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and (lower(name) like $${idx} or `;
-        idx++;
-        query += `lower(mobileno) like $${idx} or `;
-        idx++;
-        query += `lower(email) like $${idx})`;
-        idx++;
-        data.push(searchText, searchText, searchText);
-    }
+
     let sql = {
         text: query,
         values: data
@@ -105,30 +91,12 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select oid, name, mobileno, supplier_balance(oid) as balance, supplier_creditnote_balance(oid) as vendorCreditBalance from ${TABLE.VENDOR} where 1 = 1`;
+    let query = `select oid, surName, givenName, passportNumber, customerOid  from ${TABLE.PASSPORT} where 1 = 1`;
     let idx = 1;
     query += ` and companyoid = $${idx}`;
     idx++;
     data.push(userInfo.companyoid);
-    if (request.query['searchText']) {
-        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and (lower(name) like $${idx} or `;
-        idx++;
-        query += `lower(mobileno) like $${idx} or `;
-        idx++;
-        query += `lower(email) like $${idx})`;
-        idx++;
-        data.push(searchText, searchText, searchText);
-    }
-    query += ` order by createdon desc`;
-    if (request.query.offset) {
-        query += ` offset $${idx++}`;
-        data.push(request.query.offset);
-    }
-    if (request.query.limit) {
-        query += ` limit $${idx++}`;
-        data.push(request.query.limit);
-    }
+    query += ` order by passportNumber asc`;
 
     let sql = {
         text: query,

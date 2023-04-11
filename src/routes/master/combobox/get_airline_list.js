@@ -14,13 +14,13 @@ const query_scheme = Joi.object({
 
 const get_list = {
     method: "GET",
-    path: API.CONTEXT + API.COMBOBOX_GET_SUPPLIER_LIST,
+    path: API.CONTEXT + API.COMBOBOX_GET_AIRLINE_LIST,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "Combobox supplier list",
+        description: "Combobox airline list",
         plugins: { hapiAuthorization: false },
         validate: {
             query: query_scheme,
@@ -59,7 +59,7 @@ const handle_request = async (request) => {
             count: count
         };
     } catch (err) {
-        log.error(`An exception occurred while getting supplier list data : ${err?.message}`);
+        log.error(`An exception occurred while getting airline list data : ${err?.message}`);
         return {
             status: false,
             code: 500,
@@ -72,19 +72,19 @@ const get_count = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let count = 0;
     let data = [];
-    let query = `select count(*)::int4 as total from ${TABLE.VENDOR} where 1 = 1`;
+    let query = `select count(*)::int4 as total from ${TABLE.AIRLINE} where 1 = 1`;
     let idx = 1;
 
-    query += ` and companyoid = $${idx}`;
-    idx++;
-    data.push(userInfo.companyoid);
+    // query += ` and companyoid = $${idx}`;
+    // idx++;
+    // data.push(userInfo.companyoid);
     if (request.query['searchText']) {
         const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and (lower(name) like $${idx} or `;
+        query += ` and (lower(airlineName) like $${idx} or `;
         idx++;
-        query += `lower(mobileno) like $${idx} or `;
+        query += `lower(country) like $${idx} or `;
         idx++;
-        query += `lower(email) like $${idx})`;
+        query += `lower(iata) like $${idx})`;
         idx++;
         data.push(searchText, searchText, searchText);
     }
@@ -105,22 +105,22 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select oid, name, mobileno, supplier_balance(oid) as balance, supplier_creditnote_balance(oid) as vendorCreditBalance from ${TABLE.VENDOR} where 1 = 1`;
+    let query = `select oid, airlinename, logopath, iata, icao, country || '-' || airlinename || '-' || iata as arilinedetails  from ${TABLE.AIRLINE} where 1 = 1`;
     let idx = 1;
-    query += ` and companyoid = $${idx}`;
-    idx++;
-    data.push(userInfo.companyoid);
+    // query += ` and companyoid = $${idx}`;
+    // idx++;
+    // data.push(userInfo.companyoid);
     if (request.query['searchText']) {
         const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and (lower(name) like $${idx} or `;
+        query += ` and (lower(airlinename) like $${idx} or `;
         idx++;
-        query += `lower(mobileno) like $${idx} or `;
+        query += `lower(country) like $${idx} or `;
         idx++;
-        query += `lower(email) like $${idx})`;
+        query += `lower(iata) like $${idx})`;
         idx++;
         data.push(searchText, searchText, searchText);
     }
-    query += ` order by createdon desc`;
+    query += ` order by airlinename desc`;
     if (request.query.offset) {
         query += ` offset $${idx++}`;
         data.push(request.query.offset);

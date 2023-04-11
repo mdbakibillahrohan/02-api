@@ -14,13 +14,13 @@ const query_scheme = Joi.object({
 
 const get_list = {
     method: "GET",
-    path: API.CONTEXT + API.COMBOBOX_GET_SUPPLIER_LIST,
+    path: API.CONTEXT + API.COMBOBOX_GET_CUSTOMER_LIST,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "Combobox supplier list",
+        description: "Combobox customer list",
         plugins: { hapiAuthorization: false },
         validate: {
             query: query_scheme,
@@ -59,7 +59,7 @@ const handle_request = async (request) => {
             count: count
         };
     } catch (err) {
-        log.error(`An exception occurred while getting supplier list data : ${err?.message}`);
+        log.error(`An exception occurred while getting customer list data : ${err?.message}`);
         return {
             status: false,
             code: 500,
@@ -72,7 +72,7 @@ const get_count = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let count = 0;
     let data = [];
-    let query = `select count(*)::int4 as total from ${TABLE.VENDOR} where 1 = 1`;
+    let query = `select count(*)::int4 as total from ${TABLE.CUSTOMER} where 1 = 1`;
     let idx = 1;
 
     query += ` and companyoid = $${idx}`;
@@ -105,7 +105,7 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select oid, name, mobileno, supplier_balance(oid) as balance, supplier_creditnote_balance(oid) as vendorCreditBalance from ${TABLE.VENDOR} where 1 = 1`;
+    let query = `select oid, name, mobileno, email, discounttype, discountvalue, customer_balance(oid) as balance, customer_creditnote_balance(oid) as creditnotebalance  from ${TABLE.CUSTOMER} where 1 = 1`;
     let idx = 1;
     query += ` and companyoid = $${idx}`;
     idx++;
