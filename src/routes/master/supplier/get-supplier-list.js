@@ -12,7 +12,7 @@ const query_scheme = Joi.object({
     limit: Joi.number().allow(null, '').max(100000000000).optional(),
 })
 
-const get_list = {
+const route_controller = {
     method: "GET",
     path: API.CONTEXT + API.MASTER_GET_SUPPLIER_LIST,
     options: {
@@ -48,4 +48,5 @@ const handle_request = async (request) => {
 
 }
 
-module.exports = get_list;
+module.exports = route_controller;
+ 

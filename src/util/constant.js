@@ -24,7 +24,7 @@ module.exports = {
 
         CUSTOMER: "customer",
         TICKET: "ticket",
-        SUPPPLIER: "supplier",
+        SUPPLIER: "supplier",
         ACCOUNT: "account",
         EMPLOYEE: "employee",
         DEPARTMENT: "department",
@@ -33,17 +33,9 @@ module.exports = {
 
     API: {
         CONTEXT: "/api/",
-        
         GET_USER_INFO: "v1/get-user-info",
         SIGN_IN: "v1/sign-in",
         SIGN_OUT: "v1/sign-out",
-
-        // Vendor Endpoints 
-        SAVE_VENDOR: "/v1/vendor/save",
-        UPDATE_VENDOR: "",
-        DELETE_VENDOR: "",
-        GET_VENDOR_LIST: "/v1/vendor/get-list",
-
 
         // passport enpoint
         GET_PASSPORT_LIST: "v1/passport/get-list",
@@ -78,10 +70,9 @@ module.exports = {
 
         // Airport enpoint
         GET_AIRPORT: "v1/get-airport",
-
-        // master-supplier enpoint 
-        MASTER_GET_SUPPLIER_LIST: RESOURCES.SUPPLIER_RESOURCE + "get-list",
-
+        
+        // master supplier enpoint
+        MASTER_GET_SUPPLIER_LIST: RESOURCES.SUPPLIER_RESOURCE+ "get-list",
 
         // Combobox endpoints
         COMBOBOX_GET_SUPPLIER_LIST: RESOURCES.COMBOBOX_RESOURCE + "supplier-list",
