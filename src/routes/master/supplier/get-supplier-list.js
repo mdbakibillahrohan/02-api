@@ -47,3 +47,5 @@ const get_list = {
 const handle_request = async (request) => {
 
 }
+
+module.exports = get_list;
