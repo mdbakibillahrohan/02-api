@@ -12,22 +12,24 @@ const payload_scheme = Joi.object({
     address: Joi.string().trim().min(5).max(70),
     mobile_no: Joi.string().trim().min(7).max(15),
     email: Joi.string().email(),
+    supplier_type: Joi.string(),
     initial_balance: Joi.number(),
-    discount_type: Joi.string().trim().min(3).max(3),
-    discount_value: Joi.number(),
-    image_path: Joi.string(),
+    commission_type: Joi.string(),
+    commisssion_value: Joi.number(),
+    service_charge: Joi.number(),
+    image_path: Joi.string().max(256),
     status: Joi.string(),
 });
 
 const save_controller = {
     method: "POST",
-    path: API.CONTEXT + API.SAVE_CUSTOMER,
+    path: API.CONTEXT + API.SAVE_VENDOR,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "save",
+        description: "Save Vendor",
         plugins: { hapiAuthorization: false },
         validate: {
             payload: payload_scheme,
@@ -59,16 +61,17 @@ const handle_request = async (request) => {
 };
 
 const save_data = async (request) => {
-    const { name, address, mobile_no, email, initial_balance, discount_type, discount_value, image_path, status } = request.payload;
+    const { name, address, mobile_no, email, supplier_type, initial_balance, commission_type, commisssion_value, service_charge, image_path, status } = request.payload;
+
     const userInfo = await Helper.autheticatedUserInfo(request);
     const id = uuid.v4();
-    let cols = ['oid', 'name', 'address', 'mobileno', 'email', 'initialbalance', 'discounttype', 'discountvalue', 'imagepath', 'status', 'createdby', 'createdon', 'companyoid'];
-    let params = ['$1', '$2', '$3', '$4', '$5', '$6', '$7', '$8', '$9', '$10', '$11', 'clock_timestamp()', '$12'];
-    let data = [id, name, address, mobile_no, email, initial_balance, discount_type, discount_value, image_path, status, userInfo.oid, userInfo.companyoid];
+    let cols = ['oid', 'name', 'address', 'mobileno', 'email', 'suppliertype', 'initialbalance', 'commissiontype', 'commissionvalue', 'servicecharge', 'imagepath', 'status', 'createdby', 'createdon', 'companyoid'];
+    let params = ['$1', '$2', '$3', '$4', '$5', '$6', '$7', '$8', '$9', '$10', '$11', '$12', '$13', 'clock_timestamp()', '$14',];
+    let data = [id, name, address, mobile_no, email, supplier_type, initial_balance, commission_type, commisssion_value, service_charge, image_path, status, userInfo.oid, userInfo.companyoid];
 
     let scols = cols.join(', ')
     let sparams = params.join(', ')
-    let query = `insert into ${TABLE.CUSTOMER} (${scols}) values (${sparams})`;
+    let query = `insert into ${TABLE.VENDOR} (${scols}) values (${sparams})`;
     let sql = {
         text: query,
         values: data
