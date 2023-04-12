@@ -2,6 +2,7 @@
 
     RESOURCES = {
         COMBOBOX_RESOURCE: "master/combobox/v1/",
+        SUPPLIER_RESOURCE: "master/supplier/v1/"
     };
 
 module.exports = {
@@ -32,6 +33,7 @@ module.exports = {
 
     API: {
         CONTEXT: "/api/",
+        
         GET_USER_INFO: "v1/get-user-info",
         SIGN_IN: "v1/sign-in",
         SIGN_OUT: "v1/sign-out",
@@ -76,6 +78,9 @@ module.exports = {
 
         // Airport enpoint
         GET_AIRPORT: "v1/get-airport",
+
+        // master-supplier enpoint 
+        MASTER_GET_SUPPLIER_LIST: RESOURCES.SUPPLIER_RESOURCE + "get-list",
 
 
         // Combobox endpoints
