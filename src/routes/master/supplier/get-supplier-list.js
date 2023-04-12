@@ -77,9 +77,7 @@ const handle_request = async (request) => {
 const get_count = async (request) => {
    let count = 0;
    let data = [];
-   let query = `select count(*) "select count(s.oid)"
-   + " from " + Table.SUPPLIER + " s"
-   + " where 1 = 1 and s.companyOid = ?"`
+   let query = `select count(*) `
 }
 module.exports = route_controller;
  
