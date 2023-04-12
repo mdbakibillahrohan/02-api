@@ -74,11 +74,6 @@ module.exports = {
         // Department Endpoints 
         GET_DEPARTMENT_LIST: "v1/department/get-list",
 
-
-
-        // Airline enpoint
-        GET_AIRLINE: "v1/get-airline",
-
         // Airport enpoint
         GET_AIRPORT: "v1/get-airport",
 
