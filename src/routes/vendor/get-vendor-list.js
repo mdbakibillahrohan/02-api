@@ -67,7 +67,8 @@ const get_data = async (request) => {
     const UserInfo = await Helper.autheticatedUserInfo(request);
 
     let sql = {
-        text: `SELECT * FROM ${TABLE.VENDOR} WHERE companyoid = $1`,
+        // text: `SELECT * FROM ${TABLE.VENDOR} WHERE companyoid = $1`,
+        // text: ,
         values: [UserInfo.companyoid]
     }
     try {

@@ -18,7 +18,7 @@ module.exports = {
 
         CUSTOMER: "customer",
         TICKET: "ticket",
-        VENDOR: "supplier",
+        SUPPPLIER: "supplier",
         ACCOUNT: "account",
         EMPLOYEE: "employee",
         DEPARTMENT: "department",
@@ -30,6 +30,13 @@ module.exports = {
         GET_USER_INFO: "/v1/get-user-info",
         SIGN_IN: "/v1/sign-in",
         SIGN_OUT: "/v1/sign-out",
+
+        // Vendor Endpoints 
+        SAVE_VENDOR: "/v1/vendor/save",
+        UPDATE_VENDOR: "",
+        DELETE_VENDOR: "",
+        GET_VENDOR_LIST: "/v1/vendor/get-list",
+
 
         // passport enpoint
         GET_PASSPORT: "/v1/passport/get-list",
@@ -49,9 +56,6 @@ module.exports = {
 
         // Ticket Endpoints 
         GET_TICKET_LIST: "/v1/ticket/get-list",
-
-        // Vendor Endpoints 
-        GET_VENDOR_LIST: "/v1/vendor/get-list",
 
         // Account Enpoints 
         GET_ACCOUNT_LIST: "/v1/account/get-list",
