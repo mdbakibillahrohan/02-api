@@ -39,14 +39,47 @@ const route_controller = {
     handler: async(request, h) => {
         log.info(`Request received - ${JSON.stringify(request.query)}`);
         const response = await handle_request(request);
-
-        return h.response(response)
+        log.debug(`Response sent - ${JSON.stringify(response)}`)
+        return h.response(response);
     },
 };
 
 const handle_request = async (request) => {
-
+    try {
+        let count = await get_count(request);
+        let data = [];
+        if (count == 0){
+            log.info(MESSAGE.NO_DATA_FOUND);
+            return { 
+                status: false, 
+                code:400,
+                message: MESSAGE.NO_DATA_FOUND 
+            };
+        }
+        data = await get_data(request);
+        log.info(`[${count}] found`)
+        return {
+            status: true,
+            code: 200,
+            message: MESSAGE.SUCCESS_GET_LIST,
+            data: data,
+            count: count
+        };
+    } catch( err ){
+        log.error(`An exception occurred while getting supplier list data: ${err?.message}`);
+        return {
+            status: false,
+            code: 500,
+            message: MESSAGE.INTERNAL_SERVER_ERROR
+        };
+    }
+};
+const get_count = async (request) => {
+   let count = 0;
+   let data = [];
+   let query = `select count(*) "select count(s.oid)"
+   + " from " + Table.SUPPLIER + " s"
+   + " where 1 = 1 and s.companyOid = ?"`
 }
-
 module.exports = route_controller;
  

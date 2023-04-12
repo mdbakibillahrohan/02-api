@@ -85,6 +85,8 @@ module.exports = {
 
     },
     MESSAGE: {
+        NO_DATA_FOUND: `No Data Found`,
+        SUCCESS_GET_LIST: "Success ok",
         SUCCESS_SAVE: "Successfully save data into database",
         SUCCESS_UPDATE: "Successfully updated data into database",
         INTERNAL_SERVER_ERROR: "Internal server error",
