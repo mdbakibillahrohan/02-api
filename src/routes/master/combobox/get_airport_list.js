@@ -1,26 +1,22 @@
 "use strict";
 
 const Joi = require("@hapi/joi");
-const log = require("../../util/log");
-const Dao = require("../../util/dao");
-const { API, MESSAGE } = require("../../util/constant");
+const log = require("../../../util/log");
+const Dao = require("../../../util/dao");
+const { API, MESSAGE, TABLE } = require("../../../util/constant");
+const { autheticatedUserInfo } = require("../../../util/helper");
 
-const query_scheme = Joi.object({
-    status: Joi.string().trim().min(1).max(32).required(),
-    searchText: Joi.string().trim().allow(null, '').max(128).optional(),
-    offset: Joi.number().allow(null, '').max(99999999).optional(),
-    limit: Joi.number().allow(null, '').max(99999999).optional(),
-});
+const query_scheme = Joi.object({});
 
 const get_list = {
     method: "GET",
-    path: API.CONTEXT + 'get-list',
+    path: API.CONTEXT + API.COMBOBOX_GET_AIRPORT_LIST,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "get list",
+        description: "Combobox airport list",
         plugins: { hapiAuthorization: false },
         validate: {
             query: query_scheme,
@@ -59,7 +55,7 @@ const handle_request = async (request) => {
             count: count
         };
     } catch (err) {
-        log.error(`An exception occurred while getting list data : ${err?.message}`);
+        log.error(`An exception occurred while getting airport list data : ${err?.message}`);
         return {
             status: false,
             code: 500,
@@ -71,17 +67,7 @@ const handle_request = async (request) => {
 const get_count = async (request) => {
     let count = 0;
     let data = [];
-    let query = `select count(*)::int4 as total from table_name where 1 = 1`;
-    let idx = 1;
-    if (request.query['status']) {
-        query += ` and status = $${idx++}`;
-        data.push(request.query['status'])
-    }
-    if (request.query['searchText']) {
-        query += ` and (status ilike $${idx})`;
-        idx++;
-        data.push('%' + request.query['searchText'].trim() + '%');
-    }
+    let query = `select count(*)::int4 as total from ${TABLE.AIRPORT} where 1 = 1`;
     let sql = {
         text: query,
         values: data
@@ -98,25 +84,11 @@ const get_count = async (request) => {
 const get_data = async (request) => {
     let list_data = [];
     let data = [];
-    let query = `select oid from table_name where 1 = 1`;
-    let idx = 1;
-    if (request.query['status']) {
-        query += ` and status = $${idx++}`;
-        data.push(request.query['status'])
-    }
-    if (request.query['searchText']) {
-        query += ` and (status ilike $${idx})`;
-        idx++;
-        data.push('%' + request.query['searchText'].trim() + '%');
-    }
-    if (request.query.offset) {
-        query += ` offset $${idx++}`;
-        data.push(request.query.offset);
-    }
-    if (request.query.limit) {
-        query += ` limit $${idx++}`;
-        data.push(request.query.limit);
-    }
+    let query = `select oid, iata, icao, country || '-' || city || '-' || airportName || '-' || iata as airportDetails  from ${TABLE.AIRPORT} where 1 = 1`;
+
+    query += ` order by airportname desc`;
+
+
     let sql = {
         text: query,
         values: data

@@ -13,7 +13,7 @@ const payload_scheme = Joi.object({
 
 const update_controller = {
     method: "POST",
-    path: API.CONTEXT + "/update",
+    path: API.CONTEXT + "update",
     options: {
         auth: {
             mode: "required",

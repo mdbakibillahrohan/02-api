@@ -115,10 +115,10 @@ const start_server = async () => {
 
     server.events.on("start", () => {
         redis_db = init_redis(process.env.REDIS_DB)
-            .on("connect", () => {  log.info(`Redis connected`); })
+            .on("connect", () => { log.info(`Redis connected`); })
             .on("error", (error) => { log.error(error); });
         pool = init_db()
-        pool.connect().then((err, client) => log.info(`Postgres connected`))
+        pool.connect().then((err, client) => { log.info(`Postgres connected`) })
         pool.on("error", (err) => log.error(`Postgres bad has happened!`, err.stack))
         log.info(`Hapi js(${server.version}) running on ${server.info.uri}`)
     })

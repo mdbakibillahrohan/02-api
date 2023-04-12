@@ -1,13 +1,4 @@
 
-/**
- * Title: Get Department List
- * Description: This endpoint handling the get department list request and handling the neccessay action.
- * Method: GET
- * RequiredAuthentication: true
- * Authentication Strategy: jwt
- * File Path: src/routes/department/get_department_list.js
- * Author: Md Bakibillah (Rohan)
- */
 
 "use strict"
 
