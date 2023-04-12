@@ -60,15 +60,40 @@ const handle_request = async (request) => {
     log.info(`Vendor data found`)
     return { status: true, code: 200, data: data }
 }
-
+const get_count = async (request) =>{
+    let count = 0;
+    let data = [];
+    let query = `select count(*)::int4 as total from ${TABLE.SUPPLIER} where 1 = 1 `;
+    let idx = 1;
+    if (request.query['status']) {
+        query += ` and status = $${idx++}`;
+        data.push(request.query['status'])
+    }
+    if (request.query['searchText']) {
+        query += ` and (status ilike $${idx})`;
+    idx++;
+    data.push('%' + request.query['searchText'].trim() + '%');
+    }
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        let data_set = await Dao.get_data(request.pg, sql);
+        count = data_set[0]["total"];
+    } catch (e) {
+        throw new Error(e);
+    }
+    return count;
+}
 // Get data from the database 
 const get_data = async (request) => {
-    let data = null
+    let list_data = [];
+    let data = []
     const UserInfo = await Helper.autheticatedUserInfo(request);
 
     let sql = {
-        // text: `SELECT * FROM ${TABLE.VENDOR} WHERE companyoid = $1`,
-        // text: ,
+        text: `SELECT * FROM ${TABLE.SUPPLIER} WHERE companyoid = $1`,
         values: [UserInfo.companyoid]
     }
     try {
