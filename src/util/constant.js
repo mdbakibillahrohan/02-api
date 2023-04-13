@@ -2,6 +2,9 @@
 
     RESOURCES = {
         COMBOBOX_RESOURCE: "master/combobox/v1/",
+        MASTER_CUSTOMER_RESOURCE: "master/customer/v1/",
+        MASTER_EXPENSE_RESOURCE: "master/expense/v1/",
+        MASTER_INQUIRY_RESOURCE: "master/inquiry/v1/",
     };
 
 module.exports = {
@@ -29,8 +32,10 @@ module.exports = {
         DEPARTMENT: "department",
         PASSPORT: "passport",
         AIRLINE: "airline",
-        AIRPORT: "airport"
-
+        AIRPORT: "airport",
+        PAYMENT: "payment",
+        DESIGNATION: "Designation",
+        BANK: "Bank",
     },
 
     API: {
@@ -91,6 +96,24 @@ module.exports = {
         COMBOBOX_GET_TICKET_FORM_DATA_LIST: RESOURCES.COMBOBOX_RESOURCE + "ticket-form-data-list",
 
 
+        //Master Customer endpoints
+        MASTER_CUSTOMER_GET_LIST: RESOURCES.MASTER_CUSTOMER_RESOURCE + "get-list",
+
+        //Master Expense endpoints 
+        MASTER_EXPENSE_GET_LIST: RESOURCES.MASTER_EXPENSE_RESOURCE + "get-list",
+
+
+        // Master Inquiry endpoints
+        MASTER_INQUIRY_GET_LIST_PATH: RESOURCES.MASTER_INQUIRY_RESOURCE + "get-list",
+        MASTER_INQUIRY_GET_AIRLINE_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "airlines-list",
+        MASTER_INQUIRY_GET_AIRPORT_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "airport-list",
+        MASTER_INQUIRY_GET_PASSPORT_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "passport-list",
+        MASTER_INQUIRY_GET_DESIGNATION_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "designation-list",
+        MASTER_INQUIRY_GET_DEPARTMENT_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "department-list",
+        MASTER_INQUIRY_GET_BANK_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "bank-list",
+
+
+
     },
     MESSAGE: {
         SUCCESS_SAVE: "Successfully save data into database",
@@ -107,5 +130,10 @@ module.exports = {
         NULL_HEADER: this.NULL_PREFIX + "header",
         NULL_META: this.NULL_PREFIX + "meta",
         NULL_BODY: this.NULL_PREFIX + "body",
+    },
+
+    CONSTANT: {
+        ACTIVE: "Active",
+        SUPPLIER: "Supplier"
     }
 }

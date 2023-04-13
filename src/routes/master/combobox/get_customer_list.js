@@ -59,7 +59,7 @@ const handle_request = async (request) => {
             count: count
         };
     } catch (err) {
-        log.error(`An exception occurred while getting customer list data : ${err?.message}`);
+        log.error(`An exception occurred while getting combobox customer list data : ${err?.message}`);
         return {
             status: false,
             code: 500,
@@ -72,7 +72,7 @@ const get_count = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let count = 0;
     let data = [];
-    let query = `select count(*)::int4 as total from ${TABLE.CUSTOMER} where 1 = 1`;
+    let query = `select count(oid)::int4 as total from ${TABLE.CUSTOMER} where 1 = 1`;
     let idx = 1;
 
     query += ` and companyoid = $${idx}`;

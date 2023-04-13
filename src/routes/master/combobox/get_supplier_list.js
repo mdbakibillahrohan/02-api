@@ -59,7 +59,7 @@ const handle_request = async (request) => {
             count: count
         };
     } catch (err) {
-        log.error(`An exception occurred while getting supplier list data : ${err?.message}`);
+        log.error(`An exception occurred while getting combobox supplier list data : ${err?.message}`);
         return {
             status: false,
             code: 500,
