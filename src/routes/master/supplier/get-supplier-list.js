@@ -75,9 +75,15 @@ const handle_request = async (request) => {
     }
 };
 const get_count = async (request) => {
-   let count = 0;
-   let data = [];
-   let query = `select count(*) `
+    let userInfo = await autheticatedUserInfo(request)
+    console.log(userInfo);
+    let count = 0;
+    let data = [];
+    
+    let query = `select count(*) `
+}
+const get_data = async (request) => {
+
 }
 module.exports = route_controller;
  
