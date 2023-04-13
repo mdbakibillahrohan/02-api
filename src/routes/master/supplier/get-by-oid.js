@@ -12,7 +12,7 @@ const query_scheme = Joi.object({
 
 const route_controller = {
     method: "GET",
-    path: API.CONTEXT + API.MASTER_GET_SUPPLIER_BY_OID,
+    path: API.CONTEXT + API.MASTER_GET_SUPPLIER_BY_OID_PATH,
     options: {
         auth: {
             mode: "required",

@@ -14,13 +14,13 @@ const query_scheme = Joi.object({
 
 const route_controller = {
     method: "GET",
-    path: API.CONTEXT + API.MASTER_GET_SUPPLIER_LIST,
+    path: API.CONTEXT + API.MASTER_PASSPORT_GET_LIST_PATH,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "Master Supplier List",
+        description: "Master Passport List",
         plugins: {
             hapiAuthorization: false,
         },
@@ -47,6 +47,7 @@ const route_controller = {
 const handle_request = async (request) => {
     try {
         let count = await get_count(request);
+        
         let data = [];
         if (count == 0){
             log.info(MESSAGE.NO_DATA_FOUND);
@@ -80,7 +81,7 @@ const get_count = async (request) => {
     let count = 0;
     let data = [];
     
-    let query = `select count(oid) from ${ TABLE.SUPPLIER} where 1 = 1`;
+    let query = `select count(oid) from ${ TABLE.PASSPORT } where 1 = 1 `;
     let idx = 1;
 
     query += ` and companyoid = $${idx}`;
@@ -104,8 +105,9 @@ const get_count = async (request) => {
     }
     try {
         let data_set = await Dao.get_data(request.pg, sql);
-        count = data_set[0]["total"];
-
+        count = data_set[0]["count"];
+        console.log(count)
+        console.log(data_set)
         log.info(count)
     } catch (err) {
         log.error(err)
@@ -117,8 +119,8 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select oid, customerId, name, address, mobileNo, email, imagePath, status, initialBalance, commissionType, commissionValue, serviceCharge, supplierType, 
-    supplier_balance(oid) as balance, supplier_creditnote_balance(oid) as vendorCreditBalance from ${TABLE.SUPPLIER} where 1 = 1`;
+    let query = `select oid, surName, givenName, gender, nationality, countryCode, personalNo, passportNumber, previousPassportNumber, to_char(birthDate, 'YYYY-MM-DD') as birthDate, to_char(birthDate :: DATE, 'dd-Mon-yyyy') as birthDateEN,  to_char(passportIssueDate, 'YYYY-MM-DD') as passportIssueDate, to_char(passportIssueDate :: DATE, 'dd-Mon-yyyy') as passportIssueDateEN, to_char(passportExpiryDate, 'YYYY-MM-DD') as passportExpiryDate, to_char(passportExpiryDate :: DATE, 'dd-Mon-yyyy') as passportExpiryDateEN, passportexpirydate::date - current_date::date as expireDay, passportImagePath, issuingAuthority, description, status, name as customerName from  ${ Table.PASSPORT }, ${ Table.CUSTOMER }  where 1 = 1 and oid = customerOid`;
+
     let idx = 1;
     query += ` and companyoid = $${idx}`;
     idx++;

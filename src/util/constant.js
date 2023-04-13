@@ -2,7 +2,9 @@
 
     RESOURCES = {
         COMBOBOX_RESOURCE: "master/combobox/v1/",
-        SUPPLIER_RESOURCE: "master/supplier/v1/"
+        MASTER_SUPPLIER_RESOURCE: "master/supplier/v1/",
+        MASTER_PASSPORT_RESOURCE: "master/passport/v1/"
+
     };
 
 module.exports = {
@@ -72,8 +74,14 @@ module.exports = {
         GET_AIRPORT: "v1/get-airport",
         
         // master supplier enpoint
-        MASTER_GET_SUPPLIER_LIST: RESOURCES.SUPPLIER_RESOURCE+ "get-list",
-        MASTER_GET_SUPPLIER_BY_OID: RESOURCES.SUPPLIER_RESOURCE+ "get-by-oid",
+        MASTER_GET_SUPPLIER_LIST_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "get-list",
+        MASTER_GET_SUPPLIER_BY_OID_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "get-by-oid",MASTER_GET_SUPPLIER_SAVE_UPDATE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "save-update",
+
+        // master passport enpoint 
+        MASTER_PASSPORT_SAVE_UPDATE_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "save-update",
+        MASTER_PASSPORT_GET_LIST_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "get-list",
+        MASTER_PASSPORT_GET_BY_OID_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "get-by-oid",
+        MASTER_PASSPORT_PROFILE_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "passport-profile",
 
         // Combobox endpoints
         COMBOBOX_GET_SUPPLIER_LIST: RESOURCES.COMBOBOX_RESOURCE + "supplier-list",
