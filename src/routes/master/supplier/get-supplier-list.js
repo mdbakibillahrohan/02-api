@@ -58,6 +58,7 @@ const handle_request = async (request) => {
         }
         data = await get_data(request);
         log.info(`[${count}] found`)
+        
         return {
             status: true,
             code: 200,
@@ -76,14 +77,86 @@ const handle_request = async (request) => {
 };
 const get_count = async (request) => {
     let userInfo = await autheticatedUserInfo(request)
-    console.log(userInfo);
     let count = 0;
     let data = [];
     
-    let query = `select count(*) `
+    let query = `select count(oid) from ${ TABLE.SUPPLIER} where 1 = 1`;
+    let idx = 1;
+
+    query += ` and companyoid = $${idx}`;
+    idx++;
+    data.push(userInfo.companyoid);
+    if (request.query['searchText']) {
+        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
+        query += ` and lower(name) like $${idx} or`;
+        idx++;
+        query += `  lower(mobileno) like $${idx} or`;
+        idx++;
+        query += ` lower(email) like $${idx} `;
+        idx++;
+
+        data.push(searchText, searchText, searchText)
+
+    }
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        let data_set = await Dao.get_data(request.pg, sql);
+        count = data_set[0]["total"];
+        console.log(data_set)
+        log.info(count)
+    } catch (err) {
+        log.error(err)
+        throw new Error(err);
+    }
+    return count;
 }
 const get_data = async (request) => {
+    const userInfo = await autheticatedUserInfo(request);
+    console.log(userInfo)
+    let list_data = [];
+    let data = [];
+    let query = `select oid, customerId, name, address, mobileNo, email, imagePath, status, initialBalance, commissionType, commissionValue, serviceCharge, supplierType, 
+    supplier_balance(oid) as balance, supplier_creditnote_balance(oid) as vendorCreditBalance from ${TABLE.SUPPLIER} where 1 = 1`;
+    let idx = 1;
+    query += ` and companyoid = $${idx}`;
+    idx++;
+    data.push(userInfo.companyoid);
+    if (request.query['status']) {
+        query += ` and status = $${idx++}`;
+        data.push(request.query['status'])
+    }
+    if (request.query['searchText']) {
+        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
+        query += ` and lower(name) like $${idx} or`;
+        idx++;
+        query += `  lower(mobileno) like $${idx} or`;
+        idx++;
+        query += ` lower(email) like $${idx} `;
+        idx++;
 
+        data.push(searchText, searchText, searchText)
+    }
+    if (request.query.offset) {
+        query += ` offset $${idx++}`;
+        data.push(request.query.offset);
+    }
+    if (request.query.limit) {
+        query += ` limit $${idx++}`;
+        data.push(request.query.limit)
+    }
+    let sql = {
+        text: query,
+        values: data 
+    }
+    try {
+        list_data = await Dao.get_data(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    return list_data;
 }
 module.exports = route_controller;
  
