@@ -73,6 +73,7 @@ module.exports = {
         
         // master supplier enpoint
         MASTER_GET_SUPPLIER_LIST: RESOURCES.SUPPLIER_RESOURCE+ "get-list",
+        MASTER_GET_SUPPLIER_BY_OID: RESOURCES.SUPPLIER_RESOURCE+ "get-by-oid",
 
         // Combobox endpoints
         COMBOBOX_GET_SUPPLIER_LIST: RESOURCES.COMBOBOX_RESOURCE + "supplier-list",

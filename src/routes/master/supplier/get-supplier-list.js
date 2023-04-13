@@ -105,7 +105,7 @@ const get_count = async (request) => {
     try {
         let data_set = await Dao.get_data(request.pg, sql);
         count = data_set[0]["total"];
-        console.log(data_set)
+
         log.info(count)
     } catch (err) {
         log.error(err)
@@ -115,7 +115,6 @@ const get_count = async (request) => {
 }
 const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
-    console.log(userInfo)
     let list_data = [];
     let data = [];
     let query = `select oid, customerId, name, address, mobileNo, email, imagePath, status, initialBalance, commissionType, commissionValue, serviceCharge, supplierType, 
