@@ -12,13 +12,13 @@ const query_scheme = Joi.object({
 
 const route_controller = {
     method: "GET",
-    path: API.CONTEXT + API.MASTER_GET_SUPPLIER_BY_OID_PATH,
+    path: API.CONTEXT + API.MASTER_PASSPORT_GET_BY_OID_PATH,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "get supplier by oid",
+        description: "get passport by oid",
         plugins: { hapiAuthorization: false },
         validate: {
             query: query_scheme,
@@ -55,8 +55,15 @@ const handle_request = async (request) => {
 }
 const get_data = async (request) => {
     let data = null, query = null;
-    // query = `select oid from ${ TABLE.SUPPLIER } where 1 = 1 and oid = $1`;
-    query = `select oid, customerId, name, address,  mobileNo, email, imagePath, status, initialBalance, commissionType, supplier_total_transaction_amount( oid) as supplierTotalTransactionAmount, supplier_balance( oid) as balance from  ${TABLE.SUPPLIER} where 1 = 1 and  oid = $1`
+    query = `select p.oid, p.fullName, p.surName, p.givenName, p.gender, p.nationality, 
+			p.mobileNo, p.email, p.countryCode, p.birthRegistrationNo, p.personalNo, 
+			p.passportNumber, p.passportNumber as clonePassportNumber, p.previousPassportNumber,to_char(p.birthDate, 'YYYY-MM-DD') as birthDate,
+			to_char(p.birthDate :: DATE, 'dd-Mon-yyyy') as birthDateEN, 
+			to_char(p.passportIssueDate, 'YYYY-MM-DD') as passportIssueDate, 
+			to_char(p.passportIssueDate :: DATE, 'dd-Mon-yyyy') as passportIssueDateEN, 
+			to_char(p.passportExpiryDate, 'YYYY-MM-DD') as passportExpiryDate, 
+			to_char(p.passportExpiryDate :: DATE, 'dd-Mon-yyyy') as passportExpiryDateEN, 
+			p.passportImagePath, p.issuingAuthority, p.description, p.status, p.customerOid, p.countryOid from ${ TABLE.PASSPORT } as p where 1 = 1 and p.oid = $1 `;
     let sql = {
         text: query,
         values: [request.query.oid]
