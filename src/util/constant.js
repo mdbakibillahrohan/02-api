@@ -3,7 +3,8 @@
     RESOURCES = {
         COMBOBOX_RESOURCE: "master/combobox/v1/",
         MASTER_SUPPLIER_RESOURCE: "master/supplier/v1/",
-        MASTER_PASSPORT_RESOURCE: "master/passport/v1/"
+        MASTER_PASSPORT_RESOURCE: "master/passport/v1/",
+        MASTER_PAYMENT_RESOURCE: "master/payment/v1/"
 
     };
 
@@ -82,6 +83,14 @@ module.exports = {
         MASTER_PASSPORT_GET_LIST_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "get-list",
         MASTER_PASSPORT_GET_BY_OID_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "get-by-oid",
         MASTER_PASSPORT_PROFILE_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "passport-profile",
+
+
+        // master payment enpoint
+
+        MASTER_PAYMENT_SAVE_UPDATE_PATH: RESOURCES.MASTER_PAYMENT_RESOURCE + "save-update",
+        MASTER_PAYMENT_GET_LIST_PATH: RESOURCES.MASTER_PAYMENT_RESOURCE + "get-list",
+        MASTER_PAYMENT_DELETE_BY_OID_PATH: RESOURCES.MASTER_PAYMENT_RESOURCE + "delete-by-oid",
+
 
         // Combobox endpoints
         COMBOBOX_GET_SUPPLIER_LIST: RESOURCES.COMBOBOX_RESOURCE + "supplier-list",
