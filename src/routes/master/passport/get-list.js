@@ -82,22 +82,24 @@ const get_count = async (request) => {
     let count = 0;
     let data = [];
     
-    let query = `select count(oid) from ${ TABLE.PASSPORT } where 1 = 1 `;
+    let query = `select count(p.oid) from ${ TABLE.PASSPORT } as p , ${ TABLE.CUSTOMER } as c where 1 = 1 and c.oid = p.customerOid`;
     let idx = 1;
 
-    query += ` and companyoid = $${idx}`;
+    query += ` and p.companyoid = $${idx}`;
     idx++;
     data.push(userInfo.companyoid);
     if (request.query['searchText']) {
         const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and  lower(mobileno) like $${idx} or`;
-        idx++ ;
-        query += ` lower(passportNumber) like $${idx} or`;
+        query += ` and lower(p.surName) like $${idx} or`;
         idx++;
-        query += ` lower(email) like $${idx} `;
+        query += `  lower(p.givenName) like $${idx} or`;
+        idx++ ;
+        query += ` lower(p.passportNumber) like $${idx} or`;
+        idx++;
+        query += ` lower(c.name) like $${idx} `;
         idx++;
 
-        data.push(searchText, searchText, searchText)
+        data.push(searchText, searchText, searchText, searchText)
 
     }
     let sql = {
@@ -131,13 +133,13 @@ const get_data = async (request) => {
     }
     if (request.query['searchText']) {
         const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and lower(c.name) like $${idx} or`;
+        query += ` and lower(p.surName) like $${idx} or`;
         idx++;
-        query += `  lower(p.mobileno) like $${idx} or`;
+        query += `  lower(p.givenName) like $${idx} or`;
         idx++ ;
-        query += ` lower(p.passportnumber) like $${idx} or`;
+        query += ` lower(p.passportNumber) like $${idx} or`;
         idx++;
-        query += ` lower(p.email) like $${idx} `;
+        query += ` lower(c.name) like $${idx} `;
         idx++;
 
         data.push(searchText, searchText, searchText, searchText)
