@@ -7,9 +7,10 @@ const { API, MESSAGE, TABLE } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const query_scheme = Joi.object({
+    // status: Joi.string().trim().min(1).max(32).required(),
     searchText: Joi.string().trim().allow(null, '').max(128).optional(),
-    offset: Joi.number().allow(null,'').max(100000000000).optional(),
-    limit: Joi.number().allow(null, '').max(100000000000).optional(),
+    offset: Joi.number().allow(null, '').max(99999999).optional(),
+    limit: Joi.number().allow(null, '').max(99999999).optional(),
 })
 
 const route_controller = {
@@ -64,8 +65,8 @@ const handle_request = async (request) => {
             status: true,
             code: 200,
             message: MESSAGE.SUCCESS_GET_LIST,
+            count: count,
             data: data,
-            count: count
         };
     } catch( err ){
         log.error(`An exception occurred while getting supplier list data: ${err?.message}`);
@@ -89,9 +90,9 @@ const get_count = async (request) => {
     data.push(userInfo.companyoid);
     if (request.query['searchText']) {
         const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and lower(name) like $${idx} or`;
-        idx++;
-        query += `  lower(mobileno) like $${idx} or`;
+        query += ` and  lower(mobileno) like $${idx} or`;
+        idx++ ;
+        query += ` lower(passportNumber) like $${idx} or`;
         idx++;
         query += ` lower(email) like $${idx} `;
         idx++;
@@ -106,7 +107,6 @@ const get_count = async (request) => {
     try {
         let data_set = await Dao.get_data(request.pg, sql);
         count = data_set[0]["count"];
-        console.log(count)
         console.log(data_set)
         log.info(count)
     } catch (err) {
@@ -119,11 +119,11 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select oid, surName, givenName, gender, nationality, countryCode, personalNo, passportNumber, previousPassportNumber, to_char(birthDate, 'YYYY-MM-DD') as birthDate, to_char(birthDate :: DATE, 'dd-Mon-yyyy') as birthDateEN,  to_char(passportIssueDate, 'YYYY-MM-DD') as passportIssueDate, to_char(passportIssueDate :: DATE, 'dd-Mon-yyyy') as passportIssueDateEN, to_char(passportExpiryDate, 'YYYY-MM-DD') as passportExpiryDate, to_char(passportExpiryDate :: DATE, 'dd-Mon-yyyy') as passportExpiryDateEN, passportexpirydate::date - current_date::date as expireDay, passportImagePath, issuingAuthority, description, status, name as customerName from  ${ Table.PASSPORT }, ${ Table.CUSTOMER }  where 1 = 1 and oid = customerOid`;
+    let query = `select p.oid, p.surName, p.givenName, p.gender, p.nationality, p.countryCode, p.personalNo, p.passportNumber, p.previousPassportNumber, to_char(p.birthDate, 'YYYY-MM-DD') as birthDate, to_char(p.birthDate :: DATE, 'dd-Mon-yyyy') as birthDateEN,  to_char(p.passportIssueDate, 'YYYY-MM-DD') as passportIssueDate, to_char(p.passportIssueDate :: DATE, 'dd-Mon-yyyy') as passportIssueDateEN, to_char(p.passportExpiryDate, 'YYYY-MM-DD') as passportExpiryDate, to_char(p.passportExpiryDate :: DATE, 'dd-Mon-yyyy') as passportExpiryDateEN, p.passportexpirydate::date - current_date::date as expireDay, p.passportImagePath, p.issuingAuthority, p.description, p.status, c.name as customerName from  ${ TABLE.PASSPORT } as p, ${ TABLE.CUSTOMER } as c  where 1 = 1 and c.oid = p.customerOid`;
 
     let idx = 1;
-    query += ` and companyoid = $${idx}`;
-    idx++;
+    query += ` and p.companyoid = $${idx}`;
+    idx++;  
     data.push(userInfo.companyoid);
     if (request.query['status']) {
         query += ` and status = $${idx++}`;
@@ -131,14 +131,16 @@ const get_data = async (request) => {
     }
     if (request.query['searchText']) {
         const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and lower(name) like $${idx} or`;
+        query += ` and lower(c.name) like $${idx} or`;
         idx++;
-        query += `  lower(mobileno) like $${idx} or`;
+        query += `  lower(p.mobileno) like $${idx} or`;
+        idx++ ;
+        query += ` lower(p.passportnumber) like $${idx} or`;
         idx++;
-        query += ` lower(email) like $${idx} `;
+        query += ` lower(p.email) like $${idx} `;
         idx++;
 
-        data.push(searchText, searchText, searchText)
+        data.push(searchText, searchText, searchText, searchText)
     }
     if (request.query.offset) {
         query += ` offset $${idx++}`;
