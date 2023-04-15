@@ -25,6 +25,8 @@ module.exports = {
         AIRLINE: "airline",
         AIRPORT: "airport",
 
+        PAYMENT: "payment",
+        
         CUSTOMER: "customer",
         TICKET: "ticket",
         SUPPLIER: "supplier",

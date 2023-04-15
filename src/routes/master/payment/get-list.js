@@ -82,24 +82,29 @@ const get_count = async (request) => {
     let count = 0;
     let data = [];
     
-    let query = `select count(p.oid) from ${ TABLE.PASSPORT } as p , ${ TABLE.CUSTOMER } as c where 1 = 1 and c.oid = p.customerOid`;
+    let query = `select count(oid) from ${ TABLE.PAYMENT } as 
+			 where 1 = 1`;
     let idx = 1;
 
-    query += ` and p.companyoid = $${idx}`;
+    query += ` and companyoid = $${idx}`;
     idx++;
     data.push(userInfo.companyoid);
-    if (request.query['searchText']) {
-        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and lower(p.surName) like $${idx} or`;
+    if (request.query['referenceOid']) {
+        
+        query += ` and referenceOid = $${idx}`;
         idx++;
-        query += `  lower(p.givenName) like $${idx} or`;
+    }
+    if(request.query['referenceType']){
+        query += `  and referenceType = $${idx} `;
         idx++ ;
-        query += ` lower(p.passportNumber) like $${idx} or`;
+    }
+    if(request.query['paymentType']){
+        query += ` and paymentType = $${idx}`;
         idx++;
-        query += ` lower(c.name) like $${idx} `;
+    }
+    if(request.query['paymentNature']){
+        query += ` and paymentNature = $${idx} `;
         idx++;
-
-        data.push(searchText, searchText, searchText, searchText)
 
     }
     let sql = {
@@ -121,7 +126,7 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select p.oid, p.surName, p.givenName, p.gender, p.nationality, p.countryCode, p.personalNo, p.passportNumber, p.previousPassportNumber, to_char(p.birthDate, 'YYYY-MM-DD') as birthDate, to_char(p.birthDate :: DATE, 'dd-Mon-yyyy') as birthDateEN,  to_char(p.passportIssueDate, 'YYYY-MM-DD') as passportIssueDate, to_char(p.passportIssueDate :: DATE, 'dd-Mon-yyyy') as passportIssueDateEN, to_char(p.passportExpiryDate, 'YYYY-MM-DD') as passportExpiryDate, to_char(p.passportExpiryDate :: DATE, 'dd-Mon-yyyy') as passportExpiryDateEN, p.passportexpirydate::date - current_date::date as expireDay, p.passportImagePath, p.issuingAuthority, p.description, p.status, c.name as customerName from  ${ TABLE.PASSPORT } as p, ${ TABLE.CUSTOMER } as c  where 1 = 1 and c.oid = p.customerOid`;
+    let query = ``;
 
     let idx = 1;
     query += ` and p.companyoid = $${idx}`;
@@ -131,19 +136,7 @@ const get_data = async (request) => {
         query += ` and status = $${idx++}`;
         data.push(request.query['status'])
     }
-    if (request.query['searchText']) {
-        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and lower(p.surName) like $${idx} or`;
-        idx++;
-        query += `  lower(p.givenName) like $${idx} or`;
-        idx++ ;
-        query += ` lower(p.passportNumber) like $${idx} or`;
-        idx++;
-        query += ` lower(c.name) like $${idx} `;
-        idx++;
 
-        data.push(searchText, searchText, searchText, searchText)
-    }
     if (request.query.offset) {
         query += ` offset $${idx++}`;
         data.push(request.query.offset);

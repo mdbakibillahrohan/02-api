@@ -117,27 +117,29 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select oid, customerId, name, address, mobileNo, email, imagePath, status, initialBalance, commissionType, commissionValue, serviceCharge, supplierType, 
-    supplier_balance(oid) as balance, supplier_creditnote_balance(oid) as vendorCreditBalance from ${TABLE.SUPPLIER} where 1 = 1`;
     let idx = 1;
+    let query = `select s.oid, s.customerId, s.name, s.address, s.mobileNo, s.email, s.imagePath, s.status, s.initialBalance, s.commissionType, s.commissionValue, s.serviceCharge, s.supplierType, supplier_balance(s.oid) as balance, supplier_creditnote_balance(s.oid) as vendorCreditBalance, (select coalesce(sum(p.amount)) as amount from ${ TABLE.PAYMENT } as p where 1 = 1 and status = $1) from ${TABLE.SUPPLIER} as s where 1 = 1`;
+
+    data.push(request.query['status'])
+    idx++;
     query += ` and companyoid = $${idx}`;
     idx++;
     data.push(userInfo.companyoid);
-    if (request.query['status']) {
-        query += ` and status = $${idx++}`;
-        data.push(request.query['status'])
-    }
+
     if (request.query['searchText']) {
         const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and lower(name) like $${idx} or`;
+        query += ` and lower(s.name) like $${idx} or`;
         idx++;
-        query += `  lower(mobileno) like $${idx} or`;
+        query += `  lower(s.mobileno) like $${idx} or`;
         idx++;
-        query += ` lower(email) like $${idx} `;
+        query += ` lower(s.email) like $${idx} `;
         idx++;
 
         data.push(searchText, searchText, searchText)
     }
+    query += ` order by s.createdOn desc`;
+    idx ++;
+
     if (request.query.offset) {
         query += ` offset $${idx++}`;
         data.push(request.query.offset);
