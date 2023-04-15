@@ -4,7 +4,7 @@ const Joi = require("@hapi/joi");
 const log = require("../../../util/log");
 const Dao = require("../../../util/dao");
 const { API, MESSAGE, TABLE } = require("../../../util/constant");
-// const { autheticatedUserInfo } = require("../../../util/helper");
+const { autheticatedUserInfo } = require("../../../util/helper");
 
 const query_scheme = Joi.object({
     oid: Joi.string().trim().min(1).max(128).required()
@@ -54,15 +54,23 @@ const handle_request = async (request) => {
     }
 }
 const get_data = async (request) => {
-    let data = null, query = null;
-    // query = `select oid from ${ TABLE.SUPPLIER } where 1 = 1 and oid = $1`;
-    query = `select oid, customerId, name, address,  mobileNo, email, imagePath, status, initialBalance, commissionType, supplier_total_transaction_amount( oid) as supplierTotalTransactionAmount, supplier_balance( oid) as balance from  ${TABLE.SUPPLIER} where 1 = 1 and  oid = $1`
+    const userInfo = await autheticatedUserInfo(request);
+    let list_data = [];
+    let data = [];
+ 
+    let query = `select s.oid, s.customerId as "customer_id", s.name, s.address, s.mobileNo as "mobile_no", s.email, s.imagePath as "image_path", s.status, s.initialBalance as "initial_balance", s.commissionType as "commission_type", s.commissionValue as "commission_value", s.serviceCharge as "service_charge", s.supplierType as "supplier_type", supplier_total_transaction_amount(s.oid) as supplier_total_transaction_amount, supplier_balance(s.oid) as balance, (select coalesce(sum(amount), 0)  from ${ TABLE.PAYMENT } where 1 = 1 and status = $1 and referenceType = $2 and referenceOid = s.oid) as "paid_amount" from ${TABLE.SUPPLIER} as s where 1 = 1 and oid = $3`;
+    
+    data.push(request.query["status"],"Supplier", request.query["oid"])
+    let idx = 4;
+    query += ` and companyoid = $${idx++}`;
+    data.push(userInfo.companyoid); 
     let sql = {
         text: query,
         values: [request.query.oid]
     }
     try {
         let data_set = await Dao.get_data(request.pg, sql);
+        console.log(data_set)
         data = data_set.length < 1 ? null : data_set[0];
     } catch (e) {
         log.error(`An exception occurred while getting data by oid: ${e?.message}`);

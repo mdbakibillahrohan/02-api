@@ -7,7 +7,7 @@ const { API, MESSAGE, TABLE } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const query_scheme = Joi.object({
-    status: Joi.string().trim().min(1).max(32).required(),
+    status: Joi.string().trim().min(1).max(32).optional(),
     searchText: Joi.string().trim().allow(null, '').max(128).optional(),
     offset: Joi.number().allow(null,'').max(100000000000).optional(),
     limit: Joi.number().allow(null, '').max(100000000000).optional(),
@@ -64,8 +64,8 @@ const handle_request = async (request) => {
             status: true,
             code: 200,
             message: MESSAGE.SUCCESS_GET_LIST,
-            data: data,
-            count: count
+            data,
+            count
         };
     } catch( err ){
         log.error(`An exception occurred while getting supplier list data: ${err?.message}`);
@@ -84,19 +84,14 @@ const get_count = async (request) => {
     let query = `select count(oid) from ${ TABLE.SUPPLIER} where 1 = 1`;
     let idx = 1;
 
-    query += ` and companyoid = $${idx}`;
-    idx++;
+    query += ` and companyoid = $${idx++}`;
     data.push(userInfo.companyoid);
-    if (request.query['searchText']) {
-        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and lower(name) like $${idx} or`;
-        idx++;
-        query += `  lower(mobileno) like $${idx} or`;
-        idx++;
-        query += ` lower(email) like $${idx} `;
-        idx++;
+    if (request.query["searchText"]) {
+        query += ` and name ilike $${idx} or 
+            mobileno ilike $${idx} or 
+            email ilike $${idx++} `;
 
-        data.push(searchText, searchText, searchText)
+        data.push(`% ${request.query["searchText"].trim()} %`)
 
     }
     let sql = {
@@ -106,7 +101,6 @@ const get_count = async (request) => {
     try {
         let data_set = await Dao.get_data(request.pg, sql);
         count = data_set[0]["count"];
-
         log.info(count)
     } catch (err) {
         log.error(err)
@@ -119,23 +113,20 @@ const get_data = async (request) => {
     let list_data = [];
     let data = [];
  
-    let query = `select s.oid, s.customerId, s.name, s.address, s.mobileNo, s.email, s.imagePath, s.status, s.initialBalance, s.commissionType, s.commissionValue, s.serviceCharge, s.supplierType, supplier_balance(s.oid) as balance, supplier_creditnote_balance(s.oid) as vendorCreditBalance, (select coalesce(sum(amount), 0)  from ${ TABLE.PAYMENT } where 1 = 1 and status = $1 and referenceType = $2 and referenceOid = s.oid) as "paid_amount" from ${TABLE.SUPPLIER} as s where 1 = 1`;
+    let query = `select s.oid, s.customerId as "customer_id", s.name, s.address, s.mobileNo as "mobile_no", s.email, s.imagePath as "image_path", s.status, s.initialBalance as "initial_balance", s.commissionType as "commission_type", s.commissionValue as "commission_value", s.serviceCharge as "service_charge", s.supplierType as "supplier_type", supplier_balance(s.oid) as balance, supplier_creditnote_balance(s.oid) as "vendor_credit_balance", (select coalesce(sum(amount), 0)  from ${ TABLE.PAYMENT } where 1 = 1 and status = $1 and referenceType = $2 and referenceOid = s.oid) as "paid_amount" from ${TABLE.SUPPLIER} as s where 1 = 1`;
     
-    data.push(request.query['status'],"Supplier")
+    data.push(request.query["status"],"Supplier")
     let idx = 3;
     query += ` and companyoid = $${idx++}`;
     data.push(userInfo.companyoid);
 
-    if (request.query['searchText']) {
-        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and lower(s.name) like $${idx} or`;
-        idx++;
-        query += `  lower(s.mobileno) like $${idx} or`;
-        idx++;
-        query += ` lower(s.email) like $${idx} `;
-        idx++;
+    if (request.query["searchText"]) {
+        query += ` and name ilike $${idx} or 
+            mobileno ilike $${idx} or 
+            email ilike $${idx++} `;
 
-        data.push(searchText, searchText, searchText)
+        data.push(`% ${request.query["searchText"].trim()} %`)
+
     }
     query += ` order by s.createdOn desc`;
     idx ++;
