@@ -7,7 +7,8 @@ const { API, MESSAGE, TABLE } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const query_scheme = Joi.object({
-    // status: Joi.string().trim().min(1).max(32).required(),
+    status: Joi.string().trim().min(1).max(32).optional(),
+    customerOid: Joi.string().trim().allow(null, '').max(128).optional(),
     searchText: Joi.string().trim().allow(null, '').max(128).optional(),
     offset: Joi.number().allow(null, '').max(99999999).optional(),
     limit: Joi.number().allow(null, '').max(99999999).optional(),
@@ -82,25 +83,20 @@ const get_count = async (request) => {
     let count = 0;
     let data = [];
     
-    let query = `select count(p.oid) from ${ TABLE.PASSPORT } as p , ${ TABLE.CUSTOMER } as c where 1 = 1 and c.oid = p.customerOid`;
-    let idx = 1;
+    let query = `select count(p.oid) from ${ TABLE.PASSPORT } as p , ${ TABLE.CUSTOMER } as c where 1 = 1 and c.oid = p.customerOid and p.companyoid = $1`;
 
-    query += ` and p.companyoid = $${idx}`;
-    idx++;
     data.push(userInfo.companyoid);
-    if (request.query['searchText']) {
-        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and lower(p.surName) like $${idx} or`;
-        idx++;
-        query += `  lower(p.givenName) like $${idx} or`;
-        idx++ ;
-        query += ` lower(p.passportNumber) like $${idx} or`;
-        idx++;
-        query += ` lower(c.name) like $${idx} `;
-        idx++;
-
-        data.push(searchText, searchText, searchText, searchText)
-
+    let idx = 2;
+    if(request.query['customerOid']){
+        query += ` and p.customerOid = ${idx++}`;
+        data.push(request.query['customerOid'])
+    }
+    if (request.query["searchText"]) {
+        query += ` and p.surName ilike $${idx} or 
+            p.givenName ilike $${idx} or 
+            p.passportNumber ilike $${idx} or 
+            c.name ilike $${idx++} `;
+        data.push(`% ${request.query["searchText"].trim()} %`)
     }
     let sql = {
         text: query,
@@ -109,7 +105,6 @@ const get_count = async (request) => {
     try {
         let data_set = await Dao.get_data(request.pg, sql);
         count = data_set[0]["count"];
-        console.log(data_set)
         log.info(count)
     } catch (err) {
         log.error(err)
@@ -121,29 +116,30 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select p.oid, p.surName, p.givenName, p.gender, p.nationality, p.countryCode, p.personalNo, p.passportNumber, p.previousPassportNumber, to_char(p.birthDate, 'YYYY-MM-DD') as birthDate, to_char(p.birthDate :: DATE, 'dd-Mon-yyyy') as birthDateEN,  to_char(p.passportIssueDate, 'YYYY-MM-DD') as passportIssueDate, to_char(p.passportIssueDate :: DATE, 'dd-Mon-yyyy') as passportIssueDateEN, to_char(p.passportExpiryDate, 'YYYY-MM-DD') as passportExpiryDate, to_char(p.passportExpiryDate :: DATE, 'dd-Mon-yyyy') as passportExpiryDateEN, p.passportexpirydate::date - current_date::date as expireDay, p.passportImagePath, p.issuingAuthority, p.description, p.status, c.name as customerName from  ${ TABLE.PASSPORT } as p, ${ TABLE.CUSTOMER } as c  where 1 = 1 and c.oid = p.customerOid`;
+    let query = `select p.oid, p.surName as "sur_name", p.givenName as "given_name", p.gender, p.nationality, p.countryCode as "country_code", p.personalNo as "personal_no", p.passportNumber as "passport_number", p.previousPassportNumber as "previous_passport_number", to_char(p.birthDate, 'YYYY-MM-DD') as "birth_date" , to_char(p.birthDate :: DATE, 'dd-Mon-yyyy') as "birth_date_en" ,  to_char(p.passportIssueDate, 'YYYY-MM-DD') as "passport_issue_date", to_char(p.passportIssueDate :: DATE, 'dd-Mon-yyyy') as "passport_issue_date_en", to_char(p.passportExpiryDate, 'YYYY-MM-DD') as "passport_expiry_date", to_char(p.passportExpiryDate :: DATE, 'dd-Mon-yyyy') as "passport_expiry_date_en", p.passportexpirydate::date - current_date::date as "expire_day", p.passportImagePath as "passport_image_path", p.issuingAuthority as "issuing_authority", p.description, p.status, c.name as "customer_name" from  ${ TABLE.PASSPORT } as p, ${ TABLE.CUSTOMER } as c  where 1 = 1 and c.oid = p.customerOid`;
 
     let idx = 1;
-    query += ` and p.companyoid = $${idx}`;
-    idx++;  
+    query += ` and p.companyoid = $${idx++}`;
     data.push(userInfo.companyoid);
+
     if (request.query['status']) {
-        query += ` and status = $${idx++}`;
+        query += ` and status = $${idx++} and (p.passportexpirydate::date - current_date::date) > 0`;
         data.push(request.query['status'])
     }
-    if (request.query['searchText']) {
-        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and lower(p.surName) like $${idx} or`;
-        idx++;
-        query += `  lower(p.givenName) like $${idx} or`;
-        idx++ ;
-        query += ` lower(p.passportNumber) like $${idx} or`;
-        idx++;
-        query += ` lower(c.name) like $${idx} `;
-        idx++;
 
-        data.push(searchText, searchText, searchText, searchText)
+    if(request.query['customerOid']){
+        query += ` and p.customerOid = ${idx++}`;
+        data.push(request.query["customerOid"])
     }
+    if (request.query["searchText"]) {
+        query += ` and p.surName ilike $${idx} or 
+            p.givenName ilike $${idx} or 
+            p.passportNumber ilike $${idx} or 
+            c.name ilike $${idx++} `;
+        data.push(`% ${request.query["searchText"].trim()} %`)
+    }
+    query += `order by p.createdOn desc`;
+
     if (request.query.offset) {
         query += ` offset $${idx++}`;
         data.push(request.query.offset);

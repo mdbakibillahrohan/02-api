@@ -7,7 +7,7 @@ const { API, MESSAGE, TABLE } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const query_scheme = Joi.object({
-    // status: Joi.string().trim().min(1).max(32).required(),
+    invoiceNO: Joi.string().trim().allow(null, '').max(128).optional(),
     searchText: Joi.string().trim().allow(null, '').max(128).optional(),
     offset: Joi.number().allow(null, '').max(99999999).optional(),
     limit: Joi.number().allow(null, '').max(99999999).optional(),
@@ -15,13 +15,13 @@ const query_scheme = Joi.object({
 
 const route_controller = {
     method: "GET",
-    path: API.CONTEXT + API.MASTER_PAYMENT_GET_LIST_PATH,
+    path: API.CONTEXT + API.TICKET_DEPARTURE_CARD_GET_LIST_PATH,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "Master Passport List",
+        description: "Ticket Modification Get List",
         plugins: {
             hapiAuthorization: false,
         },
@@ -65,8 +65,8 @@ const handle_request = async (request) => {
             status: true,
             code: 200,
             message: MESSAGE.SUCCESS_GET_LIST,
-            count: count,
-            data: data,
+            count,
+            data,
         };
     } catch( err ){
         log.error(`An exception occurred while getting supplier list data: ${err?.message}`);
@@ -82,25 +82,19 @@ const get_count = async (request) => {
     let count = 0;
     let data = [];
     
-    let query = `select count(oid) from ${ TABLE.PAYMENT } where 1 = 1 and companyoid = $1`;
-    
+    let query = `select count(t.oid) from  ${TABLE.TICKET} as t left join ${ TABLE.TICKET_INVOICE } as ti on ti.oid = t.ticketInvoiceOid left join ${ TABLE.CUSTOMER } as c on c.oid = ti.customerOid left join  ${ TABLE.SUPPLIER } as s on s.oid = ti.supplierOid where t.status = 'Re-Issue' or t.customerStatusChange = 'true' or t.vendorStatusChange = 'true' and ti.companyOid = $1`;
+
     data.push(userInfo.companyoid);
     let idx = 2;
-    if (request.query["referenceOid"]) {  
-        query += ` and referenceOid = $${idx++}`;
-        data.push(request.query["referenceOid"])
+    if(request.query["invoiceNo"]){
+        query += ` and ti.invoiceNo ilike ${idx++}`;
+        data.push(`%${ request.query["invoiceNo"] }%`)
     }
-    if(request.query["referenceType"]){
-        query += `  and referenceType = $${idx++} `;
-        data.push(request.query["referenceType"])
-    }
-    if(request.query["paymentType"]){
-        query += ` and paymentType = $${idx++}`;
-        data.push(request.query["paymentType"])
-    }
-    if(request.query["paymentNature"]){
-        query += ` and paymentNature = $${idx++} `;
-        data.push(request.query["paymentNature"])
+    if (request.query["searchText"]) {
+        query += ` and ti.invoiceNo ilike ${idx} or 
+            c.name ilike ${idx} or t.ticketNo ilike ${idx} or 
+            t.pnr ilike ${idx}`;
+        data.push(`% ${request.query["searchText"].trim()} %`)
     }
     let sql = {
         text: query,
@@ -120,27 +114,22 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select p.oid, p.paymentNo as "payment_no", to_char(p.paymentDate 'YYYY-MM-DD') as "payment_date", p.entryType as "entry_type", p.checkNo as "check_no", p.status, p.paymentType as "payment_type", p.referenceOid as "reference_oid", p.referenceType as "reference_type", p.amount, p.accountHolderName as "account_holder_name", p.bankAccountNo as "bank_account_no", p.bankName as "bank_name", p.branchName as "branch_name" , p.paymentMode as "payment_mode", p.referenceBy as "reference_by", p.referenceByMobileNo as "reference_by_mobile_no", p.receivedBy as "received_by", to_char(p.chequeIssueDate, 'YYYY-MM-DD') as "cheque_issue_date", to_char(p.chequeIssueDate :: DATE, 'dd-Mon-yyyy') as "cheque_issue_date_en", to_char(p.paymentDate :: DATE, 'dd-Mon-yyyy') as "payment_date_en", a.name as "account_name", p.accountOid as "account_oid", p.description, p.imagePath as "image_path", p.paymentNature as "payment_nature", (CASE WHEN p.referenceType = 'Customer' THEN c.name ELSE s.name END) as "reference_name" from ${TABLE.PAYMENT } as p left join ${ TABLE.CUSTOMER } as c on p.referenceOid = c.oid left join ${ TABLE.SUPPLIER } as s on p.referenceOid = s.oid left join ${ TABLE.ACCOUNT } as a on p.accountOid = a.oid where 1 = 1 and p.companyOid = $1`;
-  
+    let query = `select t.oid, ti.createdOn as "create_on", ti.editedOn as "edited_on", ti.source, ti.invoiceNo as "invoice_no", to_char(ti.invoiceDate, 'YYYY-MM-DD') as "invoice_date", to_char(ti.invoiceDate :: DATE, 'dd-Mon-yyyy') as "invoice_date_en", ti.invoiceCloneOid as "invoice_clone_oid", ti.customerOid as "customer_oid", ti.supplierOid as "supplier_oid" , t.ticketNo as "ticket_no" , to_char(t.issueDate, 'YYYY-MM-DD') as "issue_date", to_char(t.issueDate :: DATE, 'dd-Mon-yyyy') as "issue_date_en",  t.airlines, t.sector, t.pnr, t.paxName as "pax_name" , t.status, t.customerStatusChange as "customer_status_change", t.vendorStatusChange as "vendor_status_change", t.salesPrice as "sales_price", t.netSalesPrice as "net_sales_price", t.purchasePrice as "purchase_price", t.netPurchasePrice as "net_purchase_price", t.cloneOid as "clone_oid", t.ticketCloneOid as "ticket_clone_oid", t.ticketInvoiceOid as "ticket_invoice_oid", c.name as "customer_name", s.name as "supplier_name" from ${ TABLE.TICKET } as t left join ${ TABLE.TICKET_INVOICE } as ti on ti.oid = t.ticketInvoiceOid left join ${ TABLE.CUSTOMER } as c on c.oid = ti.customerOid left join ${ TABLE.SUPPLIER } as s on s.oid = ti.supplierOid where t.status = 'Re-Issue' or t.customerStatusChange = 'true'  or t.vendorStatusChange = 'true' and ti.companyOid = $1`;
+
     data.push(userInfo.companyoid);
     let idx = 2;
+    if(request.query["invoiceNo"]){
+        query += ` and ti.invoiceNo ilike ${idx++}`;
+        data.push(`%${ request.query["invoiceNo"] }%`)
+    }
+    if (request.query["searchText"]) {
+        query += ` and ti.invoiceNo ilike ${idx} or 
+            c.name ilike ${idx} or t.ticketNo ilike ${idx} or 
+            t.pnr ilike ${idx}`;
+        data.push(`% ${request.query["searchText"].trim()} %`)
+    }
+    query += `order by p.createdOn desc`;
 
-    if (request.query["referenceOid"]) {  
-        query += ` and referenceOid = $${idx++}`;
-        data.push(request.query["referenceOid"])
-    }
-    if(request.query["referenceType"]){
-        query += `  and referenceType = $${idx++} `;
-        data.push(request.query["referenceType"])
-    }
-    if(request.query["paymentType"]){
-        query += ` and paymentType = $${idx++}`;
-        data.push(request.query["paymentType"])
-    }
-    if(request.query["paymentNature"]){
-        query += ` and paymentNature = $${idx++} `;
-        data.push(request.query["paymentNature"])
-    }
     if (request.query.offset) {
         query += ` offset $${idx++}`;
         data.push(request.query.offset);
@@ -149,13 +138,13 @@ const get_data = async (request) => {
         query += ` limit $${idx++}`;
         data.push(request.query.limit)
     }
-    query += ` order by p.paymentDate desc`
     let sql = {
         text: query,
         values: data 
     }
     try {
         list_data = await Dao.get_data(request.pg, sql);
+        
     } catch (e) {
         throw new Error(e);
     }

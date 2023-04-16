@@ -66,15 +66,14 @@ const get_data = async (request) => {
     data.push(userInfo.companyoid); 
     let sql = {
         text: query,
-        values: [request.query.oid]
+        values: data
     }
     try {
         let data_set = await Dao.get_data(request.pg, sql);
-        console.log(data_set)
-        data = data_set.length < 1 ? null : data_set[0];
+        list_data = data_set.length < 1 ? null : data_set[0];
     } catch (e) {
         log.error(`An exception occurred while getting data by oid: ${e?.message}`);
     }
-    return data;
+    return list_data;
 }
 module.exports = route_controller;

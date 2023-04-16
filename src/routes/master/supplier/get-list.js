@@ -119,7 +119,6 @@ const get_data = async (request) => {
     let idx = 3;
     query += ` and companyoid = $${idx++}`;
     data.push(userInfo.companyoid);
-
     if (request.query["searchText"]) {
         query += ` and name ilike $${idx} or 
             mobileno ilike $${idx} or 

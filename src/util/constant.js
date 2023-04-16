@@ -4,7 +4,9 @@
         COMBOBOX_RESOURCE: "master/combobox/v1/",
         MASTER_SUPPLIER_RESOURCE: "master/supplier/v1/",
         MASTER_PASSPORT_RESOURCE: "master/passport/v1/",
-        MASTER_PAYMENT_RESOURCE: "master/payment/v1/"
+        MASTER_PAYMENT_RESOURCE: "master/payment/v1/",
+        TICKET_MODIFICATION_RESOURCE: "ticket/modification/v1/",
+        TICKET_DEPARTURE_CARD_RESOURCE: "ticket/departure/card/v1/",
 
     };
 
@@ -22,6 +24,7 @@ module.exports = {
         ROLE: "role",
 
         PASSPORT: "passport",
+        PASSPORT_DETAIL: "passportdetail",
         AIRLINE: "airline",
         AIRPORT: "airport",
 
@@ -29,6 +32,7 @@ module.exports = {
         
         CUSTOMER: "customer",
         TICKET: "ticket",
+        TICKET_INVOICE: "ticketinvoice",
         SUPPLIER: "supplier",
         ACCOUNT: "account",
         EMPLOYEE: "employee",
@@ -102,6 +106,22 @@ module.exports = {
         COMBOBOX_GET_PASSPORT_LIST: RESOURCES.COMBOBOX_RESOURCE + "passport-list",
         COMBOBOX_GET_TICKET_FORM_DATA_LIST: RESOURCES.COMBOBOX_RESOURCE + "ticket-form-data-list",
 
+        // ticket enpoint
+        // ticket-departure-card enpoint 
+        TICKET_DEPARTURE_CARD_GET_LIST_PATH : RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "get-list",
+        TICKET_DEPARTURE_CARD_GET_BY_OID_PATH : RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "get-by-oid",
+        TICKET_DEPARTURE_CARD_GET_BY_TICKET_OID_PATH : RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "get-by-ticketoid",
+        TICKET_DEPARTURE_CARD_SAVE_PATH : RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "save",
+        TICKET_DEPARTURE_CARD_UPDATE_PATH : RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "update",
+        TICKET_DEPARTURE_CARD_DELETE_BY_OID_PATH : RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "delete-by-oid",
+        // ticket modification enpoint
+        TICKET_MODIFICATION_GET_LIST_PATH: RESOURCES.TICKET_MODIFICATION_RESOURCE + "get-list",
+        TICKET_MODIFICATION_REISSUE_INVOICE_UPDATE_PATH: RESOURCES.TICKET_MODIFICATION_RESOURCE + "reissue-invoice-update",
+        TICKET_MODIFICATION_REISSUE_INVOICE_BY_OID_PATH: RESOURCES.TICKET_MODIFICATION_RESOURCE + "reissue-invoice-by-oid",
+        TICKET_MODIFICATION_REISSUE_TICKET_BY_OID_PATH: RESOURCES.TICKET_MODIFICATION_RESOURCE + "reissue-ticket-by-oid",
+        TICKET_MODIFICATION_REISSUE_TICKET_LIST_BY_TICKETOID_PATH: RESOURCES.TICKET_MODIFICATION_RESOURCE + "reissue-ticket-list-by-ticketoid",
+        TICKET_MODIFICATION_SAVE_PATH: RESOURCES.TICKET_MODIFICATION_RESOURCE + "save",
+        TICKET_MODIFICATION_UPDATE_PATH: RESOURCES.TICKET_MODIFICATION_RESOURCE + "update",
 
     },
     MESSAGE: {
