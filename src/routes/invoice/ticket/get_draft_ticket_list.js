@@ -3,24 +3,26 @@
 const Joi = require("@hapi/joi");
 const log = require("../../../util/log");
 const Dao = require("../../../util/dao");
-const { API, MESSAGE, TABLE } = require("../../../util/constant");
+const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const query_scheme = Joi.object({
+    ticketNo: Joi.string().trim().max(128).optional(),
     searchText: Joi.string().trim().allow(null, '').max(128).optional(),
+    status: Joi.string().max(128).optional(),
     offset: Joi.number().allow(null, '').max(99999999).optional(),
     limit: Joi.number().allow(null, '').max(99999999).optional(),
 });
 
 const get_list = {
     method: "GET",
-    path: API.CONTEXT + API.COMBOBOX_GET_CUSTOMER_LIST,
+    path: API.CONTEXT + API.INVOICE_TICKET_GET_DRAFT_TICKET_LIST,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "Combobox customer list",
+        description: "Draft Ticket list of Invoice Ticket List",
         plugins: { hapiAuthorization: false },
         validate: {
             query: query_scheme,
@@ -59,7 +61,7 @@ const handle_request = async (request) => {
             count
         };
     } catch (err) {
-        log.error(`An exception occurred while getting combobox customer list data : ${err?.message}`);
+        log.error(`An exception occurred while getting invoice ticket, draft ticket list data : ${err?.message}`);
         return {
             status: false,
             code: 500,
@@ -70,16 +72,25 @@ const handle_request = async (request) => {
 
 const get_count = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
-    let count = 0
-    let data = []
-    let query = `select count(oid)::int4 as total from ${TABLE.CUSTOMER} where 1 = 1`
-    let idx = 1
-    query += ` and companyoid = $${idx++}`;
-    data.push(userInfo.companyoid);
+    let count = 0;
+    let data = [userInfo.companyoid, CONSTANT.DRAFT];
+    let query = `select count(t.oid) as total
+    from ${TABLE.DRAFT_TICKET} t 
+    where 1 = 1 and t.companyOid = $1 
+    and t.status = $2`;
+    let idx = 3;
+
+    if (request.query['ticketNo']) {
+        query += ` and t.ticketNo like $${idx++}`;
+        data.push(`%${request.query["ticketNo"]}%`);
+    }
+    if (request.query['status'] && request.query["status"].toLowerCase() != CONSTANT.ALL.toLocaleLowerCase()) {
+        query += ` and t.status = $${idx++}`;
+        data.push(request.query["status"]);
+    }
+
     if (request.query['searchText']) {
-        query += ` and (name ilike $${idx} 
-            or mobileno ilike $${idx} 
-            or email ilike $${idx++})`;
+        query += ` and t.subject ilike $${idx} or t.pnr ilike $${idx} or t.ticketNo ilike $${idx++}`;
         data.push(`%${request.query['searchText'].trim()}%`);
     }
     let sql = {
@@ -98,18 +109,26 @@ const get_count = async (request) => {
 const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
-    let data = [];
-    let query = `select oid, name, mobileno, email, discounttype, discountvalue, customer_balance(oid) as balance, customer_creditnote_balance(oid) as creditnotebalance  from ${TABLE.CUSTOMER} where 1 = 1`;
-    let idx = 1;
-    query += ` and companyoid = $${idx++}`;
-    data.push(userInfo.companyoid);
+    let data = [userInfo.companyoid];
+    let query = `select t.oid, t.subject, t.pnr, t.ticketNo as "ticket_no", t.ticketJson as "ticket_json", 
+    t.createdOn as "created_on", to_char(t.createdOn :: DATE, 'dd-Mon-yyyy') as "created_on_str" 
+    from ${TABLE.DRAFT_TICKET} t
+    where 1 = 1 and t.companyOid = $1`;
+    let idx = 2;
+    if (request.query['ticketNo']) {
+        query += ` and t.ticketNo like $${idx++}`;
+        data.push(`%${request.query["ticketNo"]}%`);
+    }
+    if (request.query['status'] && request.query["status"].toLowerCase() != CONSTANT.ALL.toLocaleLowerCase()) {
+        query += ` and t.status = $${idx++}`;
+        data.push(request.query["status"]);
+    }
+
     if (request.query['searchText']) {
-        query += ` and (name ilike $${idx} 
-            or mobileno ilike $${idx} 
-            or email ilike $${idx++})`;
+        query += ` and t.subject ilike $${idx} or t.pnr ilike $${idx} or t.ticketNo ilike $${idx++}`;
         data.push(`%${request.query['searchText'].trim()}%`);
     }
-    query += ` order by createdon desc`;
+    query += ` order by t.createdOn desc`;
     if (request.query.offset) {
         query += ` offset $${idx++}`;
         data.push(request.query.offset);

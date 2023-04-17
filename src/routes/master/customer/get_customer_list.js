@@ -14,13 +14,13 @@ const query_scheme = Joi.object({
 
 const get_list = {
     method: "GET",
-    path: API.CONTEXT + API.COMBOBOX_GET_CUSTOMER_LIST,
+    path: API.CONTEXT + API.MASTER_CUSTOMER_GET_LIST,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "Combobox customer list",
+        description: "master customer list",
         plugins: { hapiAuthorization: false },
         validate: {
             query: query_scheme,
@@ -55,11 +55,11 @@ const handle_request = async (request) => {
             status: true,
             code: 200,
             message: MESSAGE.SUCCESS_GET_LIST,
-            data,
-            count
+            data: data,
+            count: count
         };
     } catch (err) {
-        log.error(`An exception occurred while getting combobox customer list data : ${err?.message}`);
+        log.error(`An exception occurred while getting master customer list data : ${err?.message}`);
         return {
             status: false,
             code: 500,
@@ -70,17 +70,23 @@ const handle_request = async (request) => {
 
 const get_count = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
-    let count = 0
-    let data = []
-    let query = `select count(oid)::int4 as total from ${TABLE.CUSTOMER} where 1 = 1`
-    let idx = 1
-    query += ` and companyoid = $${idx++}`;
+    let count = 0;
+    let data = [];
+    let query = `select count(oid)::int4 as total from ${TABLE.CUSTOMER} where 1 = 1`;
+    let idx = 1;
+
+    query += ` and companyoid = $${idx}`;
+    idx++;
     data.push(userInfo.companyoid);
     if (request.query['searchText']) {
-        query += ` and (name ilike $${idx} 
-            or mobileno ilike $${idx} 
-            or email ilike $${idx++})`;
-        data.push(`%${request.query['searchText'].trim()}%`);
+        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
+        query += ` and (lower(name) like $${idx} or `;
+        idx++;
+        query += `lower(mobileno) like $${idx} or `;
+        idx++;
+        query += `lower(email) like $${idx})`;
+        idx++;
+        data.push(searchText, searchText, searchText);
     }
     let sql = {
         text: query,
@@ -99,15 +105,20 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select oid, name, mobileno, email, discounttype, discountvalue, customer_balance(oid) as balance, customer_creditnote_balance(oid) as creditnotebalance  from ${TABLE.CUSTOMER} where 1 = 1`;
+    let query = `select oid, name, address, mobileNo, mobileNo as cloneMobileNo, email, initialBalance, discountType, discountValue, imagePath, customer_balance(oid) as balance, customer_creditnote_balance(oid) as creditNoteBalance from ${TABLE.CUSTOMER} where 1 = 1`;
     let idx = 1;
-    query += ` and companyoid = $${idx++}`;
+    query += ` and companyoid = $${idx}`;
+    idx++;
     data.push(userInfo.companyoid);
     if (request.query['searchText']) {
-        query += ` and (name ilike $${idx} 
-            or mobileno ilike $${idx} 
-            or email ilike $${idx++})`;
-        data.push(`%${request.query['searchText'].trim()}%`);
+        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
+        query += ` and (lower(name) like $${idx} or `;
+        idx++;
+        query += `lower(mobileno) like $${idx} or `;
+        idx++;
+        query += `lower(email) like $${idx})`;
+        idx++;
+        data.push(searchText, searchText, searchText);
     }
     query += ` order by createdon desc`;
     if (request.query.offset) {

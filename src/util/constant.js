@@ -2,9 +2,13 @@
 
     RESOURCES = {
         COMBOBOX_RESOURCE: "master/combobox/v1/",
+        MASTER_CUSTOMER_RESOURCE: "master/customer/v1/",
+        MASTER_EXPENSE_RESOURCE: "master/expense/v1/",
+        MASTER_INQUIRY_RESOURCE: "master/inquiry/v1/",
         MASTER_SUPPLIER_RESOURCE: "master/supplier/v1/",
         MASTER_PASSPORT_RESOURCE: "master/passport/v1/",
         MASTER_PAYMENT_RESOURCE: "master/payment/v1/",
+        INVOICE_TICKET_RESOURCE: "invoice/ticket/v1/",
         TICKET_MODIFICATION_RESOURCE: "ticket/modification/v1/",
         TICKET_DEPARTURE_CARD_RESOURCE: "ticket/departure/card/v1/",
         PAYMENT_RECEIVED_RESOURCE : "payment/received/v1/",
@@ -31,15 +35,22 @@ module.exports = {
         AIRPORT: "airport",
 
         PAYMENT: "payment",
-        
+
         CUSTOMER: "customer",
         TICKET: "ticket",
         TICKET_INVOICE: "ticketinvoice",
-        SUPPLIER: "supplier",
+        VENDOR: "supplier",
         ACCOUNT: "account",
         EMPLOYEE: "employee",
         DEPARTMENT: "department",
-
+        PASSPORT: "passport",
+        AIRLINE: "airline",
+        AIRPORT: "airport",
+        PAYMENT: "payment",
+        DESIGNATION: "Designation",
+        BANK: "Bank",
+        TICKET_INVOICE: "TicketInvoice",
+        DRAFT_TICKET: "DraftTicket",
     },
 
     API: {
@@ -145,10 +156,32 @@ module.exports = {
         TICKET_MODIFICATION_SAVE_PATH: RESOURCES.TICKET_MODIFICATION_RESOURCE + "save",
         TICKET_MODIFICATION_UPDATE_PATH: RESOURCES.TICKET_MODIFICATION_RESOURCE + "update",
 
+        //Master Customer endpoints
+        MASTER_CUSTOMER_GET_LIST: RESOURCES.MASTER_CUSTOMER_RESOURCE + "get-list",
+
+        //Master Expense endpoints 
+        MASTER_EXPENSE_GET_LIST: RESOURCES.MASTER_EXPENSE_RESOURCE + "get-list",
+
+
+        // Master Inquiry endpoints
+        MASTER_INQUIRY_GET_LIST_PATH: RESOURCES.MASTER_INQUIRY_RESOURCE + "get-list",
+        MASTER_INQUIRY_GET_AIRLINE_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "airlines-list",
+        MASTER_INQUIRY_GET_AIRPORT_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "airport-list",
+        MASTER_INQUIRY_GET_PASSPORT_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "passport-list",
+        MASTER_INQUIRY_GET_DESIGNATION_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "designation-list",
+        MASTER_INQUIRY_GET_DEPARTMENT_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "department-list",
+        MASTER_INQUIRY_GET_BANK_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "bank-list",
+
+
+        // Invoice Ticket endpoints 
+        INVOICE_TICKET_GET_LIST: RESOURCES.INVOICE_TICKET_RESOURCE + "get-list",
+        INVOICE_TICKET_GET_TICKET_LIST: RESOURCES.INVOICE_TICKET_RESOURCE + "ticket-list",
+        INVOICE_TICKET_GET_DRAFT_TICKET_LIST: RESOURCES.INVOICE_TICKET_RESOURCE + "draft-ticket-list",
+
     },
+
+
     MESSAGE: {
-        NO_DATA_FOUND: `No Data Found`,
-        SUCCESS_GET_LIST: "Success ok",
         SUCCESS_SAVE: "Successfully save data into database",
         SUCCESS_UPDATE: "Successfully updated data into database",
         INTERNAL_SERVER_ERROR: "Internal server error",
@@ -163,5 +196,131 @@ module.exports = {
         NULL_HEADER: this.NULL_PREFIX + "header",
         NULL_META: this.NULL_PREFIX + "meta",
         NULL_BODY: this.NULL_PREFIX + "body",
+    },
+
+    CONSTANT: {
+        METHOD_POST: "POST",
+        REQUEST_VERSION__DEFAULT: "1.0",
+        REQUEST_TIMEOUT_IN_SECONDS__INFINITY: -1,
+        REQUEST_RETRY_COUNT__ZERO: 0,
+        USER_AGENT: "Mozilla/5.0",
+        PREETY_JSON: false,
+
+        REQUEST_RECEIVED: "RequestReceived",
+        RESPONSE_SENT: "ResponseSent",
+        INVALID_CREDENTIAL: "Invalid Credential",
+        REQUEST_CLIENT: "gds",
+
+        PREFIX_NUMBER_LENGTH_NEW: 4,
+
+        POSTGRES_DATE_TIME_FORMAT: "to_timestamp(?, 'YYYY-MM-DD HH24:MI:SS.MS')::timestamp",
+        DATE_FORMAT: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'",
+        JAVA_DATE_TIME_FORMAT: "yyyy-MM-dd HH:mm:ss.SSS",
+        JAVA_DATE_FORMAT: "yyyy-MM-dd",
+        POSTGRES_DATE_FORMAT: "to_date(?, 'YYYY-MM-DD')::date",
+
+        SERVER_YML: "server.yml",
+        PLUGIN_YML: "plugin.yml",
+        CONFIG_YML: "config.yml",
+        CONFIG_ID: "config-id",
+
+        DRAFT: "Draft",
+        ACTIVE: "Active",
+        INACTIVE: "Inactive",
+        PROCESSING: "Processing",
+
+        ONGOING: "Ongoing",
+        COMPLETED: "Completed",
+
+        MANUAL: "Manual",
+        AUTO: "Auto",
+
+        TICKET: "Ticket",
+        RE_ISSUE_TICKET: "ReIssueTicket",
+        MISCELLANEOUSES: "Miscellaneouses",
+
+        YES: "Yes",
+        NO: "No",
+
+        WOOD_TYPE_ROUND: "Round",
+        WOOD_TYPE_SQUARE: "Square",
+
+        EN_LANGUAGE: "en-US",
+        BN_LANGUAGE: "bn-BD",
+
+        ADMIN: "Admin",
+        SUPPLIER: "Supplier",
+        CUSTOMER: "Customer",
+        EMPLOYEE: "Employee",
+        EXPENSE: "Expense",
+        BOTH: "Both",
+        INCOME: "Income",
+
+        PEOPLE_TYPE_USER: "User",
+
+
+        REFERENCE_TYPE_PEOPLE: "People",
+        REFERENCE_TYPE_EMPLOYEE: "Employee",
+        ROLE_OID_CUSTOMER: "Customer",
+        ROLE_OID_SUPPLIER: "Supplier",
+
+        ACTIVE_STATUS: "A",
+        INACTIVE_STATUS: "I",
+
+        LOGIN: "Login",
+        LOGOUT: "Logout",
+
+        SUCCESS: "Success",
+        FAILED: "Failed",
+
+        BILL: "Bill",
+        INVOICE: "Invoice",
+        PRODUCTION: "Production",
+
+        OUTPUT_DIR: "output",
+        REPORT_DIR: "report",
+        //	LOGO_NAME:"logo.png",
+
+        OK: "Ok",
+        SUCCESS_OK: "Ok",
+
+        INSERT: "Insert",
+        UPDATE: "Update",
+        MODIFICATION: "Modification",
+
+        DEBIT: "Debit",
+        CREDIT: "Credit",
+        ALL: "All",
+
+        CREDIT_NOTE: "CreditNote",
+        WITHDRAW: "Withdraw",
+        CREDIT_NOTE_ADJUSTMENT: "CreditNoteAdjustment",
+        CASH_ADJUSTMENT: "CashAdjustment",
+        CUSTOMER_LEDGER_REPORT: "customerLedger",
+        VENDOR_LEDGER_REPORT: "vendorLedger",
+        CUSTOMER_TICKET_LEDGER_REPORT: "customerTicketLedger",
+        VENDOR_TICKET_LEDGER_REPORT: "vendorTicketLedger",
+
+        TICKET_DETAIL_BY_DATE_REPORT: "ticketDetailByDate",
+        TICKET_DETAIL_BY_CUSTOMER_REPORT: "ticketDetailByCustomer",
+
+        TICKET_DETAIL_BY_SUPPLIER_REPORT: "ticketDetailBySupplier",
+        SUPPLIER_PAYMENT_DETAIL_REPORT: "supplierPaymentDetailReport",
+        TICKET_PROFIT_LOSS_STATEMENT_REPORT: "ticketProfitLossStatement",
+        CUSSTOMER_TICKET_PROFIT_LOSS_STATEMENT_REPORT: "customerTicketProfitLossStatement",
+        CUSTOMER_TICKET_PROFIT_LOSS_STATEMENT_REPORT: "customerTicketProfitLossStatement",
+        TICKET_PROFIT_LOSS_SUMMARY_STATEMENT_REPORT: "ticketProfitLossSummaryStatement",
+
+        CUSTOMER_WELCOME_EMAIL: "customerwelcomeemail",
+        NEW_CUSTOMER_REGISTRATION_EMAIL: "customerregistrationemail",
+        COMPANY_SIGNUP_WELCOME_EMAIL: "companysignupwelcomemail",
+        COMPANY_SIGNUP_WELCOME_EMAIL_TEMPLATE_FOR_US: "companysignupnotificationmail",
+        CUSTOMER_PASSPORT_INFORMATION_VERIFICATION_EMAIL: "customerpassportverificationemail",
+        VENDOR_DEPOSIT_EMAIL: "vendordepositemail",
+
+        SEND_TICKET_EMAIL: "sendticketemail",
+        SEND_INVOICE_EMAIL: "sendinvoiceemail",
+        SEND_PASSPORT_EMAIL: "sendpassportemail",
     }
 }
+
