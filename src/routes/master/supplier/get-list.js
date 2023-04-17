@@ -3,7 +3,7 @@
 const Joi = require("@hapi/joi");
 const log = require("../../../util/log");
 const Dao = require("../../../util/dao");
-const { API, MESSAGE, TABLE } = require("../../../util/constant");
+const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const query_scheme = Joi.object({
@@ -115,7 +115,7 @@ const get_data = async (request) => {
  
     let query = `select s.oid, s.customerId as "customer_id", s.name, s.address, s.mobileNo as "mobile_no", s.email, s.imagePath as "image_path", s.status, s.initialBalance as "initial_balance", s.commissionType as "commission_type", s.commissionValue as "commission_value", s.serviceCharge as "service_charge", s.supplierType as "supplier_type", supplier_balance(s.oid) as balance, supplier_creditnote_balance(s.oid) as "vendor_credit_balance", (select coalesce(sum(amount), 0)  from ${ TABLE.PAYMENT } where 1 = 1 and status = $1 and referenceType = $2 and referenceOid = s.oid) as "paid_amount" from ${TABLE.SUPPLIER} as s where 1 = 1`;
     
-    data.push(request.query["status"],"Supplier")
+    data.push(CONSTANT.ACTIVE , CONSTANT.SUPPLIER);
     let idx = 3;
     query += ` and companyoid = $${idx++}`;
     data.push(userInfo.companyoid);

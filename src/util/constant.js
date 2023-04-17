@@ -30,16 +30,19 @@ module.exports = {
         ROLE: "role",
 
         PASSPORT: "passport",
-        PASSPORT_DETAIL: "passportdetail",
+        PASSPORT_DETAIL: "passportdetail", 
+        PASSPORT_VISA_INFORMATION: "passportvisainformation",
+        PASSPORT_COMMAND: "passportcommand",
         AIRLINE: "airline",
         AIRPORT: "airport",
 
         PAYMENT: "payment",
-
+       
         CUSTOMER: "customer",
         TICKET: "ticket",
         TICKET_INVOICE: "ticketinvoice",
         VENDOR: "supplier",
+        SUPPLIER: "supplier",
         ACCOUNT: "account",
         EMPLOYEE: "employee",
         DEPARTMENT: "department",
@@ -121,23 +124,23 @@ module.exports = {
 
         // payment enpoint
         // payment recive v1 enpint 
-        PAYMENT_RECEIVED_GET_CREDIT_NOTE_BALANCE_PATH : "get-credit-note-balance",
-        PAYMENT_RECEIVED_GET_DUE_INVOICE_LIST_PATH : "get-due-invoice-list",
-        PAYMENT_RECEIVED_GET_BY_OID_PATH : "get-by-oid",
-        PAYMENT_RECEIVED_PAYMENT_REPORT_BY_OID_PATH : "payment-report-by-oid",
-        PAYMENT_RECEIVED_DELETE_BY_OID_PATH : "delete-by-oid",
-        PAYMENT_RECEIVED_SAVE_PATH : "save",
-        PAYMENT_RECEIVED_UPDATE_PATH : "update",
-        PAYMENT_RECEIVED_GET_LIST_PATH : "get-list",
+        PAYMENT_RECEIVED_GET_CREDIT_NOTE_BALANCE_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-credit-note-balance",
+        PAYMENT_RECEIVED_GET_DUE_INVOICE_LIST_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-due-invoice-list",
+        PAYMENT_RECEIVED_GET_BY_OID_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-by-oid",
+        PAYMENT_RECEIVED_PAYMENT_REPORT_BY_OID_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "payment-report-by-oid",
+        PAYMENT_RECEIVED_DELETE_BY_OID_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "delete-by-oid",
+        PAYMENT_RECEIVED_SAVE_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "save",
+        PAYMENT_RECEIVED_UPDATE_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "update",
+        PAYMENT_RECEIVED_GET_LIST_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-list",
 
         // payment made v1 enpoint
-        PAYMENT_MADE_GET_CREDIT_NOTE_BALANCE_PATH : PAYMENT_MADE_RESOURCE + "get-credit-note-balance",
-        PAYMENT_MADE_GET_DUE_INVOICE_LIST_PATH : PAYMENT_MADE_RESOURCE + "get-due-invoice-list",
-        PAYMENT_MADE_GET_BY_OID_PATH : PAYMENT_MADE_RESOURCE + "get-by-oid",
-        PAYMENT_MADE_DELETE_BY_OID_PATH : PAYMENT_MADE_RESOURCE + "delete-by-oid",
-        PAYMENT_MADE_GET_LIST_PATH : PAYMENT_MADE_RESOURCE + "get-list",
-        PAYMENT_MADE_SAVE_PATH : PAYMENT_MADE_RESOURCE + "save",
-        PAYMENT_MADE_UPDATE_PATH : PAYMENT_MADE_RESOURCE + "update",
+        PAYMENT_MADE_GET_CREDIT_NOTE_BALANCE_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "get-credit-note-balance",
+        PAYMENT_MADE_GET_DUE_INVOICE_LIST_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "get-due-invoice-list",
+        PAYMENT_MADE_GET_BY_OID_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "get-by-oid",
+        PAYMENT_MADE_DELETE_BY_OID_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "delete-by-oid",
+        PAYMENT_MADE_GET_LIST_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "get-list",
+        PAYMENT_MADE_SAVE_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "save",
+        PAYMENT_MADE_UPDATE_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "update",
 
         // ticket enpoint
         // ticket-departure-card enpoint 
@@ -196,6 +199,7 @@ module.exports = {
         NULL_HEADER: this.NULL_PREFIX + "header",
         NULL_META: this.NULL_PREFIX + "meta",
         NULL_BODY: this.NULL_PREFIX + "body",
+        NO_DATA_FOUND: "NO data found"
     },
 
     CONSTANT: {

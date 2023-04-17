@@ -17,13 +17,13 @@ const query_scheme = Joi.object({
 
 const route_controller = {
     method: "GET",
-    path: API.CONTEXT + API.PAYMENT_MADE_GET_LIST_PATH,
+    path: API.CONTEXT + API.PAYMENT_RECEIVED_GET_LIST_PATH,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "Payment Made Get List",
+        description: "Payment Received Get List",
         plugins: {
             hapiAuthorization: false,
         },
@@ -86,7 +86,7 @@ const get_count = async (request) => {
     
     let query = `select count(oid) from  ${ TABLE.PAYMENT } where 1 = 1 and companyOid = $1 and referenceType = $2  and (paymentNature = $3 OR paymentNature = $4) `;
 
-    data.push(userInfo.companyoid, CONSTANT.SUPPLIER, CONSTANT.CREDIT_NOTE_ADJUSTMENT, CONSTANT.CASH_ADJUSTMENT);
+    data.push(userInfo.companyoid, CONSTANT.CUSTOMER, CONSTANT.CREDIT_NOTE_ADJUSTMENT, CONSTANT.CASH_ADJUSTMENT);
 
     let idx = 5;
 
@@ -127,8 +127,8 @@ const get_data = async (request) => {
     let data = [];
     let query = `select p.oid, p.paymentNo as "payment_no", to_char(p.paymentDate, 'YYYY-MM-DD') as "payment_date", to_char(p.paymentDate :: DATE, 'dd-Mon-yyyy') as "payment_date_en", p.entryType as "entry_type", p.checkNo as "check_no", p.status, p.paymentType as "payment_type", p.referenceOid as "reference_oid", p.referenceType as "reference_type", p.amount, a.name as "account_name", p.accountOid as "account_oid", p.description, p.imagePath as "image_path", p.paymentNature as "payment_nature", (CASE WHEN p.referenceType = 'Customer' THEN c.name ELSE s.name END) as "reference_name" from  ${ TABLE.PAYMENT } as p left join ${ TABLE.CUSTOMER } as c on p.referenceOid = c.oid left join  ${ TABLE.SUPPLIER } as s on p.referenceOid = s.oid left join ${ TABLE.ACCOUNT } as a on p.accountOid = a.oid where 1 = 1 and p.companyOid = $1 and p.referenceType = $2  and (p.paymentNature = $3 OR p.paymentNature = $4) `;
 
-    data.push(userInfo.companyoid, CONSTANT.SUPPLIER, CONSTANT.CREDIT_NOTE_ADJUSTMENT, CONSTANT.CASH_ADJUSTMENT);
-
+    data.push(userInfo.companyoid, CONSTANT.CUSTOMER, CONSTANT.CREDIT_NOTE_ADJUSTMENT, CONSTANT.CASH_ADJUSTMENT);
+    
     let idx = 5;
 
     if( request.query["referenceOid"]){

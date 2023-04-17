@@ -43,13 +43,17 @@ const handle_request = async (request) => {
     try {
         let data = await get_data_by_oid(request);
         let passport_detail = await get_passport_details(request);
+        let passport_visa = await get_passport_visa(request);
+        let passport_command = await getPassportCommand(request);
         log.info(`data found by oid`);
         return {
             status: true,
             code: 200,
             message: MESSAGE.SUCCESS_GET_BY_OID,
             data,
-            passport_detail
+            passport_detail,
+            passport_visa,
+            passport_command
             
         };
     } catch (err) {
@@ -76,10 +80,10 @@ const get_passport_details = async (request) => {
     let data = null;
     let query = `select pd.oid, pd.title, pd.imagePath as "image_path", pd.remarks, pd.sortOrder as "sort_order", pd.passportOid as " passport_oid" from ${TABLE.PASSPORT_DETAIL} as pd  where 1 = 1 and pd.passportOid = $1`;
 
-    query += `order by pd.sortOrder asc`;
+    query += ` order by pd.sortOrder asc`;
     let sql = {
         text: query,
-        values: [request.query.passportOid]
+        values: [request.query.Oid]
     }
     try{
         let data_set = await Dao.get_data(request.pg, sql);
@@ -89,5 +93,57 @@ const get_passport_details = async (request) => {
     }
     return data;
 
+}
+const get_passport_visa = async (request) => {
+    let data = null;
+    let query = `select pv.oid, pv.visaNumber as "visa_number", pv.visaType as "visa_type", pv.country, pv.imagePath as "image_path", to_char(pv.visaIssueDate, 'YYYY-MM-DD') as "visa_issue_date",  to_char(pv.visaIssueDate :: DATE, 'dd-Mon-yyyy') as "visa_issue_date_en", to_char(pv.visaExpiryDate, 'YYYY-MM-DD') as "visa_expiry_date", to_char(pv.visaExpiryDate :: DATE, 'dd-Mon-yyyy') as "visa_expiry_date_en", pv.remarks, pv.status, pv.sortOrder as "sortOrder", pv.passportOid as "passport_oid"  from  ${ TABLE.PASSPORT_VISA_INFORMATION } as pv where 1 = 1 and pv.passportOid = $1`;
+
+    query += ` order by pv.sortOrder asc`;
+    let sql = {
+        text: query,
+        values: [request.query.Oid]
+    }
+    try{
+        let data_set = await Dao.get_data(request.pg, sql);
+        data = data_set.length < 1 ? null : data_set[0];
+    } catch (err) {
+        log.error(`An exception occurred while getting data by oid: ${e?.message}`);
+    }
+    return data;
+
+}
+const getPassportCommand = async (request) => {
+    let data = null;
+    let query = `select pc.oid, pc.command, pc.title, pc.remarks, pc.sortOrder, pc.passportOid from ${ TABLE.PASSPORT_COMMAND } as pc where 1 = 1 and pc.passportOid = $1`;
+
+    query += ` order by pc.sortOrder asc`;
+    let sql = {
+        text: query,
+        values: [request.query.Oid]
+    }
+    try{
+        let data_set = await Dao.get_data(request.pg, sql);
+        data = data_set.length < 1 ? null : data_set[0];
+    } catch (err) {
+        log.error(`An exception occurred while getting data by oid: ${e?.message}`);
+    }
+    return data;
+}
+const getPassengerNotification = async (request) => {
+    let data = null;
+    let query = `select pc.oid, pc.command, pc.title, pc.remarks, pc.sortOrder, pc.passportOid from ${ TABLE.PASSPORT_COMMAND } as pc where 1 = 1 and pc.passportOid = $1`;
+
+    query += ` order by pc.sortOrder asc`;
+    let sql = {
+        text: query,
+        values: [request.query.Oid]
+    }
+    try{
+        let data_set = await Dao.get_data(request.pg, sql);
+        data = data_set.length < 1 ? null : data_set[0];
+    } catch (err) {
+        log.error(`An exception occurred while getting data by oid: ${e?.message}`);
+    }
+    return data;
 }
 module.exports = route_controller;
