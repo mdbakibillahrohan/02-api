@@ -7,6 +7,8 @@
         MASTER_PAYMENT_RESOURCE: "master/payment/v1/",
         TICKET_MODIFICATION_RESOURCE: "ticket/modification/v1/",
         TICKET_DEPARTURE_CARD_RESOURCE: "ticket/departure/card/v1/",
+        PAYMENT_RECEIVED_RESOURCE : "payment/received/v1/",
+        PAYMENT_MADE_RESOURCE : "payment/made/v1/",
 
     };
 
@@ -105,6 +107,26 @@ module.exports = {
         COMBOBOX_GET_AIRPORT_LIST: RESOURCES.COMBOBOX_RESOURCE + "airport-list",
         COMBOBOX_GET_PASSPORT_LIST: RESOURCES.COMBOBOX_RESOURCE + "passport-list",
         COMBOBOX_GET_TICKET_FORM_DATA_LIST: RESOURCES.COMBOBOX_RESOURCE + "ticket-form-data-list",
+
+        // payment enpoint
+        // payment recive v1 enpint 
+        PAYMENT_RECEIVED_GET_CREDIT_NOTE_BALANCE_PATH : "get-credit-note-balance",
+        PAYMENT_RECEIVED_GET_DUE_INVOICE_LIST_PATH : "get-due-invoice-list",
+        PAYMENT_RECEIVED_GET_BY_OID_PATH : "get-by-oid",
+        PAYMENT_RECEIVED_PAYMENT_REPORT_BY_OID_PATH : "payment-report-by-oid",
+        PAYMENT_RECEIVED_DELETE_BY_OID_PATH : "delete-by-oid",
+        PAYMENT_RECEIVED_SAVE_PATH : "save",
+        PAYMENT_RECEIVED_UPDATE_PATH : "update",
+        PAYMENT_RECEIVED_GET_LIST_PATH : "get-list",
+
+        // payment made v1 enpoint
+        PAYMENT_MADE_GET_CREDIT_NOTE_BALANCE_PATH : PAYMENT_MADE_RESOURCE + "get-credit-note-balance",
+        PAYMENT_MADE_GET_DUE_INVOICE_LIST_PATH : PAYMENT_MADE_RESOURCE + "get-due-invoice-list",
+        PAYMENT_MADE_GET_BY_OID_PATH : PAYMENT_MADE_RESOURCE + "get-by-oid",
+        PAYMENT_MADE_DELETE_BY_OID_PATH : PAYMENT_MADE_RESOURCE + "delete-by-oid",
+        PAYMENT_MADE_GET_LIST_PATH : PAYMENT_MADE_RESOURCE + "get-list",
+        PAYMENT_MADE_SAVE_PATH : PAYMENT_MADE_RESOURCE + "save",
+        PAYMENT_MADE_UPDATE_PATH : PAYMENT_MADE_RESOURCE + "update",
 
         // ticket enpoint
         // ticket-departure-card enpoint 

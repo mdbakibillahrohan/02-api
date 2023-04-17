@@ -128,7 +128,7 @@ const get_data = async (request) => {
             t.pnr ilike ${idx}`;
         data.push(`% ${request.query["searchText"].trim()} %`)
     }
-    query += `order by p.createdOn desc`;
+    query += ` order by ti.editedOn desc`;
 
     if (request.query.offset) {
         query += ` offset $${idx++}`;

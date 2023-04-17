@@ -15,13 +15,13 @@ const query_scheme = Joi.object({
 
 const route_controller = {
     method: "GET",
-    path: API.CONTEXT + API.TICKET_DEPARTURE_CARD_GET_LIST_PATH,
+    path: API.CONTEXT + API.PAYMENT_MADE_GET_LIST_PATH,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "Ticket Modification Get List",
+        description: "Payment Made Get List",
         plugins: {
             hapiAuthorization: false,
         },
@@ -82,18 +82,28 @@ const get_count = async (request) => {
     let count = 0;
     let data = [];
     
-    let query = `select count(t.oid) from  ${ TABLE.TICKET_INVOICE } as t , 
-    ${ TABLE.CUSTOMER } as c where 1 = 1 and c.oid = t.customerOid and t.companyOid = $1`;
+    let query = `select count(oid) from  ${ TABLE.PAYMENT } where 1 = 1 and companyOid = 1$ `;
 
     data.push(userInfo.companyoid);
     let idx = 2;
 
-    if (request.query["searchText"]) {
-        query += `and t.invoiceNo ilike ${idx} or 
-            t.pnr ilike ${idx} or 
-            c.name ilike ${idx++}`;
-        data.push(`% ${request.query["searchText"].trim()} %`)
+    if( request.query["referenceOid"]){
+        query += ` and referenceOid = $${idx++}`
+        data.push(request.query["referenceOid"])
+    }    
+    if( request.query["referenceType"]){
+        query += ` and referenceType = $${idx++}`
+        data.push(request.query["referenceType"])
     }
+    if ( request.query["paymentType"] ){
+        query += ` and paymentType = $${idx++}`
+        data.push(request.query["paymentType"])
+    }
+    if ( request.query["paymentNature"] ){
+        query += ` and paymentNature = $${idx++}`
+        data.push(request.query["paymentNature"])
+    }
+
     let sql = {
         text: query,
         values: data
@@ -112,20 +122,31 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select  oid, passengerName as "passenger_name", gender, nationality, 
-        passportNumber as "passport_number", flightNumber as "flight_number", addressForForeigners as "address_for_foreigners", visaNumber as "visa_number", visaType as "visa_type", purposeOfVisit as "purpose_of_visit", companyOid as "company_oid", to_char(birthDate, 'YYYY-MM-DD') as "birth_date", to_char(passportExpiryDate, 'YYYY-MM-DD') as "passport_expiry_date", to_char(departureDate, 'YYYY-MM-DD') as "departure_date", to_char(visaExpiryDate, 'YYYY-MM-DD') as "visa_expiry_date" from ${ TABLE.DEPARTURE_CARD } where 1 = 1 and companyOid = $1`;
+    let query = `select p.oid, p.paymentNo as "payment_no", to_char(p.paymentDate, 'YYYY-MM-DD') as "payment_date", to_char(p.paymentDate :: DATE, 'dd-Mon-yyyy') as "payment_date_en", p.entryType as "entry_type", p.checkNo as "check_no", p.status, p.paymentType as "paymentType", p.referenceOid as "reference_oid", p.referenceType as "reference_type", p.amount, a.name as "account_name", p.accountOid as "account_oid", p.description, p.imagePath as "image_path", p.paymentNature as "payment_nature", (CASE WHEN p.referenceType = 'Customer' THEN c.name ELSE s.name END) as "reference_name" from  ${ TABLE.PAYMENT } as p left join ${ TABLE.CUSTOMER } as c on p.referenceOid = c.oid left join  ${ TABLE.SUPPLIER } as s on p.referenceOid = s.oid left join ${ TABLE.ACCOUNT } as a on p.accountOid = a.oid where 1 = 1 and p.companyOid = $1 and p.referenceType = ?  and (p.paymentNature = ? OR p.paymentNature = ?) `;
 
     data.push(userInfo.companyoid);
     let idx = 2;
 
 
-    if (request.query["searchText"]) {
-        query += `and t.invoiceNo ilike ${idx} or 
-            t.pnr ilike ${idx} or 
-            c.name ilike ${idx++}`;
-        data.push(`% ${request.query["searchText"].trim()} %`)
-    } 
-    query += ` order by createdOn desc`;
+
+    if( request.query["referenceOid"]){
+        query += ` and referenceOid = $${idx++}`
+        data.push(request.query["referenceOid"])
+    }    
+    if( request.query["referenceType"]){
+        query += ` and referenceType = $${idx++}`
+        data.push(request.query["referenceType"])
+    }
+    if ( request.query["paymentType"] ){
+        query += ` and paymentType = $${idx++}`
+        data.push(request.query["paymentType"])
+    }
+    if ( request.query["paymentNature"] ){
+        query += ` and paymentNature = $${idx++}`
+        data.push(request.query["paymentNature"])
+    }
+
+    query += `order by p.paymentDate desc`;
 
     if (request.query.offset) {
         query += ` offset $${idx++}`;
