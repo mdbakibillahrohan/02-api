@@ -1,6 +1,7 @@
 "use strict",
 
     RESOURCES = {
+        MASTER_DASHBOARD_RESOURCE: "master/dashboard/v1/",
         COMBOBOX_RESOURCE: "master/combobox/v1/",
         MASTER_CUSTOMER_RESOURCE: "master/customer/v1/",
         MASTER_EXPENSE_RESOURCE: "master/expense/v1/",
@@ -164,10 +165,13 @@ module.exports = {
         TICKET_MODIFICATION_SAVE_PATH: RESOURCES.TICKET_MODIFICATION_RESOURCE + "save",
         TICKET_MODIFICATION_UPDATE_PATH: RESOURCES.TICKET_MODIFICATION_RESOURCE + "update",
 
-        //Master Customer endpoints
+        // Master Dashboard enpoint
+        MASTER_DASHBOARD_GET_DASHBOARD_INFO_PATH: RESOURCES.MASTER_DASHBOARD_RESOURCE + "get-dashboard-info",
+
+        //Master Customer enpoint
         MASTER_CUSTOMER_GET_LIST: RESOURCES.MASTER_CUSTOMER_RESOURCE + "get-list",
 
-        //Master Expense endpoints 
+        //Master Expense enpoints 
         MASTER_EXPENSE_GET_LIST: RESOURCES.MASTER_EXPENSE_RESOURCE + "get-list",
 
 
