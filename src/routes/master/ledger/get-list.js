@@ -3,12 +3,11 @@
 const Joi = require("@hapi/joi");
 const log = require("../../../util/log");
 const Dao = require("../../../util/dao");
-const { API, MESSAGE, TABLE } = require("../../../util/constant");
+const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const query_scheme = Joi.object({
     status: Joi.string().trim().min(1).max(32).optional(),
-    customerOid: Joi.string().trim().allow(null, '').max(128).optional(),
     searchText: Joi.string().trim().allow(null, '').max(128).optional(),
     offset: Joi.number().allow(null, '').max(99999999).optional(),
     limit: Joi.number().allow(null, '').max(99999999).optional(),
@@ -16,13 +15,13 @@ const query_scheme = Joi.object({
 
 const route_controller = {
     method: "GET",
-    path: API.CONTEXT + API.MASTER_PASSPORT_GET_LIST_PATH,
+    path: API.CONTEXT + API.MASTER_LEDGER_GET_LIST_PATH,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "Master Passport List",
+        description: "Master Ledger List",
         plugins: {
             hapiAuthorization: false,
         },
@@ -83,19 +82,13 @@ const get_count = async (request) => {
     let count = 0;
     let data = [];
     
-    let query = `select count(p.oid) from ${ TABLE.PASSPORT } as p , ${ TABLE.CUSTOMER } as c where 1 = 1 and c.oid = p.customerOid and p.companyoid = $1`;
+    let query = `select count(c.oid) from ${ TABLE.LEDGER } as c where 1 = 1 and c.companyoid = $1`;
 
     data.push(userInfo.companyoid);
     let idx = 2;
-    if(request.query['customerOid']){
-        query += ` and p.customerOid = ${idx++}`;
-        data.push(request.query['customerOid'])
-    }
     if (request.query["searchText"]) {
-        query += ` and p.surName ilike $${idx} or 
-            p.givenName ilike $${idx} or 
-            p.passportNumber ilike $${idx} or 
-            c.name ilike $${idx++} `;
+        query += ` and c.name ilike $${idx} or 
+            c.ledgerType ilike $${++idx}  `;
         data.push(`% ${request.query["searchText"].trim()} %`)
     }
     let sql = {
@@ -116,28 +109,16 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select p.oid, p.surName as "sur_name", p.givenName as "given_name", p.gender, p.nationality, p.countryCode as "country_code", p.personalNo as "personal_no", p.passportNumber as "passport_number", p.previousPassportNumber as "previous_passport_number", to_char(p.birthDate, 'YYYY-MM-DD') as "birth_date" , to_char(p.birthDate :: DATE, 'dd-Mon-yyyy') as "birth_date_en" ,  to_char(p.passportIssueDate, 'YYYY-MM-DD') as "passport_issue_date", to_char(p.passportIssueDate :: DATE, 'dd-Mon-yyyy') as "passport_issue_date_en", to_char(p.passportExpiryDate, 'YYYY-MM-DD') as "passport_expiry_date", to_char(p.passportExpiryDate :: DATE, 'dd-Mon-yyyy') as "passport_expiry_date_en", p.passportexpirydate::date - current_date::date as "expire_day", p.passportImagePath as "passport_image_path", p.issuingAuthority as "issuing_authority", p.description, p.status, c.name as "customer_name" from  ${ TABLE.PASSPORT } as p, ${ TABLE.CUSTOMER } as c  where 1 = 1 and c.oid = p.customerOid`;
-
-    let idx = 1;
-    query += ` and p.companyoid = $${idx++}`;
-    data.push(userInfo.companyoid);
-
-    if (request.query['status']) {
-        query += ` and status = $${idx++} and (p.passportexpirydate::date - current_date::date) > 0`;
-        data.push(request.query['status'])
-    }
-
-    if(request.query['customerOid']){
-        query += ` and p.customerOid = ${idx++}`;
-        data.push(request.query["customerOid"])
-    }
+    let query = `select c.oid, c.name, c.ledgerType, (select coalesce(sum(amount), 0) from ${ TABLE.PAYMENT } where 1 = 1 and status = $1 and referenceOid = c.oid) as balance from ${ TABLE.LEDGER } as c where 1 = 1 and c.companyOid = $2`;
+    
+    data.push( CONSTANT.ACTIVE ,userInfo.companyoid);
+    let idx = 3;
     if (request.query["searchText"]) {
-        query += ` and p.surName ilike $${idx} or 
-            p.givenName ilike $${idx} or 
-            p.passportNumber ilike $${idx} or 
-            c.name ilike $${idx++} `;
+        query += ` and c.name ilike $${idx} or 
+            c.ledgerType ilike $${++idx}  `;
         data.push(`% ${request.query["searchText"].trim()} %`)
     }
+
     query += ` order by p.createdOn desc`;
 
     if (request.query.offset) {

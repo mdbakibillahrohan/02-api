@@ -8,6 +8,7 @@
         MASTER_SUPPLIER_RESOURCE: "master/supplier/v1/",
         MASTER_PASSPORT_RESOURCE: "master/passport/v1/",
         MASTER_PAYMENT_RESOURCE: "master/payment/v1/",
+        MASTER_LEDGER_RESOURCE: "master/ledger/v1/",
         INVOICE_TICKET_RESOURCE: "invoice/ticket/v1/",
         TICKET_MODIFICATION_RESOURCE: "ticket/modification/v1/",
         TICKET_DEPARTURE_CARD_RESOURCE: "ticket/departure/card/v1/",
@@ -37,7 +38,7 @@ module.exports = {
         AIRPORT: "airport",
 
         PAYMENT: "payment",
-       
+        LEDGER: "ledger",
         CUSTOMER: "customer",
         TICKET: "ticket",
         TICKET_INVOICE: "ticketinvoice",
@@ -113,6 +114,10 @@ module.exports = {
         MASTER_PAYMENT_GET_LIST_PATH: RESOURCES.MASTER_PAYMENT_RESOURCE + "get-list",
         MASTER_PAYMENT_DELETE_BY_OID_PATH: RESOURCES.MASTER_PAYMENT_RESOURCE + "delete-by-oid",
 
+        // master ledger enpoint
+        MASTER_LEDGER_GET_LIST_PATH: RESOURCES.MASTER_LEDGER_RESOURCE + "get-list",
+        MASTER_LEDGER_SAVE_PATH: RESOURCES.MASTER_LEDGER_RESOURCE + "save",
+        MASTER_LEDGER_UPDATE_PATH: RESOURCES.MASTER_LEDGER_RESOURCE + "update",
 
         // Combobox endpoints
         COMBOBOX_GET_SUPPLIER_LIST: RESOURCES.COMBOBOX_RESOURCE + "supplier-list",
