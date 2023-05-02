@@ -36,44 +36,22 @@ const route_controller = {
     },
     handler: async(request, h) => {
         log.info(`Request received - ${JSON.stringify(request.query)}`);
-        const response = await handle_request(request);
+        const response = await handle_request(request, h);
         log.debug(`Response sent - ${JSON.stringify(response)}`)
         return h.response(response);
     },
 };
 
-const handle_request = async (request) => {
-    let userInfo = await autheticatedUserInfo(request)
+const handle_request = async (request, h) => {
     try {
-
-        let data = [];
-        let receivable_amount = [];
-        let paid_receivable_amount = [];
-        let payble_amount = [];
-        let paid_payble_amount = [];
-        let vendor_credit_amount = [];
-        let paid_vendor_credit_amount = [];
-        let credit_note_amount = [];
-        let paid_credit_note_amount = [];
-        let payment_amount_by_month = [];
-
-        data = await get_data(user,request);
-        receivable_amount = await getReceivableAmount(userInfo, request)
-        paid_receivable_amount = await getPaidReceivableAmount(userInfo, request)
-        payble_amount = await getPaybleAmount(userInfo, request)
-        paid_payble_amount = await getPaidPaybleAmount(userInfo, request)
-        vendor_credit_amount = await getVendorCreditAmount(userInfo, request)
-        paid_vendor_credit_amount = await getPaidVendorCreditAmount(userInfo, request)
-        credit_note_amount = await getCreditNoteAmount(userInfo, request)
-        paid_credit_note_amount = await getPaidCreditNoteAmount(userInfo, request)
-        payment_amount_by_month = await getPaymentAmountByMonth(userInfo, request)
-        
+        const data = await get_data(request);
         return {
             status: true,
             code: 200,
             message: MESSAGE.SUCCESS_GET_LIST,
-            
-        };
+            data,
+
+        }
     } catch( err ){
         log.error(`An exception occurred while getting supplier list data: ${err?.message}`);
         return {
@@ -83,11 +61,69 @@ const handle_request = async (request) => {
         };
     }
 }
+const get_data = async (request) => {
+    try{
+        let userInfo = await autheticatedUserInfo(request);
+
+        const total_receivable_amount = await getReceivableAmount(userInfo, request)
+        const paid_receivable_amount = await getPaidReceivableAmount(userInfo, request)
+        const total_payble_amount = await getPaybleAmount(userInfo, request)
+        const paid_payble_amount = await getPaidPaybleAmount(userInfo, request)
+        const total_vendor_credit_amount = await getVendorCreditAmount(userInfo, request)
+        const paid_vendor_credit_amount = await getPaidVendorCreditAmount(userInfo, request)
+        const total_credit_note_amount = await getCreditNoteAmount(userInfo, request)
+        const paid_credit_note_amount = await getPaidCreditNoteAmount(userInfo, request)
+        const months = await getLastTwelveMonths();
+        const payment_amount_by_month = await getPaymentAmountByMonth(userInfo, request)
+
+        const data_list = {
+            total_receivable_amount,
+            paid_receivable_amount,
+            due_receivable_amount: ( total_receivable_amount - paid_receivable_amount ),
+            total_payble_amount,
+            paid_payble_amount,
+            due_payable: ( total_payble_amount - paid_payble_amount ),
+            total_vendor_credit_amount,
+            paid_vendor_credit_amount,
+            due_vendor_credit: ( total_vendor_credit_amount - paid_vendor_credit_amount),
+            total_credit_note_amount,
+            paid_credit_note_amount,
+            due_credit_note: ( total_credit_note_amount - paid_credit_note_amount),
+        }
+
+        return data_list;
+        
+    }
+    catch (err){
+        log.error(`An exception occurred while getting supplier list data: ${err?.message}`);
+        return {
+            status: false,
+            code: 500,
+            message: MESSAGE.INTERNAL_SERVER_ERROR
+        };
+    }
+}
+const getLastTwelveMonths = async () => {
+    let months = { month: []};
+    const now = new Date();
+    const date = now.setDate(1);
+    
+    const totalMonth = 12;
+    for(let i = 1; i <= totalMonth; i++){
+        let d = i+'-'+ date.getFullYear()
+        months.month.push(d)
+        if( i == totalMonth ){
+            
+        }else if( i == 1 ){
+        
+        }
+    }
+
+}
 const getReceivableAmount = async (userInfo, request) => {
     let receivableAmount = [];
     let data = [];
-    let query = `select coalesce(sum(amount), 0) from ${ TABLE.PAYMENT } where 1 = 1 and companyOid = $1`;
-    // let query = 'select company_account_receivable(?)';
+    let query = `select company_account_receivable($1)`;
 
     data.push(userInfo.companyoid);
     let sql = {
@@ -109,8 +145,7 @@ const getReceivableAmount = async (userInfo, request) => {
 const getPaidReceivableAmount = async (userInfo, request) => {
     let paidReceivableAmount = [];
     let data = [];
-    // let query = `select coalesce(sum(amount), 0) from ${ TABLE.PAYMENT } where 1 = 1 and companyOid = $1`;
-    let query = 'select company_paid_account_receivable(?)';
+    let query = `select company_paid_account_receivable($1)`;
 
     data.push(userInfo.companyoid);
     let sql = {
@@ -132,8 +167,7 @@ const getPaidReceivableAmount = async (userInfo, request) => {
 const getPaybleAmount = async (userInfo, request) => {
     let paybleAmount = [];
     let data = [];
-    // let query = `select coalesce(sum(amount), 0) from ${ TABLE.PAYMENT } where 1 = 1 and companyOid = $1`;
-    let query = 'select company_account_payable(?)';
+    let query = `select company_account_payable($1)`;
 
     data.push(userInfo.companyoid);
     let sql = {
@@ -155,8 +189,7 @@ const getPaybleAmount = async (userInfo, request) => {
 const getPaidPaybleAmount = async (userInfo, request) => {
     let paidPaybleAmount = [];
     let data = [];
-    // let query = `select coalesce(sum(amount), 0) from ${ TABLE.PAYMENT } where 1 = 1 and companyOid = $1`;
-    let query = 'select company_paid_account_payable(?)';
+    let query = `select company_paid_account_payable($1)`;
 
     data.push(userInfo.companyoid);
     let sql = {
@@ -178,8 +211,7 @@ const getPaidPaybleAmount = async (userInfo, request) => {
 const getVendorCreditAmount = async (userInfo, request) => {
     let vendorCreditAmount = [];
     let data = [];
-    // let query = `select coalesce(sum(amount), 0) from ${ TABLE.PAYMENT } where 1 = 1 and companyOid = $1`;
-    let query = 'select company_vendor_credit(?)';
+    let query = `select company_vendor_credit($1)`;
 
     data.push(userInfo.companyoid);
     let sql = {
@@ -201,8 +233,7 @@ const getVendorCreditAmount = async (userInfo, request) => {
 const getPaidVendorCreditAmount = async (userInfo, request) => {
     let paidVendorCreditAmount = [];
     let data = [];
-    // let query = `select coalesce(sum(amount), 0) from ${ TABLE.PAYMENT } where 1 = 1 and companyOid = $1`;
-    let query = 'select company_paid_vendor_credit(?)';
+    let query = `select company_paid_vendor_credit($1)`;
 
     data.push(userInfo.companyoid);
     let sql = {
@@ -224,8 +255,7 @@ const getPaidVendorCreditAmount = async (userInfo, request) => {
 const getCreditNoteAmount = async (userInfo, request) => {
     let creditNoteAmount = [];
     let data = [];
-    // let query = `select coalesce(sum(amount), 0) from ${ TABLE.PAYMENT } where 1 = 1 and companyOid = $1`;
-    let query = 'select company_credit_note(?)';
+    let query = `select company_credit_note($1)`;
 
     data.push(userInfo.companyoid);
     let sql = {
@@ -247,8 +277,7 @@ const getCreditNoteAmount = async (userInfo, request) => {
 const getPaidCreditNoteAmount = async (userInfo, request) => {
     let paidCreditNoteAmount = [];
     let data = [];
-    // let query = `select coalesce(sum(amount), 0) from ${ TABLE.PAYMENT } where 1 = 1 and companyOid = $1`;
-    let query = 'select company_paid_credit_note(?)';
+    let query = `select company_paid_credit_note($1)`;
 
     data.push(userInfo.companyoid);
     let sql = {
@@ -366,40 +395,6 @@ const getPaymentAmountByDateRange = async (userInfo, request, paymentType, start
     return data_list;
 }
 
-const get_data = async (userInfo,request) => {
-    const user = userInfo;
-    let list_data = [];
-    let data = [];
-    let query = ``;
-    
-    data.push( CONSTANT.ACTIVE ,user.companyoid);
-    let idx = 3;
-    if (request.query["searchText"]) {
-        query += ` and c.name ilike $${idx} or 
-            c.ledgerType ilike $${++idx}  `;
-        data.push(`% ${request.query["searchText"].trim()} %`)
-    }
 
-    query += ` order by p.createdOn desc`;
-
-    if (request.query.offset) {
-        query += ` offset $${idx++}`;
-        data.push(request.query.offset);
-    }
-    if (request.query.limit) {
-        query += ` limit $${idx++}`;
-        data.push(request.query.limit)
-    }
-    let sql = {
-        text: query,
-        values: data 
-    }
-    try {
-        list_data = await Dao.get_data(request.pg, sql);
-    } catch (e) {
-        throw new Error(e);
-    }
-    return list_data;
-}
 module.exports = route_controller;
  

@@ -196,6 +196,7 @@ module.exports = {
     MESSAGE: {
         SUCCESS_SAVE: "Successfully save data into database",
         SUCCESS_UPDATE: "Successfully updated data into database",
+        SUCCESS_GET_LIST: "Successfully get list data",
         INTERNAL_SERVER_ERROR: "Internal server error",
         REQUEST_MSG_PREFIX: "request_",
         FAIL_HEADER_INVALID_REQUEST_CLIENT: "fail_header_invalid_request_client",
