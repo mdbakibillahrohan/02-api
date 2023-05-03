@@ -39,6 +39,8 @@
             BANK: "Bank",
             TICKET_INVOICE: "TicketInvoice",
             DRAFT_TICKET: "DraftTicket",
+            CATEGORY: "Category",
+            PRODUCT: "Product",
         },
 
         API: {
