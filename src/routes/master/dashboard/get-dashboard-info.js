@@ -63,7 +63,7 @@ const handle_request = async (request, h) => {
 }
 const get_data = async (request) => {
     try{
-        let userInfo = await autheticatedUserInfo(request);
+        const userInfo = await autheticatedUserInfo(request);
 
         const total_receivable_amount = await getReceivableAmount(userInfo, request)
         const paid_receivable_amount = await getPaidReceivableAmount(userInfo, request)
@@ -74,7 +74,12 @@ const get_data = async (request) => {
         const total_credit_note_amount = await getCreditNoteAmount(userInfo, request)
         const paid_credit_note_amount = await getPaidCreditNoteAmount(userInfo, request)
         const months = await getLastTwelveMonths();
-        const payment_amount_by_month = await getPaymentAmountByMonth(userInfo, request)
+        const credit_amount = await getAmount(userInfo, request, months.month, CONSTANT.CREDIT);
+        const debit_amount = await getAmount(userInfo, request, months.month, CONSTANT.DEBIT);
+        const start_balance = await getAccountBalanceBeforeDate(userInfo, request, months.startDate)
+        const end_balance = await getAccountBalanceTillDate(userInfo, request, months.endDate);
+        const total_incoming = await getPaymentAmountByDateRange(userInfo, request, CONSTANT.CREDIT, months.startDate, months.endDate );
+        const total_outgoing = await getPaymentAmountByDateRange(userInfo, request, CONSTANT.DEBIT, months.startDate, months.endDate);
 
         const data_list = {
             total_receivable_amount,
@@ -89,6 +94,16 @@ const get_data = async (request) => {
             total_credit_note_amount,
             paid_credit_note_amount,
             due_credit_note: ( total_credit_note_amount - paid_credit_note_amount),
+            months: months.month,
+            startDate: months.startDate,
+            endDate: months.endDate,
+            credit_amount,
+            debit_amount,
+            start_balance,
+            end_balance,
+            total_incoming,
+            total_outgoing,
+
         }
 
         return data_list;
@@ -103,22 +118,36 @@ const get_data = async (request) => {
         };
     }
 }
+
 const getLastTwelveMonths = async () => {
     let months = { month: []};
     const now = new Date();
-    const date = now.setDate(1);
-    
+    now.setDate(1);
+
     const totalMonth = 12;
     for(let i = 1; i <= totalMonth; i++){
-        let d = i+'-'+ date.getFullYear()
-        months.month.push(d)
+        let d = `${ now.getMonth() < 9? '0'+(now.getMonth() + 1): now.getMonth() + 1}-${now.getFullYear()}`;
+        now.setMonth(now.getMonth() - 1);
+        months.month.push(d);
         if( i == totalMonth ){
-            
+            let startDate = `${ now.getFullYear() }-${ now.getMonth() < 9? '0'+(now.getMonth() + 1): now.getMonth() + 1}-${ now.getDate() < 9? '0'+(now.getDate() + 1) : now.getDate() + 1 }`;
+            months.startDate = startDate;
         }else if( i == 1 ){
-        
-        }
+            const nowDate = new Date();
+            months.endDate = `${ nowDate.getFullYear()}-${ nowDate.getMonth() < 9? '0'+(nowDate.getMonth() + 1): nowDate.getMonth() + 1}-${ nowDate.getDate() < 9? '0'+(nowDate.getDate() + 1) : nowDate.getDate() + 1 }`
+        }   
     }
+   
+    return months;
 
+}
+const getAmount = async (user, request, months, paymentType) => {
+    let amount = [];
+    for(let month of months) {
+        const a = await getPaymentAmountByMonth(user, request, paymentType, month);
+        amount.push(a);
+    }
+    return amount;
 }
 const getReceivableAmount = async (userInfo, request) => {
     let receivableAmount = [];
@@ -130,6 +159,7 @@ const getReceivableAmount = async (userInfo, request) => {
         text: query,
         values: data
     }
+
     try {
         let getData = await Dao.get_data(request.pg, sql);
         if(getData.length < 1){
@@ -344,7 +374,7 @@ const getAccountBalanceTillDate = async (userInfo, request, date) => {
     let data_list = [];
     let data = [];
     let query = `select coalesce(sum(account_balance_till_date(oid, $1)), 0)
-     from ${ Table.ACCOUNT } where 1 = 1 and companyOid = $2 and status = $3 `;
+     from ${ TABLE.ACCOUNT } where 1 = 1 and companyOid = $2 and status = $3 `;
 
     data.push( date, userInfo.companyoid, CONSTANT.ACTIVE );
     let sql = {
