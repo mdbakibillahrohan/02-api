@@ -45,6 +45,14 @@ const route_controller = {
 const handle_request = async (request, h) => {
     try {
         const data = await get_data(request);
+        if ( data.length < 1){
+            log.info(MESSAGE.NO_DATA_FOUND);
+            return { 
+                status: false, 
+                code:400,
+                message: MESSAGE.NO_DATA_FOUND 
+            };
+        }
         return {
             status: true,
             code: 200,
@@ -53,7 +61,7 @@ const handle_request = async (request, h) => {
 
         }
     } catch( err ){
-        log.error(`An exception occurred while getting supplier list data: ${err?.message}`);
+        log.error(`An exception occurred while getting dashboard info list data: ${err?.message}`);
         return {
             status: false,
             code: 500,
@@ -110,7 +118,7 @@ const get_data = async (request) => {
         
     }
     catch (err){
-        log.error(`An exception occurred while getting supplier list data: ${err?.message}`);
+        log.error(`An exception occurred while getting dashboard info list data: ${err?.message}`);
         return {
             status: false,
             code: 500,

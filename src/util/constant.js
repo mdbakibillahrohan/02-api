@@ -2,6 +2,7 @@
 
     RESOURCES = {
         MASTER_DASHBOARD_RESOURCE: "master/dashboard/v1/",
+        TICKET_DASHBOARD_RESOURCE: "ticket/dashboard/v1/",
         COMBOBOX_RESOURCE: "master/combobox/v1/",
         MASTER_CUSTOMER_RESOURCE: "master/customer/v1/",
         MASTER_EXPENSE_RESOURCE: "master/expense/v1/",
@@ -168,6 +169,8 @@ module.exports = {
         // Master Dashboard enpoint
         MASTER_DASHBOARD_GET_DASHBOARD_INFO_PATH: RESOURCES.MASTER_DASHBOARD_RESOURCE + "get-dashboard-info",
 
+        // Master Ticket Dashboard enpoint
+        TICKET_DASHBOARD_GET_DASHBOARD_INFO_PATH: RESOURCES.TICKET_DASHBOARD_RESOURCE + "get-ticket-dashboard-data",
         //Master Customer enpoint
         MASTER_CUSTOMER_GET_LIST: RESOURCES.MASTER_CUSTOMER_RESOURCE + "get-list",
 
