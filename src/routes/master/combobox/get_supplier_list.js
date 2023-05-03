@@ -72,7 +72,7 @@ const get_count = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let count = 0;
     let data = [];
-    let query = `select count(*)::int4 as total from ${TABLE.VENDOR} where 1 = 1`;
+    let query = `select count(*)::int4 as total from ${TABLE.SUPPLIER} where 1 = 1`;
     let idx = 1;
 
     query += ` and companyoid = $${idx}`;
@@ -105,7 +105,7 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select oid, name, mobileno, supplier_balance(oid) as balance, supplier_creditnote_balance(oid) as vendorCreditBalance from ${TABLE.VENDOR} where 1 = 1`;
+    let query = `select oid, name, mobileno, supplier_balance(oid) as balance, supplier_creditnote_balance(oid) as vendorCreditBalance from ${TABLE.SUPPLIER} where 1 = 1`;
     let idx = 1;
     query += ` and companyoid = $${idx}`;
     idx++;

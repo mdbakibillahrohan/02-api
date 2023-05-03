@@ -27,7 +27,7 @@
 
             CUSTOMER: "customer",
             TICKET: "ticket",
-            VENDOR: "supplier",
+            SUPPLIER: "supplier",
             ACCOUNT: "account",
             EMPLOYEE: "employee",
             DEPARTMENT: "department",
@@ -41,6 +41,10 @@
             DRAFT_TICKET: "DraftTicket",
             CATEGORY: "Category",
             PRODUCT: "Product",
+            LEDGER: "Ledger",
+            METAPROPERTY: "MetaProperty",
+            PACKAGE: "Package",
+            COUNTRY: "Country",
         },
 
         API: {
@@ -69,9 +73,9 @@
             GET_TICKET_LIST: "v1/ticket/get-list",
             SAVE_TICKET: "v1/ticket/save",
 
-            // Vendor Endpoints 
-            GET_VENDOR_LIST: "v1/vendor/get-list",
-            SAVE_VENDOR: "v1/vendor/save",
+            // SUPPLIER Endpoints 
+            GET_SUPPLIER_LIST: "v1/SUPPLIER/get-list",
+            SAVE_SUPPLIER: "v1/SUPPLIER/save",
 
             // Account Enpoints 
             GET_ACCOUNT_LIST: "v1/account/get-list",
@@ -240,9 +244,9 @@
             CREDIT_NOTE_ADJUSTMENT: "CreditNoteAdjustment",
             CASH_ADJUSTMENT: "CashAdjustment",
             CUSTOMER_LEDGER_REPORT: "customerLedger",
-            VENDOR_LEDGER_REPORT: "vendorLedger",
+            SUPPLIER_LEDGER_REPORT: "SUPPLIERLedger",
             CUSTOMER_TICKET_LEDGER_REPORT: "customerTicketLedger",
-            VENDOR_TICKET_LEDGER_REPORT: "vendorTicketLedger",
+            SUPPLIER_TICKET_LEDGER_REPORT: "SUPPLIERTicketLedger",
 
             TICKET_DETAIL_BY_DATE_REPORT: "ticketDetailByDate",
             TICKET_DETAIL_BY_CUSTOMER_REPORT: "ticketDetailByCustomer",
@@ -259,7 +263,7 @@
             COMPANY_SIGNUP_WELCOME_EMAIL: "companysignupwelcomemail",
             COMPANY_SIGNUP_WELCOME_EMAIL_TEMPLATE_FOR_US: "companysignupnotificationmail",
             CUSTOMER_PASSPORT_INFORMATION_VERIFICATION_EMAIL: "customerpassportverificationemail",
-            VENDOR_DEPOSIT_EMAIL: "vendordepositemail",
+            SUPPLIER_DEPOSIT_EMAIL: "SUPPLIERdepositemail",
 
             SEND_TICKET_EMAIL: "sendticketemail",
             SEND_INVOICE_EMAIL: "sendinvoiceemail",

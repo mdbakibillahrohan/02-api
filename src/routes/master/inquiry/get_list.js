@@ -3,10 +3,12 @@
 const Joi = require("@hapi/joi");
 const log = require("../../../util/log");
 const Dao = require("../../../util/dao");
-const { API, MESSAGE, TABLE } = require("../../../util/constant");
+const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
-const query_scheme = Joi.object({});
+const query_scheme = Joi.object({
+    metaOid: Joi.array().optional(),
+});
 
 const get_list = {
     method: "GET",
@@ -61,20 +63,8 @@ const handle_request = async (request) => {
 
 
 const get_data = async (request) => {
-    const userInfo = await autheticatedUserInfo(request)
-    let list_data = [];
-    let data = [userInfo.companyoid];
-    let query = `select oid, surName, givenName, passportNumber, customerOid from ${TABLE.PASSPORT} where 1 = 1 and companyoid = $1 order by passportNumber asc`;
+    const metaList = await getMetaPropertyListSql();
 
-    let sql = {
-        text: query,
-        values: data
-    }
-    try {
-        list_data = await Dao.get_data(request.pg, sql);
-    } catch (e) {
-        throw new Error(e);
-    }
     return list_data;
 };
 
@@ -131,12 +121,51 @@ const getProductListSql = async (request) => {
     }
     return list_data;
 }
-const getSupplierListSql = async (request) => {
+const getSupplierList = async (request) => {
     const userInfo = await autheticatedUserInfo(request)
     let list_data = [];
     let data = [userInfo.companyoid];
     let query = `select oid, name, email, address, mobileNo as "mobile_no", initialBalance as "initial_balance", commissionType as "commission_type", 
-    commissionValue as "commission_value", serviceCharge as "service_charge", supplier_balance(oid) as balance, supplier_creditnote_balance(oid) as "vendor_credit_balance" from ${TABLE.VENDOR} where 1 = 1 and companyoid = $1 order by createdOn desc`;
+    commissionValue as "commission_value", serviceCharge as "service_charge", supplier_balance(oid) as balance, supplier_creditnote_balance(oid) as "vendor_credit_balance" from ${TABLE.SUPPLIER} where 1 = 1 and companyoid = $1 order by createdOn desc`;
+
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        list_data = await Dao.get_data(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    return list_data;
+}
+const getCustomerListSql = async (request) => {
+    const userInfo = await autheticatedUserInfo(request)
+    let list_data = [];
+    let data = [userInfo.companyoid];
+    let query = `select oid, name, email, address, mobileNo as "mobile_no", initialBalance as "initial_balance", discountType as "discount_type", 
+    discountValue as "discount_value", customer_balance(oid) as balance, 
+    customer_creditnote_balance(oid) as "credit_note_alance" from ${TABLE.CUSTOMER} where 1 = 1 and companyoid = $1 order by createdOn desc`;
+
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        list_data = await Dao.get_data(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    return list_data;
+}
+const getLedgerListSql = async (request) => {
+    const userInfo = await autheticatedUserInfo(request)
+    let list_data = [];
+    let data = [CONSTANT.ACTIVE, userInfo.companyoid];
+    let query = `select c.oid, c.name, c.ledgerType as "ledger_type",
+    (select coalesce(sum(amount), 0) from ${TABLE.PAYMENT} where 1 = 1 and status = $1 and referenceOid = c.oid) as balance
+    from ${TABLE.LEDGER} c
+    where 1 = 1 and c.companyOid = $2 order by c.createdOn desc`;
 
     let sql = {
         text: query,
@@ -150,6 +179,107 @@ const getSupplierListSql = async (request) => {
     return list_data;
 }
 
+const getPeopleListSql = async (request) => {
+    const userInfo = await autheticatedUserInfo(request)
+    let list_data = [];
+    let data = [userInfo.companyoid];
+    let query = `select oid, nameEn as name, presentAddress as address, mobileNo as "mobile_no"
+    from ${TABLE.EMPLOYEE} where 1 = 1 and companyOid = $1 order by createdOn desc`;
+
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        list_data = await Dao.get_data(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    return list_data;
+}
+
+
+const getMetaPropertyListSql = async (request) => {
+    const { metaOid } = request.payload;
+    let list_data = [];
+    let data = metaOid;
+    let idx = 1;
+    let params = "";
+    let query = `select oid, valueJson as "value_json"
+    from ${TABLE.METAPROPERTY} where 1 = 1`;
+    if (metaOid) {
+        for (let i = 1; i <= metaOid.length; i++) {
+            params += `$${idx++},`
+        }
+    }
+    query += ` and oid in ${params}`
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        list_data = await Dao.get_data(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    return list_data;
+}
+
+
+
+const getPackageListSql = async (request) => {
+    let list_data = [];
+    let data = [];
+    let query = `select oid, name, packageJson as "package_json", description, price, period, type
+    from ${TABLE.PACKAGE} where 1 = 1`;
+
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        list_data = await Dao.get_data(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    return list_data;
+}
+
+const getCountryListSql = async (request) => {
+    let list_data = [];
+    let data = [];
+    let query = `select oid, name, capital, isoCodeAlphaTwo as "iso_code_alpha_two", isoCodeAlphaThree as "iso_code_alpha_three", countryCode as "country_code", dialingCode as "dialing_code"
+    from ${TABLE.COUNTRY} where 1 = 1`;
+
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        list_data = await Dao.get_data(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    return list_data;
+}
+
+const getBankListSql = async (request) => {
+    let list_data = [];
+    let data = [];
+    let query = `select oid, nameEn as "name_en", nameBn as "name_bn"
+    from ${TABLE.COUNTRY} where 1 = 1`;
+
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        list_data = await Dao.get_data(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    return list_data;
+}
 
 
 module.exports = get_list;
