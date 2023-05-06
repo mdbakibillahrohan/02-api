@@ -76,4 +76,7 @@ const getSalesAmount = async (userInfo, request) => {
         throw new Error(e);
     }
 }
+const getDateTime = async (date) => {
+    
+}
 module.exports = route_controller;
