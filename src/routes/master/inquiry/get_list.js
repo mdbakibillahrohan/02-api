@@ -6,12 +6,12 @@ const Dao = require("../../../util/dao");
 const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
-const query_scheme = Joi.object({
-    metaOid: Joi.array().optional(),
+const payload_scheme = Joi.object({
+    oids: Joi.array().items(Joi.string().trim().min(1).required()).required(),
 });
 
 const get_list = {
-    method: "GET",
+    method: "POST",
     path: API.CONTEXT + API.MASTER_INQUIRY_GET_LIST_PATH,
     options: {
         auth: {
@@ -21,7 +21,7 @@ const get_list = {
         description: "Inquiry list",
         plugins: { hapiAuthorization: false },
         validate: {
-            query: query_scheme,
+            payload: payload_scheme,
             options: {
                 allowUnknown: false,
             },
@@ -63,9 +63,41 @@ const handle_request = async (request) => {
 
 
 const get_data = async (request) => {
-    const metaList = await getMetaPropertyListSql();
-
-    return list_data;
+    const metaList = await getMetaPropertyList(request);
+    const supplierList = await getSupplierList(request);
+    const customerList = await getCustomerList(request);
+    const peopleList = await getPeopleList(request);
+    const accountList = await getAccountList(request);
+    const categoryList = await getCategoryList(request);
+    const productList = await getProductList(request);
+    const packageList = await getPackageList(request);
+    const countryList = await getCountryList(request);
+    const ledgerList = await getLedgerList(request);
+    const bankList = await getBankList(request);
+    let data = {
+        supplierList,
+        customerList,
+        peopleList,
+        accountList,
+        categoryList,
+        productList,
+        packageList,
+        countryList,
+        ledgerList,
+        bankList
+    }
+    request.payload.oids.forEach(element => {
+        if ("accounttype" === element.toLowerCase()) {
+            const m = metaList.find((el) => {
+                return el.oid.toLowerCase() === element.toLowerCase();
+            })
+            if (m != undefined && m.valuJson !== '' || m.valuJson != undefined || m.valuJson != null) {
+                const acccountTypeList = m.valuJson;
+                data = { ...data, acccountTypeList };
+            }
+        }
+    });
+    return data;
 };
 
 
@@ -82,6 +114,7 @@ const getAccountList = async (request) => {
     try {
         list_data = await Dao.get_data(request.pg, sql);
     } catch (e) {
+        console.log("account List error ", e)
         throw new Error(e);
     }
     return list_data;
@@ -100,11 +133,12 @@ const getCategoryList = async (request) => {
     try {
         list_data = await Dao.get_data(request.pg, sql);
     } catch (e) {
+        console.log("cateogry List error ", e)
         throw new Error(e);
     }
     return list_data;
 }
-const getProductListSql = async (request) => {
+const getProductList = async (request) => {
     const userInfo = await autheticatedUserInfo(request)
     let list_data = [];
     let data = [userInfo.companyoid];
@@ -117,6 +151,7 @@ const getProductListSql = async (request) => {
     try {
         list_data = await Dao.get_data(request.pg, sql);
     } catch (e) {
+        console.log("product List error ", e)
         throw new Error(e);
     }
     return list_data;
@@ -135,11 +170,12 @@ const getSupplierList = async (request) => {
     try {
         list_data = await Dao.get_data(request.pg, sql);
     } catch (e) {
+        console.log("supplier List error ", e)
         throw new Error(e);
     }
     return list_data;
 }
-const getCustomerListSql = async (request) => {
+const getCustomerList = async (request) => {
     const userInfo = await autheticatedUserInfo(request)
     let list_data = [];
     let data = [userInfo.companyoid];
@@ -154,11 +190,12 @@ const getCustomerListSql = async (request) => {
     try {
         list_data = await Dao.get_data(request.pg, sql);
     } catch (e) {
+        console.log("customer List error ", e)
         throw new Error(e);
     }
     return list_data;
 }
-const getLedgerListSql = async (request) => {
+const getLedgerList = async (request) => {
     const userInfo = await autheticatedUserInfo(request)
     let list_data = [];
     let data = [CONSTANT.ACTIVE, userInfo.companyoid];
@@ -174,12 +211,13 @@ const getLedgerListSql = async (request) => {
     try {
         list_data = await Dao.get_data(request.pg, sql);
     } catch (e) {
+        console.log("ledger List error ", e)
         throw new Error(e);
     }
     return list_data;
 }
 
-const getPeopleListSql = async (request) => {
+const getPeopleList = async (request) => {
     const userInfo = await autheticatedUserInfo(request)
     let list_data = [];
     let data = [userInfo.companyoid];
@@ -193,26 +231,26 @@ const getPeopleListSql = async (request) => {
     try {
         list_data = await Dao.get_data(request.pg, sql);
     } catch (e) {
+        console.log("peop;e List error ", e)
         throw new Error(e);
     }
     return list_data;
 }
 
 
-const getMetaPropertyListSql = async (request) => {
-    const { metaOid } = request.payload;
+const getMetaPropertyList = async (request) => {
     let list_data = [];
-    let data = metaOid;
+    let data = [];
     let idx = 1;
     let params = "";
     let query = `select oid, valueJson as "value_json"
     from ${TABLE.METAPROPERTY} where 1 = 1`;
-    if (metaOid) {
-        for (let i = 1; i <= metaOid.length; i++) {
+    if (request.payload["oids"]) {
+        for (let i = 0; i < request.payload.oids.length; i++) {
             params += `$${idx++},`
         }
     }
-    query += ` and oid in ${params}`
+    query += ` and oid in ('${request.payload["oids"].join(', ')}')`
     let sql = {
         text: query,
         values: data
@@ -220,6 +258,7 @@ const getMetaPropertyListSql = async (request) => {
     try {
         list_data = await Dao.get_data(request.pg, sql);
     } catch (e) {
+        console.log("meta property List error ", e)
         throw new Error(e);
     }
     return list_data;
@@ -227,7 +266,7 @@ const getMetaPropertyListSql = async (request) => {
 
 
 
-const getPackageListSql = async (request) => {
+const getPackageList = async (request) => {
     let list_data = [];
     let data = [];
     let query = `select oid, name, packageJson as "package_json", description, price, period, type
@@ -240,12 +279,13 @@ const getPackageListSql = async (request) => {
     try {
         list_data = await Dao.get_data(request.pg, sql);
     } catch (e) {
+        console.log("package List error ", e)
         throw new Error(e);
     }
     return list_data;
 }
 
-const getCountryListSql = async (request) => {
+const getCountryList = async (request) => {
     let list_data = [];
     let data = [];
     let query = `select oid, name, capital, isoCodeAlphaTwo as "iso_code_alpha_two", isoCodeAlphaThree as "iso_code_alpha_three", countryCode as "country_code", dialingCode as "dialing_code"
@@ -258,16 +298,17 @@ const getCountryListSql = async (request) => {
     try {
         list_data = await Dao.get_data(request.pg, sql);
     } catch (e) {
+        console.log("country List error ", e)
         throw new Error(e);
     }
     return list_data;
 }
 
-const getBankListSql = async (request) => {
+const getBankList = async (request) => {
     let list_data = [];
     let data = [];
     let query = `select oid, nameEn as "name_en", nameBn as "name_bn"
-    from ${TABLE.COUNTRY} where 1 = 1`;
+    from ${TABLE.BANK} where 1 = 1`;
 
     let sql = {
         text: query,
@@ -276,6 +317,7 @@ const getBankListSql = async (request) => {
     try {
         list_data = await Dao.get_data(request.pg, sql);
     } catch (e) {
+        console.log("bank List error ", e)
         throw new Error(e);
     }
     return list_data;
