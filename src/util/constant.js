@@ -5,6 +5,7 @@
         TICKET_DASHBOARD_RESOURCE: "ticket/dashboard/v1/",
         COMBOBOX_RESOURCE: "master/combobox/v1/",
         MASTER_TRANSACTION_RESOURCE: "master/transaction/v1/",
+        MASTER_ACCOUNT_RESOURCE: "master/account/v1/",
         MASTER_CUSTOMER_RESOURCE: "master/customer/v1/",
         MASTER_EXPENSE_RESOURCE: "master/expense/v1/",
         MASTER_INQUIRY_RESOURCE: "master/inquiry/v1/",
@@ -147,6 +148,11 @@ module.exports = {
         MASTER_TRANSACTION_GET_LIST_PATH: RESOURCES.MASTER_TRANSACTION_RESOURCE + "get-list",
         MASTER_TRANSACTION_SAVE_PATH: RESOURCES.MASTER_TRANSACTION_RESOURCE + "save",
         MASTER_TRANSACTION_UPDATE_PATH: RESOURCES.MASTER_TRANSACTION_RESOURCE + "update",
+
+        // master account enpoint
+        MASTER_ACCOUNT_GET_LIST_PATH : RESOURCES.MASTER_ACCOUNT_RESOURCE + "get-list",
+        MASTER_ACCOUNT_SAVE_PATH : RESOURCES.MASTER_ACCOUNT_RESOURCE + "save",
+        MASTER_ACCOUNT_UPDATE_PATH : RESOURCES.MASTER_ACCOUNT_RESOURCE + "update",
 
         // Combobox endpoints
         COMBOBOX_GET_SUPPLIER_LIST: RESOURCES.COMBOBOX_RESOURCE + "supplier-list",

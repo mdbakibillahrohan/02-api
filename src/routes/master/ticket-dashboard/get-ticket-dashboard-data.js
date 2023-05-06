@@ -7,8 +7,8 @@ const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const query_scheme = Joi.object({
-    fromDate: Joi.string().trim().min(1).max(128).required(),
-    toDate: Joi.string().trim().min(1).max(128).required(),
+    fromDate: Joi.date().format('YYYY-MM-DD').utc().required(),
+    toDate: Joi.date().format('YYYY-MM-DD').utc().required(),
 
 });
 
@@ -20,7 +20,7 @@ const route_controller = {
             mode: "required",
             strategy: "jwt",
         },
-        description: "get passport by oid",
+        description: "get ticket dashboard data",
         plugins: { hapiAuthorization: false },
         validate: {
             query: query_scheme,
@@ -56,14 +56,12 @@ const handle_request = async (request) => {
 const getSalesAmount = async (userInfo, request) => {
     let list_data = [];
     let data = [];
-    const from = getDateTime(request.query['fromDate']);
-    const to = getDateTime(request.query['toDate']);
     
     let query = `select coalesce(sum(netsalesprice), 0) from ${ TABLE.TICKET_INVOICE }
-     where 1 = 1 and companyOid = $1 and status = $1 and invoiceDate between ${ from.getLeft() } and
-     ${to.getLeft()} `;
+     where 1 = 1 and companyOid = $1 and status = $1 and invoiceDate between ${ request.query['fromDate'] } and
+     ${ request.query['toDate'] } `;
 
-    data.push(userInfo.companyoid, CONSTANT.ACTIVE, )
+    data.push(userInfo.companyoid, CONSTANT.ACTIVE)
     let sql = {
         text: query,
         values: data
@@ -76,7 +74,5 @@ const getSalesAmount = async (userInfo, request) => {
         throw new Error(e);
     }
 }
-const getDateTime = async (date) => {
-    
-}
+
 module.exports = route_controller;

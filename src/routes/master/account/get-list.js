@@ -14,7 +14,7 @@ const query_scheme = Joi.object({
 
 const route_controller = {
     method: "GET",
-    path: API.CONTEXT + API.MASTER_TRANSACTION_GET_LIST_PATH,
+    path: API.CONTEXT + API.MASTER_ACCOUNT_GET_LIST_PATH,
     options: {
         auth: {
             mode: "required",
@@ -80,8 +80,8 @@ const get_count = async (request) => {
     let count = 0;
     let data = [];
     
-    let query = `select count(oid) from ${ TABLE.ACCOUNT_TRANSACTION } where 1 = 1 
-    and companyOid = $1`;
+    let query = `select count(oid) from ${ TABLE.ACCOUNT } where 1 = 1 
+    and companyOid = $1`;   
 
     data.push(userInfo.companyoid);
  
@@ -104,18 +104,12 @@ const get_data = async (request) => {
     let list_data = [];
     let data = [];
  
-    let query = `select at.oid, at.status, at.transactionNo as "transaction_no",
-        to_char(at.transactionDate, 'YYYY-MM-DD') as "transaction_date",
-		to_char(at.transactionDate :: DATE, 'dd-Mon-yyyy') as "transaction_date_en", 
-		at.amount,  at.transactionType as "transaction_type", at.description, at.accountOid as account_oid, a.name as account_name,
-        a.accountNumber as account_number from ${ TABLE.ACCOUNT_TRANSACTION } at, ${ TABLE.ACCOUNT } as a 
-		where 1 = 1 and a.oid = at.accountOid and a.companyOid = $1`;
+    let query = `select oid, name, accountNumber as account_number, accountType as account_type, initialBalance as initial_balance, account_balance(oid) as balance from ${ TABLE.ACCOUNT } where 1 = 1 and companyOid = $1`;
     
 
     data.push(userInfo.companyoid);
 
-    query += ` order by at.transactionDate desc`;
-    
+    query += ` order by createdOn desc`;
     let idx = 2;
 
     if (request.query.offset) {
