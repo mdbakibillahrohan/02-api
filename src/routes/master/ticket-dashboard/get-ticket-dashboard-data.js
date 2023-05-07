@@ -7,8 +7,8 @@ const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const query_scheme = Joi.object({
-    fromDate: Joi.date().format('YYYY-MM-DD').utc().required(),
-    toDate: Joi.date().format('YYYY-MM-DD').utc().required(),
+    fromDate: Joi.date().required(),
+    toDate: Joi.date().required(),
 
 });
 
