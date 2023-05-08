@@ -66,7 +66,7 @@ const get_supplier_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select oid, name, mobileNo, commissionType, commissionValue, serviceCharge  from ${TABLE.VENDOR} where 1 = 1`;
+    let query = `select oid, name, mobileNo, commissionType, commissionValue, serviceCharge  from ${TABLE.SUPPLIER} where 1 = 1`;
     let idx = 1;
     query += ` and companyoid = $${idx}`;
     idx++;

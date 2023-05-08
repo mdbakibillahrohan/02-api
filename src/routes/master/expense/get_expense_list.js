@@ -72,7 +72,7 @@ const get_count = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let count = 0;
     let data = [];
-    let query = `select count(oid)::int4 as total from ${TABLE.VENDOR} where 1 = 1`;
+    let query = `select count(oid)::int4 as total from ${TABLE.SUPPLIER} where 1 = 1`;
     let idx = 1;
 
     query += ` and companyoid = $${idx}`;
@@ -106,7 +106,7 @@ const get_data = async (request) => {
     let list_data = [];
     let data = [];
     let query = `select oid, customerId, name, address, mobileNo, email, imagePath,
-     initialBalance, commissionType, commissionValue, serviceCharge, supplier_balance(oid) as balance, supplier_creditnote_balance(oid) as vendorCreditBalance, (select coalesce(sum(amount), 0) from ${TABLE.PAYMENT} where 1 = 1 and status = $1 and referenceType = $2 and referenceOid = oid) as paidAmount from ${TABLE.VENDOR} where 1 = 1`;
+     initialBalance, commissionType, commissionValue, serviceCharge, supplier_balance(oid) as balance, supplier_creditnote_balance(oid) as vendorCreditBalance, (select coalesce(sum(amount), 0) from ${TABLE.PAYMENT} where 1 = 1 and status = $1 and referenceType = $2 and referenceOid = oid) as paidAmount from ${TABLE.SUPPLIER} where 1 = 1`;
     data.push(CONSTANT.ACTIVE, CONSTANT.SUPPLIER);
     let idx = 3;
     query += ` and companyoid = $${idx}`;

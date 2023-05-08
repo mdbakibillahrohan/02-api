@@ -81,6 +81,57 @@ module.exports = {
         COMPANY_CALENDAR  : "CompanyCalendar" ,
         EMPLOYEE_SALARY  : "EmployeeSalary" ,
         MOBILE_BILL  : "MobileBill" ,
+
+        LOGIN: "login",
+        LOGIN_LOG: "loginlog",
+        ROLE: "role",
+
+        PASSPORT: "passport",
+        PASSPORT_DETAIL: "passportdetail", 
+        PASSPORT_VISA_INFORMATION: "passportvisainformation",
+        PASSPORT_COMMAND: "passportcommand",
+        AIRLINE: "airline",
+        AIRPORT: "airport",
+
+        PAYMENT: "payment",
+        LEDGER: "ledger",
+        CUSTOMER: "customer",
+        TICKET: "ticket",
+        TICKET_INVOICE: "ticketinvoice",
+        VENDOR: "supplier",
+        SUPPLIER: "supplier",
+        ACCOUNT: "account",
+        EMPLOYEE: "employee",
+        DEPARTMENT: "department",
+        PASSPORT: "passport",
+        AIRLINE: "airline",
+        AIRPORT: "airport",
+        PAYMENT: "payment",
+        DESIGNATION: "Designation",
+        BANK: "Bank",
+        TICKET_INVOICE: "TicketInvoice",
+        DRAFT_TICKET: "DraftTicket",
+
+        CUSTOMER: "customer",
+        TICKET: "ticket",
+        SUPPLIER: "supplier",
+        ACCOUNT: "account",
+        EMPLOYEE: "employee",
+        DEPARTMENT: "department",
+        PASSPORT: "passport",
+        AIRLINE: "airline",
+        AIRPORT: "airport",
+        PAYMENT: "payment",
+        DESIGNATION: "Designation",
+        BANK: "Bank",
+        TICKET_INVOICE: "TicketInvoice",
+        DRAFT_TICKET: "DraftTicket",
+        CATEGORY: "Category",
+        PRODUCT: "Product",
+        LEDGER: "Ledger",
+        METAPROPERTY: "MetaProperty",
+        PACKAGE: "Package",
+        COUNTRY: "Country",
     },
 
     API: {
@@ -368,6 +419,118 @@ module.exports = {
         CUSTOMER_TICKET_PROFIT_LOSS_STATEMENT_REPORT: "customerTicketProfitLossStatement",
         TICKET_PROFIT_LOSS_SUMMARY_STATEMENT_REPORT: "ticketProfitLossSummaryStatement",
 
+        PREFIX_NUMBER_LENGTH_NEW: 4,
+
+        POSTGRES_DATE_TIME_FORMAT: "to_timestamp(?, 'YYYY-MM-DD HH24:MI:SS.MS')::timestamp",
+        DATE_FORMAT: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'",
+        JAVA_DATE_TIME_FORMAT: "yyyy-MM-dd HH:mm:ss.SSS",
+        JAVA_DATE_FORMAT: "yyyy-MM-dd",
+        POSTGRES_DATE_FORMAT: "to_date(?, 'YYYY-MM-DD')::date",
+
+        SERVER_YML: "server.yml",
+        PLUGIN_YML: "plugin.yml",
+        CONFIG_YML: "config.yml",
+        CONFIG_ID: "config-id",
+
+        DRAFT: "Draft",
+        ACTIVE: "Active",
+        INACTIVE: "Inactive",
+        PROCESSING: "Processing",
+
+        ONGOING: "Ongoing",
+        COMPLETED: "Completed",
+
+        MANUAL: "Manual",
+        AUTO: "Auto",
+
+        TICKET: "Ticket",
+        RE_ISSUE_TICKET: "ReIssueTicket",
+        MISCELLANEOUSES: "Miscellaneouses",
+
+        YES: "Yes",
+        NO: "No",
+
+        WOOD_TYPE_ROUND: "Round",
+        WOOD_TYPE_SQUARE: "Square",
+
+        EN_LANGUAGE: "en-US",
+        BN_LANGUAGE: "bn-BD",
+
+        ADMIN: "Admin",
+        SUPPLIER: "Supplier",
+        CUSTOMER: "Customer",
+        EMPLOYEE: "Employee",
+        EXPENSE: "Expense",
+        BOTH: "Both",
+        INCOME: "Income",
+
+        PEOPLE_TYPE_USER: "User",
+
+
+        REFERENCE_TYPE_PEOPLE: "People",
+        REFERENCE_TYPE_EMPLOYEE: "Employee",
+        ROLE_OID_CUSTOMER: "Customer",
+        ROLE_OID_SUPPLIER: "Supplier",
+
+        ACTIVE_STATUS: "A",
+        INACTIVE_STATUS: "I",
+
+        LOGIN: "Login",
+        LOGOUT: "Logout",
+
+        SUCCESS: "Success",
+        FAILED: "Failed",
+
+        BILL: "Bill",
+        INVOICE: "Invoice",
+        PRODUCTION: "Production",
+
+        OUTPUT_DIR: "output",
+        REPORT_DIR: "report",
+        //	LOGO_NAME:"logo.png",
+
+        OK: "Ok",
+        SUCCESS_OK: "Ok",
+
+        INSERT: "Insert",
+        UPDATE: "Update",
+        MODIFICATION: "Modification",
+
+        DEBIT: "Debit",
+        CREDIT: "Credit",
+        ALL: "All",
+
+        CREDIT_NOTE: "CreditNote",
+        WITHDRAW: "Withdraw",
+        CREDIT_NOTE_ADJUSTMENT: "CreditNoteAdjustment",
+        CASH_ADJUSTMENT: "CashAdjustment",
+        CUSTOMER_LEDGER_REPORT: "customerLedger",
+        SUPPLIER_LEDGER_REPORT: "SUPPLIERLedger",
+        CUSTOMER_TICKET_LEDGER_REPORT: "customerTicketLedger",
+        SUPPLIER_TICKET_LEDGER_REPORT: "SUPPLIERTicketLedger",
+
+        TICKET_DETAIL_BY_DATE_REPORT: "ticketDetailByDate",
+        TICKET_DETAIL_BY_CUSTOMER_REPORT: "ticketDetailByCustomer",
+
+        TICKET_DETAIL_BY_SUPPLIER_REPORT: "ticketDetailBySupplier",
+        SUPPLIER_PAYMENT_DETAIL_REPORT: "supplierPaymentDetailReport",
+        TICKET_PROFIT_LOSS_STATEMENT_REPORT: "ticketProfitLossStatement",
+        CUSSTOMER_TICKET_PROFIT_LOSS_STATEMENT_REPORT: "customerTicketProfitLossStatement",
+        CUSTOMER_TICKET_PROFIT_LOSS_STATEMENT_REPORT: "customerTicketProfitLossStatement",
+        TICKET_PROFIT_LOSS_SUMMARY_STATEMENT_REPORT: "ticketProfitLossSummaryStatement",
+
+        CUSTOMER_WELCOME_EMAIL: "customerwelcomeemail",
+        NEW_CUSTOMER_REGISTRATION_EMAIL: "customerregistrationemail",
+        COMPANY_SIGNUP_WELCOME_EMAIL: "companysignupwelcomemail",
+        COMPANY_SIGNUP_WELCOME_EMAIL_TEMPLATE_FOR_US: "companysignupnotificationmail",
+        CUSTOMER_PASSPORT_INFORMATION_VERIFICATION_EMAIL: "customerpassportverificationemail",
+        SUPPLIER_DEPOSIT_EMAIL: "SUPPLIERdepositemail",
+
+        SEND_TICKET_EMAIL: "sendticketemail",
+        SEND_INVOICE_EMAIL: "sendinvoiceemail",
+        SEND_PASSPORT_EMAIL: "sendpassportemail",
+        
+
         CUSTOMER_WELCOME_EMAIL: "customerwelcomeemail",
         NEW_CUSTOMER_REGISTRATION_EMAIL: "customerregistrationemail",
         COMPANY_SIGNUP_WELCOME_EMAIL: "companysignupwelcomemail",
@@ -382,6 +545,7 @@ module.exports = {
         getDateTime: (dateTime) => {
 
         }
+
     }
 }
 
