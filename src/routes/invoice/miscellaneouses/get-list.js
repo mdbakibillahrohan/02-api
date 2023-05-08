@@ -208,7 +208,7 @@ const getDataList = async (request) => {
     try {
         list_data = await Dao.get_data(request.pg, sql);
     } catch (e) {
-        log.error( `An exception occurred while getting ticket list : ${ err?.message}`)
+        log.error( `An exception occurred while getting ticket list : ${ err?.message }`)
         // throw new Error(e);
     }
     return list_data;
