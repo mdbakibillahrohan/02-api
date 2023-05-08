@@ -23,13 +23,13 @@ const payload_scheme = Joi.object({
 
 const save_controller = {
     method: "POST",
-    path: API.CONTEXT + API.SAVE_VENDOR,
+    path: API.CONTEXT + API.SAVE_SUPPLIER,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "Save Vendor",
+        description: "Save SUPPLIER",
         plugins: { hapiAuthorization: false },
         validate: {
             payload: payload_scheme,
@@ -71,7 +71,7 @@ const save_data = async (request) => {
 
     let scols = cols.join(', ')
     let sparams = params.join(', ')
-    let query = `insert into ${TABLE.VENDOR} (${scols}) values (${sparams})`;
+    let query = `insert into ${TABLE.SUPPLIER} (${scols}) values (${sparams})`;
     let sql = {
         text: query,
         values: data
