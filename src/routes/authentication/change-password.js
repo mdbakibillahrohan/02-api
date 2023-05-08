@@ -13,7 +13,7 @@ const payload_scheme = Joi.object({
 
 const route_controller = {
     method: "POST",
-    path: API.CONTEXT + API.AUTHENTICATION_USER_V1_RESOURCE + API.AUTHENTICATION_USER_V1_CHANGE_PASSWORD_PATH,
+    path: API.CONTEXT + "v1/authentication/change-password",
     options: {
         auth: {
             mode: "required",
