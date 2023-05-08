@@ -2,7 +2,10 @@
 
     RESOURCES = {
         MASTER_DASHBOARD_RESOURCE: "master/dashboard/v1/",
+        TICKET_DASHBOARD_RESOURCE: "ticket/dashboard/v1/",
         COMBOBOX_RESOURCE: "master/combobox/v1/",
+        MASTER_TRANSACTION_RESOURCE: "master/transaction/v1/",
+        MASTER_ACCOUNT_RESOURCE: "master/account/v1/",
         MASTER_CUSTOMER_RESOURCE: "master/customer/v1/",
         MASTER_EXPENSE_RESOURCE: "master/expense/v1/",
         MASTER_INQUIRY_RESOURCE: "master/inquiry/v1/",
@@ -27,6 +30,57 @@ module.exports = {
         ALGORITHM: "HS256"
     },
     TABLE: {
+        ANTARIKA_REQUEST_LOG  : "AntarikaRequestLog",
+        ROLE  : "Role",
+        LOGIN  : "Login" ,
+        LOGIN_TRAIL  : "LoginLog" ,
+        SMS_INFORMATION  : "SmsLog" ,
+        METAPROPERTY  : "MetaProperty" ,
+        COMPANY  : "Company" ,
+        CATEGORY  : "Category" ,
+        LEDGER  : "Ledger" ,
+        PRODUCT  : "Product" ,
+        PACKAGE : "Package" ,
+        COUNTRY : "Country" ,
+        SUPPLIER  : "Supplier" ,
+        EXPENSE_SUMMARY  : "ExpenseSummary" ,
+        EXPENSE_DETAIL  : "ExpenseDetail" ,
+        SUPPLIER_EMAIL_SERVICE  : "SupplierEmailService" ,
+        CUSTOMER  : "Customer" ,
+        PASSPORT  : "Passport" ,
+        PASSPORT_DETAIL  : "PassportDetail" ,
+        PASSPORT_COMMAND  : "PassportCommand" ,
+        PASSENGER_NOTIFICATION  : "PassengerNotification" ,
+        PASSPORT_VISA_INFORMATION  : "PassportVisaInformation" ,
+        AIRPORT  : "Airport" ,
+        AIRLINE  : "Airline" ,
+        DEPARTURE_CARD  : "DepartureCard" ,
+        TICKET_INVOICE  : "TicketInvoice" ,
+        TICKET  : "Ticket" ,
+        DRAFT_TICKET  : "DraftTicket" ,
+        ROUTE  : "Route" ,
+        TAX  : "Tax" ,
+        TICKET_INVOICE_LOG  : "TicketInvoiceLog" ,
+        TICKET_LOG  : "TicketLog" ,
+        ACCOUNT  : "Account" ,
+        PAYMENT  : "Payment" ,
+        INVOICE_BILL_PAYMENT  : "InvoiceBillPayment" ,
+        ACCOUNT_TRANSACTION  : "AccountTransaction" ,
+        V_SUPPLIER_LEDGER  : "v_supplier_ledger" ,
+        V_CUSTOMER_LEDGER  : "v_customer_ledger" ,
+        V_SUPPLIER_TICKET_LEDGER  : "v_supplier_ticket_ledger" ,
+        V_CUSTOMER_TICKET_LEDGER  : "v_customer_ticket_ledger" ,
+      
+  
+        DEPARTMENT  : "Department" ,
+        DESIGNATION  : "Designation" ,
+        EMPLOYEE  : "Employee" ,
+        BANK  : "Bank" ,
+        CALENDAR  : "Calendar" ,
+        COMPANY_CALENDAR  : "CompanyCalendar" ,
+        EMPLOYEE_SALARY  : "EmployeeSalary" ,
+        MOBILE_BILL  : "MobileBill" ,
+
         LOGIN: "login",
         LOGIN_LOG: "loginlog",
         ROLE: "role",
@@ -141,6 +195,16 @@ module.exports = {
         MASTER_LEDGER_SAVE_PATH: RESOURCES.MASTER_LEDGER_RESOURCE + "save",
         MASTER_LEDGER_UPDATE_PATH: RESOURCES.MASTER_LEDGER_RESOURCE + "update",
 
+        // master transaction enpoint
+        MASTER_TRANSACTION_GET_LIST_PATH: RESOURCES.MASTER_TRANSACTION_RESOURCE + "get-list",
+        MASTER_TRANSACTION_SAVE_PATH: RESOURCES.MASTER_TRANSACTION_RESOURCE + "save",
+        MASTER_TRANSACTION_UPDATE_PATH: RESOURCES.MASTER_TRANSACTION_RESOURCE + "update",
+
+        // master account enpoint
+        MASTER_ACCOUNT_GET_LIST_PATH : RESOURCES.MASTER_ACCOUNT_RESOURCE + "get-list",
+        MASTER_ACCOUNT_SAVE_PATH : RESOURCES.MASTER_ACCOUNT_RESOURCE + "save",
+        MASTER_ACCOUNT_UPDATE_PATH : RESOURCES.MASTER_ACCOUNT_RESOURCE + "update",
+
         // Combobox endpoints
         COMBOBOX_GET_SUPPLIER_LIST: RESOURCES.COMBOBOX_RESOURCE + "supplier-list",
         COMBOBOX_GET_CUSTOMER_LIST: RESOURCES.COMBOBOX_RESOURCE + "customer-list",
@@ -189,6 +253,8 @@ module.exports = {
         // Master Dashboard enpoint
         MASTER_DASHBOARD_GET_DASHBOARD_INFO_PATH: RESOURCES.MASTER_DASHBOARD_RESOURCE + "get-dashboard-info",
 
+        // Master Ticket Dashboard enpoint
+        TICKET_DASHBOARD_GET_DASHBOARD_INFO_PATH: RESOURCES.TICKET_DASHBOARD_RESOURCE + "get-ticket-dashboard-data",
         //Master Customer enpoint
         MASTER_CUSTOMER_GET_LIST: RESOURCES.MASTER_CUSTOMER_RESOURCE + "get-list",
 
@@ -217,6 +283,7 @@ module.exports = {
     MESSAGE: {
         SUCCESS_SAVE: "Successfully save data into database",
         SUCCESS_UPDATE: "Successfully updated data into database",
+        SUCCESS_GET_LIST: "Successfully get list data",
         INTERNAL_SERVER_ERROR: "Internal server error",
         REQUEST_MSG_PREFIX: "request_",
         FAIL_HEADER_INVALID_REQUEST_CLIENT: "fail_header_invalid_request_client",
@@ -467,6 +534,10 @@ module.exports = {
         SEND_TICKET_EMAIL: "sendticketemail",
         SEND_INVOICE_EMAIL: "sendinvoiceemail",
         SEND_PASSPORT_EMAIL: "sendpassportemail",
+
+        getDateTime: (dateTime) => {
+
+        }
 
     }
 }
