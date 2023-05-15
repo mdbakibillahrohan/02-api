@@ -1,28 +1,38 @@
 "use strict";
 
-const Joi = require("@hapi/joi");
-const log = require("../../../util/log");
-const Dao = require("../../../util/dao");
-const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
-const { autheticatedUserInfo } = require("../../../util/helper");
+const Joi = require("joi");
+// const fs = require('fs');
+const concat = require('concat-stream')
+const log = require("../../util/log");
+const { API, MESSAGE, TABLE, CONSTANT } = require("../../util/constant");
+const { autheticatedUserInfo } = require("../../util/helper");
+
 
 const payload_scheme = Joi.object({
-    status: Joi.string().trim().min(1).max(32).required(),
-    oid: Joi.string().trim().min(1).max(128).required()
-});
+    file: Joi.object(),
+    parse: true,
+    multipart: {
+            output: 'stream'
+    },
+    maxBytes: 1000 * 1000 * 5, // 5 Mb
+    
+    
+})
+
 
 const save_controller = {
     method: "POST",
-    path: API.CONTEXT + API.MASTER_GET_SUPPLIER_SAVE_PATH,
+    path: API.CONTEXT + API.IMAGE_UPLOAD_PARH,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "save",
+        description: "image upload",
         plugins: { hapiAuthorization: false },
         validate: {
-            payload: payload_scheme,
+            payload: payload_scheme
+            ,
             options: {
                 allowUnknown: false,
             },
@@ -51,24 +61,7 @@ const handle_request = async (request) => {
 };
 
 const save_data = async (request) => {
-    let userInfo = await autheticatedUserInfo(request)
-
-    let cols = ["oid", "customerId", "name", "imagePath", "companyOid"];
-    let params = ['$1', '$2', '$3', '$4', '$5'];
-    let data = ['1', request.auth.credentials.userId];
-    let idx = 6;
-    if (request.payload['status'] == 'Submitted') {
-        cols.push('submittedOn');
-        params.push(`clock_timestamp()`)
-    }
-    let scols = cols.join(', ')
-    let sparams = params.join(', ')
-    let query = `insert into ${ TABLE.SUPPLIER } (${scols}) values (${sparams})`;
-    let sql = {
-        text: query,
-        values: data
-    }
-    await Dao.execute_value(sql)
+    console.log(request.payload)
 };
 
 

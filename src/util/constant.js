@@ -19,6 +19,8 @@
         TICKET_DEPARTURE_CARD_RESOURCE: "ticket/departure/card/v1/",
         PAYMENT_RECEIVED_RESOURCE : "payment/received/v1/",
         PAYMENT_MADE_RESOURCE : "payment/made/v1/",
+        UPLOAD_RESOURCE: "upload/v1/",
+
 
     };
 
@@ -173,6 +175,9 @@ module.exports = {
 
         // Airport enpoint
         GET_AIRPORT: "v1/get-airport",
+        
+        // image upload enpoint
+        IMAGE_UPLOAD_PARH: RESOURCES.UPLOAD_RESOURCE + "image",
         
         // master supplier enpoint
         MASTER_GET_SUPPLIER_LIST_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "get-list",
