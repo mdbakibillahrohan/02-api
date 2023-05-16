@@ -3,23 +3,30 @@
 const Joi = require("@hapi/joi");
 const log = require("../../../util/log");
 const Dao = require("../../../util/dao");
+const uuid = require('uuid');
 const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const payload_scheme = Joi.object({
-    status: Joi.string().trim().min(1).max(32).required(),
     customerId: Joi.string().trim().min(1).max(128).required(),
     name: Joi.string().trim().min(1).max(128).required(),
     imagePath: Joi.string().trim().min(1).max(256).required(),
+    mobileNo: Joi.string().trim().min(1).max(128).required(),
+    email: Joi.string().trim().email().required(),
     
-    mobileNo: Joi.string().trim().min(1).max(128).optional(),
-    email: Joi.string().trim().email().optional(),
-    pushress: Joi.string().trim().min(1).max(128).optional(),
+    status: Joi.string().trim().min(1).max(32).optional(),
+    address: Joi.string().trim().min(1).max(128).optional(),
     initialBalance: Joi.number().optional(),
     commissionType: Joi.string().trim().min(1).max(128).optional(),
     commissionValue: Joi.number().optional(),
     supplierType: Joi.string().trim().min(1).max(128).optional(),
     serviceCharge: Joi.number().optional(),
+
+    emailService: Joi.array(
+        Joi.object({
+
+        })
+    )
 });
 
 const save_controller = {
@@ -53,9 +60,6 @@ const save_controller = {
 const handle_request = async (request) => {
     try {
         let save = await save_data(request);
-        if (save.result.rowCount >= 1){
-            console.log(save.result.rowCount)
-        }
         log.info(`Successfully saved`);
         return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };
     } catch (err) {
@@ -63,13 +67,21 @@ const handle_request = async (request) => {
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
     }
 };
-
 const save_data = async (request) => {
-    let userInfo = await autheticatedUserInfo(request)
-
+    try{
+        let userInfo = await autheticatedUserInfo(request);
+        let supplierOid = uuid.v4();
+        let save_data = await save(userInfo, supplierOid, request)
+        const saveSupplierEmailService = await saveSupplierEmailService(userInfo, supplierOid, request)
+    } catch ( err ){
+        log.error()
+    }
+}
+const save = async (userInfo, oid, request) => {
+    let oid = uuid.v4()
     let cols = ["oid", "customerId", "name", "imagePath", "companyOid"];
     let params = ['$1', '$2', '$3', '$4', '$5'];
-    let data = [request.payload["oid"], request.payload["customerId"], request.payload["name"], request.payload["imagePath"], userInfo.companyoid];
+    let data = [ oid, request.payload["customerId"], request.payload["name"], request.payload["imagePath"], userInfo.companyoid];
     let idx = 6;
     if(request.payload["mobileNo"]){
         cols.push("mobileNo");
@@ -81,10 +93,10 @@ const save_data = async (request) => {
         params.push(idx++);
         data.push(request.payload["email"]);
     }
-    if(request.payload["pushress"]){
-        cols.push("pushress");
+    if(request.payload["address"]){
+        cols.push("address");
         params.push(idx++);
-        data.push(request.payload["pushress"]);
+        data.push(request.payload["address"]);
     }
     if(request.payload["initialBalance"]){
         cols.push("initialBalance");
@@ -133,5 +145,43 @@ const save_data = async (request) => {
     return execute
 };
 
+const saveSupplierEmailService = async (userInfo, request) => {
+    let oid = uuid.v4()
+    let cols = ["oid", "serviceType", "toEmailAddrees", "supplierOid", "sortOrder", "companyOid"];
+    let params = ['$1', '$2', '$3', '$4', '$5', '$6'];
+    let data = [ oid, request.payload["serviceType"], request.payload["toEmailAddrees"], request.payload["supplierOid"], request.payload["sortOrder"], userInfo.companyoid];
+    let idx = 7;
 
+    if( request.payload["toCCEmailAddrees"] ){
+        cols.push("toCCEmailAddrees");
+        params.push( idx++ );
+        data.push(request.payload["toCCEmailAddrees"]);
+    }
+    if( request.payload["contactNo"] ){
+        cols.push("contactNo");
+        params.push( idx++ );
+        data.push(request.payload["contactNo"]);
+    }
+    if( request.payload["remarks"] ){
+        cols.push("remarks");
+        params.push( idx++ );
+        data.push(request.payload["remarks"]);
+    }
+
+    let scols = cols.join(', ')
+    let sparams = params.join(', ')
+    let query = `insert into ${ TABLE.SUPPLIER_EMAIL_SERVICE } (${scols}) values (${sparams})`;
+    let sql = {
+        text: query,
+        values: data
+    }
+    let execute;
+    try{
+       execute =  await Dao.execute_value(request.pg, sql);
+       console.log(execute)
+    } catch(err) {
+        log.error(`save date ${err?.message}`)
+    }
+    return execute
+}
 module.exports = save_controller;
