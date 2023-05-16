@@ -9,14 +9,7 @@ const { autheticatedUserInfo } = require("../../util/helper");
 
 
 const payload_scheme = Joi.object({
-    file: Joi.object(),
-    parse: true,
-    multipart: {
-            output: 'stream'
-    },
-    maxBytes: 1000 * 1000 * 5, // 5 Mb
-    
-    
+    file: Joi.string().optional(),
 })
 
 
