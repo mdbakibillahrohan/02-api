@@ -1,10 +1,10 @@
 "use strict";
 
 const Joi = require("@hapi/joi");
-const log = require("../../../util/log");
-const Dao = require("../../../util/dao");
-const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
-const { autheticatedUserInfo } = require("../../../util/helper");
+const log = require("../../../../util/log");
+const Dao = require("../../../../util/dao");
+const { API, MESSAGE, TABLE } = require("../../../../util/constant");
+const { autheticatedUserInfo } = require("../../../../util/helper");
 
 const query_scheme = Joi.object({
     searchText: Joi.string().trim().allow(null, '').max(128).optional(),
@@ -14,13 +14,13 @@ const query_scheme = Joi.object({
 
 const get_list = {
     method: "GET",
-    path: API.CONTEXT + API.MASTER_EXPENSE_GET_LIST,
+    path: API.CONTEXT + API.MASTER_SETTINGS_GET_DEPARTMENT_LIST,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "master expense list",
+        description: "master setting department list",
         plugins: { hapiAuthorization: false },
         validate: {
             query: query_scheme,
@@ -45,11 +45,11 @@ const handle_request = async (request) => {
 
         let count = await get_count(request);
         let data = [];
+        data = await get_data(request)
         if (count == 0) {
             log.info(`No data found`);
             return { status: false, code: 400, message: `No data found` };
         }
-        data = await get_data(request)
         log.info(`[${count}] found`);
         return {
             status: true,
@@ -59,7 +59,7 @@ const handle_request = async (request) => {
             count: count
         };
     } catch (err) {
-        log.error(`An exception occurred while getting master expense list data : ${err?.message}`);
+        log.error(`An exception occurred while getting master settings department list data : ${err?.message}`);
         return {
             status: false,
             code: 500,
@@ -72,21 +72,15 @@ const get_count = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let count = 0;
     let data = [];
-    let query = `select count(oid)::int4 as total from ${TABLE.SUPPLIER} where 1 = 1`;
+    let query = `select count(oid)::int4 as total from ${TABLE.DEPARTMENT} where 1 = 1`;
     let idx = 1;
 
-    query += ` and companyoid = $${idx}`;
-    idx++;
+    query += ` and companyoid = $${idx++}`;
     data.push(userInfo.companyoid);
     if (request.query['searchText']) {
         const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and (lower(name) like $${idx} or `;
-        idx++;
-        query += `lower(mobileno) like $${idx} or `;
-        idx++;
-        query += `lower(email) like $${idx})`;
-        idx++;
-        data.push(searchText, searchText, searchText);
+        query += ` and nameEn ilike $${idx} or nameBn ilike $${idx} or status ilike $${idx++}`
+        data.push(searchText);
     }
     let sql = {
         text: query,
@@ -105,22 +99,14 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select oid, customerId as "customer_id", name, address, mobileNo as "mobile_no", email, imagePath as "image_path",
-     initialBalance as "initial_balance", commissionType as "comission_type", commissionValue as "comission_value", serviceCharge as "service_charge", supplier_balance(oid) as "balance", supplier_creditnote_balance(oid) as "vendor_credit_balance", (select coalesce(sum(amount), 0) from ${TABLE.PAYMENT} where 1 = 1 and status = $1 and referenceType = $2 and referenceOid = oid) as "paid_amount" from ${TABLE.SUPPLIER} where 1 = 1`;
-    data.push(CONSTANT.ACTIVE, CONSTANT.SUPPLIER);
-    let idx = 3;
-    query += ` and companyoid = $${idx}`;
-    idx++;
+    let query = `select oid, nameEn as "name_en", nameBn as "name_bn", status, sortOrder as "sort_order" from ${TABLE.DEPARTMENT} where 1 = 1`;
+    let idx = 1;
+    query += ` and companyoid = $${idx++}`;
     data.push(userInfo.companyoid);
     if (request.query['searchText']) {
         const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and (lower(name) like $${idx} or `;
-        idx++;
-        query += `lower(mobileno) like $${idx} or `;
-        idx++;
-        query += `lower(email) like $${idx})`;
-        idx++;
-        data.push(searchText, searchText, searchText);
+        query += ` and nameEn ilike $${idx} or nameBn ilike $${idx} or status ilike $${idx++}`
+        data.push(searchText);
     }
     query += ` order by createdon desc`;
     if (request.query.offset) {

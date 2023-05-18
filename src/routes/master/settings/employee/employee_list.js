@@ -1,12 +1,13 @@
 "use strict";
 
 const Joi = require("@hapi/joi");
-const log = require("../../../util/log");
-const Dao = require("../../../util/dao");
-const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
-const { autheticatedUserInfo } = require("../../../util/helper");
+const log = require("../../../../util/log");
+const Dao = require("../../../../util/dao");
+const { API, MESSAGE, TABLE } = require("../../../../util/constant");
+const { autheticatedUserInfo } = require("../../../../util/helper");
 
 const query_scheme = Joi.object({
+    status: Joi.string().trim().allow(null, '').optional(),
     searchText: Joi.string().trim().allow(null, '').max(128).optional(),
     offset: Joi.number().allow(null, '').max(99999999).optional(),
     limit: Joi.number().allow(null, '').max(99999999).optional(),
@@ -14,13 +15,13 @@ const query_scheme = Joi.object({
 
 const get_list = {
     method: "GET",
-    path: API.CONTEXT + API.MASTER_EXPENSE_GET_LIST,
+    path: API.CONTEXT + API.MASTER_SETTINGS_GET_EMPLOYEE_LIST,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "master expense list",
+        description: "master setting employee list",
         plugins: { hapiAuthorization: false },
         validate: {
             query: query_scheme,
@@ -59,7 +60,7 @@ const handle_request = async (request) => {
             count: count
         };
     } catch (err) {
-        log.error(`An exception occurred while getting master expense list data : ${err?.message}`);
+        log.error(`An exception occurred while getting master settings designation list data : ${err?.message}`);
         return {
             status: false,
             code: 500,
@@ -72,21 +73,28 @@ const get_count = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let count = 0;
     let data = [];
-    let query = `select count(oid)::int4 as total from ${TABLE.SUPPLIER} where 1 = 1`;
+    let query = `select count(e.oid)::int4 as total
+    from ${TABLE.EMPLOYEE} e 
+    left join ${TABLE.DEPARTMENT} d on d.oid = e.departmentOid
+    left join  ${TABLE.DESIGNATION} des on des.oid = e.departmentOid
+    where 1 = 1`;
     let idx = 1;
-
-    query += ` and companyoid = $${idx}`;
-    idx++;
+    query += ` and e.companyoid = $${idx++}`;
     data.push(userInfo.companyoid);
+    if (request.query['status']) {
+        query += `  and e.status = $${idx++}`
+        data.push(request.query['status']);
+    }
     if (request.query['searchText']) {
         const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and (lower(name) like $${idx} or `;
-        idx++;
-        query += `lower(mobileno) like $${idx} or `;
-        idx++;
-        query += `lower(email) like $${idx})`;
-        idx++;
-        data.push(searchText, searchText, searchText);
+        query += ` and e.nameEn ilike $${idx}
+        or des.nameEn ilike $${idx}
+        or e.status ilike $${idx}
+        or e.mobileNo ilike $${idx}
+        or d.nameEn ilike $${idx}
+        or e.nid ilike $${idx}
+        or e.passportNo ilike $${idx}`
+        data.push(searchText);
     }
     let sql = {
         text: query,
@@ -105,24 +113,31 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select oid, customerId as "customer_id", name, address, mobileNo as "mobile_no", email, imagePath as "image_path",
-     initialBalance as "initial_balance", commissionType as "comission_type", commissionValue as "comission_value", serviceCharge as "service_charge", supplier_balance(oid) as "balance", supplier_creditnote_balance(oid) as "vendor_credit_balance", (select coalesce(sum(amount), 0) from ${TABLE.PAYMENT} where 1 = 1 and status = $1 and referenceType = $2 and referenceOid = oid) as "paid_amount" from ${TABLE.SUPPLIER} where 1 = 1`;
-    data.push(CONSTANT.ACTIVE, CONSTANT.SUPPLIER);
-    let idx = 3;
-    query += ` and companyoid = $${idx}`;
-    idx++;
+    let query = `select e.oid, e.nameEn as "name_en", e.status, e.mobileNo as "mobile_no", e.email, e.imagePath as "image_path", e.nid, e.passportNo as "passport_no",
+    des.nameEn as "designation_name_en", d.nameEn as departmentNameEn
+    from ${TABLE.EMPLOYEE} e 
+    left join ${TABLE.DEPARTMENT} d on d.oid = e.departmentOid
+    left join  ${TABLE.DESIGNATION} des on des.oid = e.departmentOid
+    where 1 = 1`;
+    let idx = 1;
+    query += ` and e.companyoid = $${idx++}`;
     data.push(userInfo.companyoid);
+    if (request.query['status']) {
+        query += `  and e.status = $${idx++}`
+        data.push(request.query['status']);
+    }
     if (request.query['searchText']) {
         const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
-        query += ` and (lower(name) like $${idx} or `;
-        idx++;
-        query += `lower(mobileno) like $${idx} or `;
-        idx++;
-        query += `lower(email) like $${idx})`;
-        idx++;
-        data.push(searchText, searchText, searchText);
+        query += ` and e.nameEn ilike $${idx}
+        or des.nameEn ilike $${idx}
+        or e.status ilike $${idx}
+        or e.mobileNo ilike $${idx}
+        or d.nameEn ilike $${idx}
+        or e.nid ilike $${idx}
+        or e.passportNo ilike $${idx++}`
+        data.push(searchText);
     }
-    query += ` order by createdon desc`;
+    query += ` order by d.sortOrder asc, des.sortOrder asc, e.joiningdate asc`;
     if (request.query.offset) {
         query += ` offset $${idx++}`;
         data.push(request.query.offset);
@@ -131,7 +146,8 @@ const get_data = async (request) => {
         query += ` limit $${idx++}`;
         data.push(request.query.limit);
     }
-
+    console.log(query)
+    console.log(data)
     let sql = {
         text: query,
         values: data
