@@ -181,8 +181,11 @@ module.exports = {
         
         // master supplier enpoint
         MASTER_GET_SUPPLIER_LIST_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "get-list",
-        MASTER_GET_SUPPLIER_BY_OID_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "get-by-oid",MASTER_GET_SUPPLIER_SAVE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "save",
-        MASTER_GET_SUPPLIER_UPDATE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "update",
+        MASTER_GET_SUPPLIER_BY_OID_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "get-by-oid",
+        MASTER_SUPPLIER_SAVE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "save",
+        MASTER_SUPPLIER_UPDATE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "update",
+        MASTER_SUPPLIER_DELETE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "delete",
+        MASTER_SUPPLIER_EMAIL_SERVICE_DELETE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "email-delete",
 
         // master passport enpoint 
         MASTER_PASSPORT_SAVE_UPDATE_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "save-update",
@@ -296,6 +299,7 @@ module.exports = {
     MESSAGE: {
         SUCCESS_SAVE: "Successfully save data into database",
         SUCCESS_UPDATE: "Successfully updated data into database",
+        SUCCESS_DELETE: "Successfully Delete data into database",
         SUCCESS_GET_LIST: "Successfully get list data",
         INTERNAL_SERVER_ERROR: "Internal server error",
         REQUEST_MSG_PREFIX: "request_",
@@ -309,7 +313,8 @@ module.exports = {
         NULL_HEADER: this.NULL_PREFIX + "header",
         NULL_META: this.NULL_PREFIX + "meta",
         NULL_BODY: this.NULL_PREFIX + "body",
-        NO_DATA_FOUND: "NO data found"
+        NO_DATA_FOUND: "NO data found",
+        USER_NOT_EXIST: "User not exist into database"
     },
 
     CONSTANT: {

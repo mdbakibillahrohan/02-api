@@ -22,16 +22,19 @@ const payload_scheme = Joi.object({
     supplierType: Joi.string().trim().min(1).max(128).optional(),
     serviceCharge: Joi.number().optional(),
 
-    emailService: Joi.array(
-        Joi.object({
-
-        })
+    emailService: Joi.array().items({
+            serviceType: Joi.string().trim().min(1).max(128).optional(),
+            toEmailAddrees: Joi.string().trim().min(1).max(128).optional(),
+            toCCEmailAddrees: Joi.string().trim().min(1).max(128).optional(),
+            contactNo: Joi.string().trim().min(1).max(128).optional(),
+            remarks: Joi.string().trim().optional(),
+        }
     )
 });
 
 const save_controller = {
     method: "POST",
-    path: API.CONTEXT + API.MASTER_GET_SUPPLIER_SAVE_PATH,
+    path: API.CONTEXT + API.MASTER_SUPPLIER_SAVE_PATH,
     options: {
         auth: {
             mode: "required",
@@ -69,58 +72,69 @@ const handle_request = async (request) => {
 };
 const save_data = async (request) => {
     try{
-        let userInfo = await autheticatedUserInfo(request);
-        let supplierOid = uuid.v4();
+        const userInfo = await autheticatedUserInfo(request);
+        const supplierOid = uuid.v4();
+
         let save_data = await save(userInfo, supplierOid, request)
-        const saveSupplierEmailService = await saveSupplierEmailService(userInfo, supplierOid, request)
+        let sortOrder = 1;
+        let emailService;
+        request.payload["emailService"].forEach(async email => {
+            let oid = uuid.v4()
+            email.oid = oid
+            email.supplierOid = supplierOid
+            email.sortOrder = sortOrder ++ 
+            emailService = await saveSupplierEmailService(userInfo, email, request)
+            
+        });
     } catch ( err ){
-        log.error()
+        log.error(`${err?.message}`)
     }
 }
 const save = async (userInfo, oid, request) => {
-    let oid = uuid.v4()
+
     let cols = ["oid", "customerId", "name", "imagePath", "companyOid"];
     let params = ['$1', '$2', '$3', '$4', '$5'];
     let data = [ oid, request.payload["customerId"], request.payload["name"], request.payload["imagePath"], userInfo.companyoid];
     let idx = 6;
     if(request.payload["mobileNo"]){
         cols.push("mobileNo");
-        params.push(idx++);
+        params.push(`$${idx++}`);
         data.push(request.payload["mobileNo"]);
+
     }
     if(request.payload["email"]){
         cols.push("email");
-        params.push(idx++);
+        params.push(`$${idx++}`);
         data.push(request.payload["email"]);
     }
     if(request.payload["address"]){
         cols.push("address");
-        params.push(idx++);
+        params.push(`$${idx++}`);
         data.push(request.payload["address"]);
     }
     if(request.payload["initialBalance"]){
         cols.push("initialBalance");
-        params.push(idx++);
+        params.push(`$${idx++}`);
         data.push(request.payload["initialBalance"]);
     }
     if(request.payload["commissionType"]){
         cols.push("commissionType");
-        params.push(idx++);
+        params.push(`$${idx++}`);
         data.push(request.payload["commissionType"]);
     }
     if(request.payload["commissionValue"]){
         cols.push("commissionValue");
-        params.push(idx++);
+        params.push(`$${idx++}`);
         data.push(request.payload["commissionValue"]);
     }
     if(request.payload["supplierType"]){
         cols.push("supplierType");
-        params.push(idx++);
+        params.push(`$${idx++}`);
         data.push(request.payload["supplierType"]);
     }
     if(request.payload["serviceCharge"] >= 0){
         cols.push("serviceCharge");
-        params.push(idx++);
+        params.push(`$${idx++}`);
         data.push(request.payload["serviceCharge"]);
     }
 
@@ -138,34 +152,34 @@ const save = async (userInfo, oid, request) => {
     let execute;
     try{
        execute =  await Dao.execute_value(request.pg, sql);
-       console.log(execute)
+
     } catch(err) {
-        log.error(`save date ${err?.message}`)
+        log.error(`saveSupplier Error: ${err?.message}`)
     }
     return execute
 };
 
-const saveSupplierEmailService = async (userInfo, request) => {
-    let oid = uuid.v4()
+const saveSupplierEmailService = async (userInfo, email, request) => {
     let cols = ["oid", "serviceType", "toEmailAddrees", "supplierOid", "sortOrder", "companyOid"];
     let params = ['$1', '$2', '$3', '$4', '$5', '$6'];
-    let data = [ oid, request.payload["serviceType"], request.payload["toEmailAddrees"], request.payload["supplierOid"], request.payload["sortOrder"], userInfo.companyoid];
+    let data = [ email.oid, email['serviceType'], email["toEmailAddrees"], email["supplierOid"], email["sortOrder"], userInfo.companyoid];
+
     let idx = 7;
 
-    if( request.payload["toCCEmailAddrees"] ){
+    if( email["toCCEmailAddrees"] ){
         cols.push("toCCEmailAddrees");
-        params.push( idx++ );
-        data.push(request.payload["toCCEmailAddrees"]);
+        params.push( `$${idx++}` );
+        data.push(email["toCCEmailAddrees"]);
     }
-    if( request.payload["contactNo"] ){
+    if( email["contactNo"] ){
         cols.push("contactNo");
-        params.push( idx++ );
-        data.push(request.payload["contactNo"]);
+        params.push( `$${idx++}` );
+        data.push(email["contactNo"]);
     }
-    if( request.payload["remarks"] ){
+    if( email["remarks"] ){
         cols.push("remarks");
-        params.push( idx++ );
-        data.push(request.payload["remarks"]);
+        params.push( `$${idx++}` );
+        data.push(email["remarks"]);
     }
 
     let scols = cols.join(', ')
@@ -178,9 +192,8 @@ const saveSupplierEmailService = async (userInfo, request) => {
     let execute;
     try{
        execute =  await Dao.execute_value(request.pg, sql);
-       console.log(execute)
     } catch(err) {
-        log.error(`save date ${err?.message}`)
+        log.error(`saveSupplierEmailService error: ${err?.message}`)
     }
     return execute
 }
