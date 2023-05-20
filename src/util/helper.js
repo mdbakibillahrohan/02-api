@@ -20,7 +20,30 @@ const autheticatedUserInfo = async (request) => {
     return userInfo[0];
 }
 
+
+const passwordGenerator = (length, hasNumbers, hasSymbols) => {
+    const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const integers = "0123456789";
+    const exCharacters = "!@#$%^&*_-=+";
+    let chars = alpha;
+    if (hasNumbers) {
+        chars += integers;
+    }
+    if (hasSymbols) {
+        chars += exCharacters;
+    }
+    return generatePassword(length, chars);
+}
+const generatePassword = (length, chars) => {
+    let password = "";
+    for (let i = 0; i < length; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+};
+
 module.exports = {
     is_granted: is_granted,
-    autheticatedUserInfo: autheticatedUserInfo
+    autheticatedUserInfo: autheticatedUserInfo,
+    passwordGenerator,
 };
