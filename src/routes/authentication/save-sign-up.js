@@ -7,17 +7,16 @@ const Dao = require("../../util/dao");
 const { API, MESSAGE, TABLE, CONSTANT } = require("../../util/constant");
 
 const payload_scheme = Joi.object({
-    // companyName: Joi.string().trim().min(1).max(256).required(),
-    // mnemonic: Joi.string().trim().min(1).max(256).required(),
-    // packageOid: Joi.string().trim().min().max(128).required(),
-    // name: Joi.string().trim().min(1).max(256).required(),
-    // mobileNo: Joi.string().trim().min(1).max(64).required(),
-    // email: Joi.string().trim().min(1).max(354).required(),
-    // imagePath: Joi.string().trim().min(1).max(256).required(),
-    // companyAddress: Joi.string().trim().min(1).max(128).required(),
-    // loginId: Joi.string().trim().min(1).max(128).required(),
-    // password: Joi.string().trim().min(1).max(128).required(),
-    password: Joi.string().trim().min(1).max(128).optional(),
+    companyName: Joi.string().trim().min(1).max(256).required(),
+    mnemonic: Joi.string().trim().min(1).max(256).required(),
+    packageOid: Joi.string().trim().min(1).max(128).required(),
+    name: Joi.string().trim().min(1).max(256).required(),
+    mobileNo: Joi.string().trim().min(1).max(64).required(),
+    email: Joi.string().trim().min(1).max(354).required(),
+    imagePath: Joi.string().trim().min(1).max(256).required(),
+    companyAddress: Joi.string().trim().min(1).max(128).required(),
+    loginId: Joi.string().trim().min(1).max(128).required(),
+    password: Joi.string().trim().min(1).max(128).required(),
 });
 
 const save_controller = {
@@ -51,15 +50,27 @@ const handle_request = async (request) => {
         request.payload.peopleOid = uuid.v4()
         request.payload.loginOid = uuid.v4()
         request.payload.roleOid = CONSTANT.ADMIN
-        request.payload.referenceOid = peopleOid;
+        request.payload.referenceOid = request.payload.peopleOid;
         request.payload.referenceType = CONSTANT.REFERENCE_TYPE_EMPLOYEE;
         request.payload.peopleType = CONSTANT.PEOPLE_TYPE_USER;
         request.payload.status = CONSTANT.ACTIVE
         
-        const todayStr = new Date().toLocaleDateString() 
+        const todayStr = new Date().toISOString().slice(0,10)
+        request.payload.peopleId = `${ request.payload.mnemonic }-U-${todayStr} 01`;
 
-        log.info(`Successfully saved`);
-        return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };
+        console.log(request.payload.peopleId)
+        const companyQuery = await saveCompany(request);
+        const peopleQuery = await savePeople(request);
+        const userQuery = await saveLogin(request);
+        
+        if(companyQuery["rowCount"] == 1){
+
+            log.info(`Successfully saved`);
+            return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };            
+        }else{
+            return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
+        }
+
     } catch (err) {
         log.error(`An exception occurred while saving: ${err?.message}`);
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
