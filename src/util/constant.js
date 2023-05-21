@@ -1,6 +1,7 @@
 "use strict",
 
     RESOURCES = {
+        AUTHENTICATION_RESOURCE: "authentication/user/v1/",
         MASTER_DASHBOARD_RESOURCE: "master/dashboard/v1/",
         TICKET_DASHBOARD_RESOURCE: "ticket/dashboard/v1/",
         COMBOBOX_RESOURCE: "master/combobox/v1/",
@@ -176,6 +177,7 @@ module.exports = {
         // Airport enpoint
         GET_AIRPORT: "v1/get-airport",
         
+        AUTHENTICATION_SAVE_SIGNUP_PATH: RESOURCES.AUTHENTICATION_RESOURCE + "save-signup",
         // image upload enpoint
         IMAGE_UPLOAD_PARH: RESOURCES.UPLOAD_RESOURCE + "image",
         
