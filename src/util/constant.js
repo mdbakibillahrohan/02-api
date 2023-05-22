@@ -1,6 +1,7 @@
 "use strict",
 
     RESOURCES = {
+        AUTHENTICATION_RESOURCE: "authentication/user/v1/",
         MASTER_DASHBOARD_RESOURCE: "master/dashboard/v1/",
         TICKET_DASHBOARD_RESOURCE: "ticket/dashboard/v1/",
         COMBOBOX_RESOURCE: "master/combobox/v1/",
@@ -13,12 +14,15 @@
         MASTER_PASSPORT_RESOURCE: "master/passport/v1/",
         MASTER_PAYMENT_RESOURCE: "master/payment/v1/",
         MASTER_LEDGER_RESOURCE: "master/ledger/v1/",
+        INVOICE_MISCELLANEOUSES_RESOURCE: "invoice/miscellaneouses/v1/",
         INVOICE_TICKET_RESOURCE: "invoice/ticket/v1/",
         TICKET_MODIFICATION_RESOURCE: "ticket/modification/v1/",
         TICKET_DEPARTURE_CARD_RESOURCE: "ticket/departure/card/v1/",
         PAYMENT_RECEIVED_RESOURCE: "payment/received/v1/",
         PAYMENT_MADE_RESOURCE: "payment/made/v1/",
-        MASTER_SETTINGS_RESOURCE: "master/settings/v1/"
+        MASTER_SETTINGS_RESOURCE: "master/settings/v1/"        UPLOAD_RESOURCE: "upload/v1/",
+
+
     };
 
 module.exports = {
@@ -173,9 +177,17 @@ module.exports = {
         // Airport enpoint
         GET_AIRPORT: "v1/get-airport",
 
+        AUTHENTICATION_SAVE_SIGNUP_PATH: RESOURCES.AUTHENTICATION_RESOURCE + "save-signup",
+        // image upload enpoint
+        IMAGE_UPLOAD_PARH: RESOURCES.UPLOAD_RESOURCE + "image",
+
         // master supplier enpoint
         MASTER_GET_SUPPLIER_LIST_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "get-list",
-        MASTER_GET_SUPPLIER_BY_OID_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "get-by-oid", MASTER_GET_SUPPLIER_SAVE_UPDATE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "save-update",
+        MASTER_GET_SUPPLIER_BY_OID_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "get-by-oid",
+        MASTER_SUPPLIER_SAVE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "save",
+        MASTER_SUPPLIER_UPDATE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "update",
+        MASTER_SUPPLIER_DELETE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "delete",
+        MASTER_SUPPLIER_EMAIL_SERVICE_DELETE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "email-delete",
 
         // master passport enpoint 
         MASTER_PASSPORT_SAVE_UPDATE_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "save-update",
@@ -275,6 +287,12 @@ module.exports = {
         MASTER_INQUIRY_GET_DEPARTMENT_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "department-list",
         MASTER_INQUIRY_GET_BANK_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "bank-list",
 
+        // Invoice miscellaneuses endpoints
+        INVOICE_MISCELLANEOUSES_GET_LIST_PATH: RESOURCES.INVOICE_MISCELLANEOUSES_RESOURCE + "get-list",
+        INVOICE_MISCELLANEOUSES_GET_BY_OID_PATH: RESOURCES.INVOICE_MISCELLANEOUSES_RESOURCE + "get-by-oid",
+        INVOICE_MISCELLANEOUSES_SAVE_PATH: RESOURCES.INVOICE_MISCELLANEOUSES_RESOURCE + "save",
+        INVOICE_MISCELLANEOUSES_UPDATE_PATH: RESOURCES.INVOICE_MISCELLANEOUSES_RESOURCE + "update",
+
 
         // Invoice Ticket endpoints 
         INVOICE_TICKET_GET_LIST: RESOURCES.INVOICE_TICKET_RESOURCE + "get-list",
@@ -292,6 +310,7 @@ module.exports = {
     MESSAGE: {
         SUCCESS_SAVE: "Successfully save data into database",
         SUCCESS_UPDATE: "Successfully updated data into database",
+        SUCCESS_DELETE: "Successfully Delete data into database",
         SUCCESS_GET_LIST: "Successfully get list data",
         INTERNAL_SERVER_ERROR: "Internal server error",
         REQUEST_MSG_PREFIX: "request_",
@@ -305,7 +324,8 @@ module.exports = {
         NULL_HEADER: this.NULL_PREFIX + "header",
         NULL_META: this.NULL_PREFIX + "meta",
         NULL_BODY: this.NULL_PREFIX + "body",
-        NO_DATA_FOUND: "NO data found"
+        NO_DATA_FOUND: "NO data found",
+        USER_NOT_EXIST: "User not exist into database"
     },
 
     CONSTANT: {

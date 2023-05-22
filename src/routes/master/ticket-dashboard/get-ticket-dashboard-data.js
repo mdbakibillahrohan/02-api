@@ -9,8 +9,6 @@ const { autheticatedUserInfo } = require("../../../util/helper");
 const query_scheme = Joi.object({
     fromDate: Joi.date().required(),
     toDate: Joi.date().required(),
-    // from: Joi.string().optional()
-    from: Joi.string().trim().optional()
 });
 
 const route_controller = {
@@ -60,22 +58,27 @@ const handle_request = async (request) => {
             status: true,
             code: 200,
             message: MESSAGE.SUCCESS_GET_LIST,
-
+            data
         };
     } catch (err) {
         log.error(err?.message);
+        return {
+            status: false,
+            code: 500,
+            message: MESSAGE.INTERNAL_SERVER_ERROR
+        };
     }
 }
 const getData = async (userInfo, request) => {
     try {
 
-        const total_sales_ticket_count = await getSalesTicketCount(user, request);
-        const total_ticket_sales_amount = await getTicketSalesAmount(user, request);
-        const total_ticket_received_amount = await getReceivedAmount(user, request);
-        const total_ticket_bill_amount = await getTicketBillAmount(user, request);
-        const total_ticket_bill_paid_amount = await getBillPaidAmount(user, request);
-        const total_ticket_vendor_payment_amount = await getVendorPaymentAmount(user, request);
-        const segment = await getSegment(user, request);
+        const total_sales_ticket_count = await getSalesTicketCount(userInfo, request);
+        const total_ticket_sales_amount = await getTicketSalesAmount(userInfo, request);
+        const total_ticket_received_amount = await getReceivedAmount(userInfo, request);
+        const total_ticket_bill_amount = await getTicketBillAmount(userInfo, request);
+        const total_ticket_bill_paid_amount = await getBillPaidAmount(userInfo, request);
+        const total_ticket_vendor_payment_amount = await getVendorPaymentAmount(userInfo, request);
+        const segment = await getSegment(userInfo, request);
 
         const data_list = {
             total_sales_ticket_count,
@@ -90,10 +93,13 @@ const getData = async (userInfo, request) => {
             total_ticket_segment: segment,
 
         }
+        return data_list;
 
     } catch(err) {
-        log.error(`an error in get ticket dashboard data ${ err }`)
+        log.error(`an error in get ticket dashboard data ${ err?.message }`)
+
     }
+     
 }
 const getTicketSalesAmount = async (userInfo, request) => {
     let list_data = [];
@@ -114,7 +120,7 @@ const getTicketSalesAmount = async (userInfo, request) => {
 
     }
     catch(err) {
-        log.error(`An exception occurred while getting sales amount : ${err}`)
+        log.error(`An exception occurred while getting sales amount : ${err?.message}`)
         // throw new Error(e);
         
     }
@@ -141,7 +147,7 @@ const getReceivedAmount = async (userInfo, request) => {
 
     }
     catch(err) {
-        log.error(`An exception occurred while getting received amount : ${ MESSAGE?.err}`)
+        log.error(`An exception occurred while getting received amount : ${err?.message}`)
         // throw new Error(e);
         
     }
@@ -168,7 +174,7 @@ const getTicketBillAmount = async (userInfo, request) => {
 
     }
     catch(err) {
-        log.error(`An exception occurred while getting ticket bill amount : ${err}`)
+        log.error(`An exception occurred while getting ticket bill amount : ${err?.message}`)
         // throw new Error(e);
         
     }
@@ -196,7 +202,7 @@ const getBillPaidAmount = async (userInfo, request) => {
 
     }
     catch(err) {
-        log.error(`An exception occurred while getting bill paid amount : ${err}`)
+        log.error(`An exception occurred while getting bill paid amount : ${err?.message}`)
         // throw new Error(e);
         
     }
@@ -244,7 +250,7 @@ const getSegment = async (userInfo, request) => {
         
     }
     catch(err) {
-        log.error(`An exception occurred while getting segment : ${err}`)
+        log.error(`An exception occurred while getting segment : ${err?.message}`)
         // throw new Error(e);
         
     }
@@ -268,7 +274,7 @@ const getVendorPaymentAmount = async (userInfo, request) => {
 
     }
     catch(err) {
-        log.error(`An exception occurred while getting vendor payment amount : ${err}`)
+        log.error(`An exception occurred while getting vendor payment amount : ${err?.message}`)
         // throw new Error(e);
         
     }

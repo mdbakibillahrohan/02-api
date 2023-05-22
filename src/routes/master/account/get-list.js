@@ -20,7 +20,7 @@ const route_controller = {
             mode: "required",
             strategy: "jwt",
         },
-        description: "Master Transaction List",
+        description: "Master Account List",
         plugins: {
             hapiAuthorization: false,
         },
