@@ -316,7 +316,8 @@ module.exports = {
         NULL_META: this.NULL_PREFIX + "meta",
         NULL_BODY: this.NULL_PREFIX + "body",
         NO_DATA_FOUND: "NO data found",
-        USER_NOT_EXIST: "User not exist into database"
+        USER_NOT_EXIST: "User not exist into database",
+        LOGIN_ID_ALLREADY_EXIST: "Login id is Allready exist"
     },
 
     CONSTANT: {

@@ -7,12 +7,12 @@ const Dao = require("../../util/dao");
 const { API, MESSAGE, TABLE, CONSTANT } = require("../../util/constant");
 
 const payload_scheme = Joi.object({
-    companyName: Joi.string().trim().min(1).max(256).required(),
-    mnemonic: Joi.string().trim().min(1).max(256).required(),
+    companyName: Joi.string().trim().min(1).max(128).required(),
+    mnemonic: Joi.string().trim().min(1).max(32).required(),
     packageOid: Joi.string().trim().min(1).max(128).required(),
     name: Joi.string().trim().min(1).max(256).required(),
     mobileNo: Joi.string().trim().min(1).max(64).required(),
-    email: Joi.string().trim().min(1).max(354).required(),
+    email: Joi.string().trim().min(1).max(128).required(),
     imagePath: Joi.string().trim().min(1).max(256).required(),
     companyAddress: Joi.string().trim().min(1).max(128).required(),
     loginId: Joi.string().trim().min(1).max(128).required(),
@@ -46,9 +46,15 @@ const save_controller = {
 
 const handle_request = async (request) => {
     try {
-        request.payload.companyOid = uuid.v4()
-        request.payload.peopleOid = uuid.v4()
-        request.payload.loginOid = uuid.v4()
+        const companyOid = uuid.v4();
+        const peopleOid = uuid.v4();
+        const loginOid = uuid.v4();
+        request.payload.companyOid = companyOid;
+
+        request.payload.peopleOid = peopleOid;
+
+        request.payload.loginOid = loginOid;
+
         request.payload.roleOid = CONSTANT.ADMIN
         request.payload.referenceOid = request.payload.peopleOid;
         request.payload.referenceType = CONSTANT.REFERENCE_TYPE_EMPLOYEE;
@@ -58,18 +64,28 @@ const handle_request = async (request) => {
         const todayStr = new Date().toISOString().slice(0,10)
         request.payload.peopleId = `${ request.payload.mnemonic }-U-${todayStr} 01`;
 
-        console.log(request.payload.peopleId)
-        const companyQuery = await saveCompany(request);
-        const peopleQuery = await savePeople(request);
-        const userQuery = await saveLogin(request);
-        
-        if(companyQuery["rowCount"] == 1){
+        const check_LoginId = await checkLoginId(request);
 
-            log.info(`Successfully saved`);
-            return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };            
-        }else{
-            return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
+        
+        if(check_LoginId[0].loginid != request.payload.loginId) {
+            const companyQuery = await saveCompany(request);
+            const peopleQuery = await savePeople(request);
+            const userQuery = await saveLogin(request);
+            
+            if(companyQuery && peopleQuery && userQuery){
+
+                log.info(`Successfully saved`);
+                return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };            
+            }else{
+                return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
+            }
+
+        } else{
+            return { status: true, code: 409, message: MESSAGE.LOGIN_ID_ALLREADY_EXIST};
+
+           
         }
+
 
     } catch (err) {
         log.error(`An exception occurred while saving: ${err?.message}`);
@@ -84,10 +100,30 @@ const saveLogin = async (request) => {
     `(select menuJson from ${ TABLE.ROLE }  where oid = $6), 
     (select reportJson from ${ TABLE.ROLE }  where oid = $7)`, 
     "$8", "$9"];
-    let data = [uuid.v4(), request.payload['loginId'], request.payload["password"], request.payload["name"], request.payload["menuJson"], request.payload["reportJson"], CONSTANT.ACTIVE, request.payload["roleOid"]];
+    let data = [uuid.v4(), request.payload['loginId'], request.payload["password"], request.payload["name"], request.payload["imagePath"], request.payload["roleOid"], request.payload["roleOid"], CONSTANT.ACTIVE, request.payload["roleOid"]];
 
     let idx = 10;
  
+    if(request.payload["mobileNo"]){
+        cols.push("mobileNo");
+        params.push(`$${idx++}`);
+        data.push(request.payload["mobileNo"]);
+    } 
+    if(request.payload["email"]){
+        cols.push("email");
+        params.push(`$${idx++}`);
+        data.push(request.payload["email"]);
+    }
+    if(request.payload["address"]){
+        cols.push("address");
+        params.push(`$${idx++}`);
+        data.push(request.payload["address"]);
+    } 
+    if(request.payload.companyOid){
+        cols.push("companyOid");
+        params.push(`$${idx++}`);
+        data.push(request.payload.companyOid)
+    }  
     if(request.payload["referenceOid"]){
         cols.push("referenceOid");
         params.push(`$${idx++}`);
@@ -123,7 +159,7 @@ const saveLogin = async (request) => {
 const checkLoginId = async (request) => {
     try{
 
-        let query = `select oid, loginId from "${ TABLE.LOGIN }  where 1 = 1 and loginId = $1`;
+        let query = `select oid, loginId from ${ TABLE.LOGIN }  where 1 = 1 and loginId = $1`;
         let sql = {
             text: query,
             values: [request.payload["loginId"]]
@@ -136,11 +172,10 @@ const checkLoginId = async (request) => {
     
 }
 const saveCompany = async  (request) => {
-    const oid = uuid.v4();
 
     let cols = ["oid", "name", "mnemonic", "address", "packageOid"];
     let params = ["$1", "$2", "$3", "$4", "$5"];
-    let data = [request.payload["companyOid"], request.payload['name'], request.payload["mnemonic"], request.payload["companyAddress"], request.payload["packageOid"]];
+    let data = [request.payload.companyOid, request.payload['name'], request.payload["mnemonic"], request.payload["companyAddress"], request.payload.packageOid];
     let idx = 6;
  
     let scols = cols.join(', ')
@@ -160,14 +195,16 @@ const saveCompany = async  (request) => {
 } 
 
 const savePeople = async (request) => {
-    const oid = uuid.v4();
 
     let cols = ["oid", "employeeId", "nameEn", "imagePath", "employeeType", "status", "companyOid"];
     let params = ["$1", "$2", "$3", "$4", "$5", "$6", "$7"];
-    let data = [ request.payload["peopleOid"], request.payload["peopleId"], request.payload["name"], request.payload["imagePath"], request.payload["peopleType"], CONSTANT.ACTIVE, request.payload["companyOid"] ];
+    let data = [ request.payload["peopleOid"], request.payload["peopleId"], request.payload["name"], request.payload["imagePath"], request.payload["peopleType"], CONSTANT.ACTIVE, request.payload.companyOid ];
 
     let idx = 8;
- 
+    if(request.payload["companyOid"]){
+        console.log('sp',request.payload.companyOid)
+    }
+    console.log(request.payload)
     if(request.payload["mobileNo"]){
         cols.push("mobileNo");
         params.push(`$${idx++}`);
