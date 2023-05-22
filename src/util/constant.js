@@ -20,7 +20,8 @@
         TICKET_DEPARTURE_CARD_RESOURCE: "ticket/departure/card/v1/",
         PAYMENT_RECEIVED_RESOURCE: "payment/received/v1/",
         PAYMENT_MADE_RESOURCE: "payment/made/v1/",
-        MASTER_SETTINGS_RESOURCE: "master/settings/v1/"        UPLOAD_RESOURCE: "upload/v1/",
+        MASTER_SETTINGS_RESOURCE: "master/settings/v1/",
+        UPLOAD_RESOURCE: "upload/v1/",
 
 
     };

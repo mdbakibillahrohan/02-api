@@ -96,44 +96,44 @@ const update_customer = async (request, userInfo) => {
     let cols = [`name = $1`, `imagePath = $2`,];
     let data = [name, image_path]
 
-
+    let idx = 3;
     if (mobile_no) {
-        cols.push("mobileNo = $3");
+        cols.push(`mobileNo = $${idx++}`);
         data.push(mobile_no);
     }
 
     if (email) {
-        cols.push("email = $4");
+        cols.push(`email = $${idx++}`);
         data.push(email);
     }
 
     if (address) {
-        cols.push("address = $5");
+        cols.push(`address = $${idx++}`);
         data.push(address);
     }
 
 
     if (initial_balance) {
-        cols.push("initialBalance = $6");
+        cols.push(`initialBalance = $${idx++}`);
         data.push(initial_balance);
     }
 
 
 
     if (discount_type) {
-        cols.push("discountType = $7");
+        cols.push(`discountType = $${idx++}`);
         data.push(discount_type);
     }
 
 
     if (discount_value && discount_value > 0) {
-        cols.push("discountValue = $8");
+        cols.push(`discountValue = $${idx++}`);
         data.push(discount_value);
     }
 
 
     let scols = cols.join(', ')
-    let query = `update ${TABLE.CUSTOMER} set ${scols} where 1 = 1 and oid = $9`;
+    let query = `update ${TABLE.CUSTOMER} set ${scols} where 1 = 1 and oid = $${idx++}`;
     data.push(oid);
     let sql = {
         text: query,
