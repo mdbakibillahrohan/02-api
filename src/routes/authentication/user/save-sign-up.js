@@ -23,7 +23,7 @@ const save_controller = {
     method: "POST",
     path: API.CONTEXT + API.AUTHENTICATION_USER_SAVE_SIGNUP_PATH,
     options: {
-
+        auth: false,
         description: "save sign up",
         plugins: { hapiAuthorization: false },
         validate: {

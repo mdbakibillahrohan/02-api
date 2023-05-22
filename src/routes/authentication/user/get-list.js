@@ -16,7 +16,7 @@ const get_list = {
     method: "GET",
     path: API.CONTEXT + API.AUTHENTICATION_USER_GET_LIST,
     options: {
-
+        auth: false,
         description: "get list",
         plugins: { hapiAuthorization: false },
         validate: {
@@ -98,8 +98,8 @@ const get_count = async (request) => {
 const get_data = async (request) => {
     let list_data = [];
     let data = [];
-    let query = `select l.oid, l.loginId, l.mobileNo, l.name, 
-        l.email, l.status, r.roleId from ${ TABLE.LOGIN } as l
+    let query = `select l.oid, l.loginId as login_id, l.mobileNo as mobile_no, l.name, 
+        l.email, l.status, r.roleId as role_id from ${ TABLE.LOGIN } as l
         left join ${ TABLE.ROLE } as r on r.oid = l.roleOid
         where 1 = 1`;
     let idx = 1;
