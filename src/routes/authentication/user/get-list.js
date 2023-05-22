@@ -14,7 +14,7 @@ const query_scheme = Joi.object({
 
 const get_list = {
     method: "GET",
-    path: API.CONTEXT + API.AUTHENTICATION_USER_GET_LIST,
+    path: API.CONTEXT + API.AUTHENTICATION_USER_GET_LIST_PATH,
     options: {
         auth: false,
         description: "get list",

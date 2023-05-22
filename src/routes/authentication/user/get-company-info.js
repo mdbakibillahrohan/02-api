@@ -11,7 +11,7 @@ const query_schema = Joi.object({
 })
 const route_controller = {
     method: "GET",
-    path: API.CONTEXT + API.AUTHENTICATION_USER_GET_COMPANY_INFO,
+    path: API.CONTEXT + API.AUTHENTICATION_USER_GET_COMPANY_INFO_PATH,
     options: {
         auth: {
             mode: "required",
