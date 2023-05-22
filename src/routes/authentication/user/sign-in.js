@@ -3,11 +3,11 @@
 const uuid = require("uuid")
 const _ = require("underscore")
 const Joi = require("@hapi/joi")
-const log = require("../../util/log")
-const Dao = require("../../util/dao")
+const log = require("../../../util/log")
+const Dao = require("../../../util/dao")
 const JWT = require("jsonwebtoken")
 const requestIp = require('request-ip')
-const { API, TABLE, TEXT } = require("../../util/constant")
+const { API, TABLE, TEXT } = require("../../../util/constant")
 const { default: ms } = require("ms")
 
 const payload_scheme = Joi.object({

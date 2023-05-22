@@ -1,10 +1,10 @@
 "use strict"
 
 const _ = require("underscore")
-const log = require("../../util/log")
-const Dao = require("../../util/dao")
-const Helper = require("../../util/helper")
-const { API, TABLE, SCHEMA } = require("../../util/constant")
+const log = require("../../../util/log")
+const Dao = require("../../../util/dao")
+const Helper = require("../../../util/helper")
+const { API, TABLE, SCHEMA } = require("../../../util/constant")
 
 const route_controller = {
     method: "GET",

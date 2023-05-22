@@ -2,9 +2,9 @@
 
 const Joi = require("@hapi/joi");
 const uuid = require('uuid');
-const log = require("../../util/log");
-const Dao = require("../../util/dao");
-const { API, MESSAGE, TABLE, CONSTANT } = require("../../util/constant");
+const log = require("../../../util/log");
+const Dao = require("../../../util/dao");
+const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 
 const payload_scheme = Joi.object({
     companyName: Joi.string().trim().min(1).max(128).required(),
@@ -21,7 +21,7 @@ const payload_scheme = Joi.object({
 
 const save_controller = {
     method: "POST",
-    path: API.CONTEXT + API.AUTHENTICATION_SAVE_SIGNUP_PATH,
+    path: API.CONTEXT + API.AUTHENTICATION_USER_SAVE_SIGNUP_PATH,
     options: {
 
         description: "save sign up",

@@ -13,7 +13,7 @@ const is_granted = async (request, api) => {
 const autheticatedUserInfo = async (request) => {
     const loginId = request.auth.credentials['loginid'];
     const sql = {
-        text: `SELECT oid, name, email, companyoid FROM ${TABLE.LOGIN} WHERE loginid = $1`,
+        text: `SELECT oid, loginid, name, email, companyoid FROM ${TABLE.LOGIN} WHERE loginid = $1`,
         values: [loginId]
     }
     const userInfo = await Dao.get_data(request.pg, sql);

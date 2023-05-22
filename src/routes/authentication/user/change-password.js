@@ -1,10 +1,10 @@
 "use strict"
 
-const log = require("../../util/log")
-const Dao = require("../../util/dao")
-const Helper = require("../../util/helper")
+const log = require("../../../util/log")
+const Dao = require("../../../util/dao")
+const Helper = require("../../../util/helper")
 const Joi = require('joi');
-const { API, TABLE } = require("../../util/constant")
+const { API, TABLE } = require("../../../util/constant")
 
 const payload_scheme = Joi.object({
     old_password: Joi.string().trim().min(1).max(32).required(),
