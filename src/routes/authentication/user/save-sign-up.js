@@ -12,7 +12,7 @@ const payload_scheme = Joi.object({
     packageOid: Joi.string().trim().min(1).max(128).required(),
     name: Joi.string().trim().min(1).max(256).required(),
     mobileNo: Joi.string().trim().min(1).max(64).required(),
-    email: Joi.string().trim().min(1).max(128).required(),
+    email: Joi.string().email().trim().min(1).max(128).required(),
     imagePath: Joi.string().trim().min(1).max(256).required(),
     companyAddress: Joi.string().trim().min(1).max(128).required(),
     loginId: Joi.string().trim().min(1).max(128).required(),

@@ -174,10 +174,12 @@ module.exports = {
 
         // Department Endpoints 
         GET_DEPARTMENT_LIST: "v1/department/get-list",
-
+        
         // Airport enpoint
         GET_AIRPORT: "v1/get-airport",
-
+        
+        AUTHENTICATION_USER_PATH: RESOURCES.AUTHENTICATION_USER_RESOURCE + "authenticate-user",
+        
         AUTHENTICATION_ROLE_GET_LIST_PATH: RESOURCES.AUTHENTICATION_ROLE_RESOURCE + "get-list",
 
         AUTHENTICATION_USER_GET_LIST_PATH: RESOURCES.AUTHENTICATION_USER_RESOURCE + "get-list",
@@ -313,6 +315,7 @@ module.exports = {
         SUCCESS_UPDATE: "Successfully updated data into database",
         SUCCESS_DELETE: "Successfully Delete data into database",
         SUCCESS_GET_LIST: "Successfully get list data",
+        ALREADY_UPDATE: "Data Already update into database",
         INTERNAL_SERVER_ERROR: "Internal server error",
         REQUEST_MSG_PREFIX: "request_",
         FAIL_HEADER_INVALID_REQUEST_CLIENT: "fail_header_invalid_request_client",

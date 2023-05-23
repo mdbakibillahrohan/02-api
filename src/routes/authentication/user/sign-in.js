@@ -51,6 +51,7 @@ const handle_request = async (request, h) => {
         return { status: false, code: 201, message: `User is not active` }
     }
     let user = _.pick(data, 'loginid')
+    console.log(user)
     let token = JWT.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: process.env.ACCESS_TOKEN_SECRET_EXPIRE,
         algorithm:TEXT.ALGORITHM 

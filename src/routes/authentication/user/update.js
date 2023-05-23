@@ -6,7 +6,6 @@ const log = require("../../../util/log");
 const Dao = require("../../../util/dao");
 const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
-const { userInfo } = require("os");
 
 const payload_scheme = Joi.object({
 
@@ -16,7 +15,7 @@ const payload_scheme = Joi.object({
     packageOid: Joi.string().trim().min(1).max(128).required(),
     name: Joi.string().trim().min(1).max(256).required(),
     mobileNo: Joi.string().trim().min(1).max(64).required(),
-    email: Joi.string().trim().min(1).max(128).required(),
+    email: Joi.string().email().trim().min(1).max(128).required(),
     imagePath: Joi.string().trim().min(1).max(256).required(),
     companyAddress: Joi.string().trim().min(1).max(128).required(),
     loginId: Joi.string().trim().min(1).max(128).required(),
@@ -27,8 +26,11 @@ const save_controller = {
     method: "POST",
     path: API.CONTEXT + API.AUTHENTICATION_USER_SAVE_UPDATE_PATH,
     options: {
-        auth: false,
-        description: "save sign up",
+        auth: {
+           mode: "required",
+           strategy: "jwt"
+        },
+        description: "update login info",
         plugins: { hapiAuthorization: false },
         validate: {
             payload: payload_scheme,
@@ -53,7 +55,6 @@ const handle_request = async (request) => {
         let userInfo = await autheticatedUserInfo(request)
 
         if( !request.payload.oid ){
-
             
             const oid = uuid.v4();
             const peopleOid = uuid.v4();
@@ -75,8 +76,8 @@ const handle_request = async (request) => {
             const check_LoginId = await checkLoginId(request);
 
             if(check_LoginId[0].loginid != request.payload["loginId"]) {
-                const peopleQuery = await savePeopleSql(userInfo, request)
-                const userQuery = await saveLogin(user, request)
+                const peopleQuery = await savePeople(userInfo, request)
+                const userQuery = await saveLogin(userInfo, request)
                 
                 if( peopleQuery && userQuery){
 
@@ -88,25 +89,29 @@ const handle_request = async (request) => {
 
             } else{
                 return { status: true, code: 409, message: MESSAGE.LOGIN_ID_ALLREADY_EXIST};
-
             
             }
         }
         else {
+            
             const update = await updateLogin(userInfo, request)
-            if(update.rowcount == 1) {
+            
+            if(update["rowcount"] >= 1) {
                 log.info(`Successfully update`);
                 return { status: true, code: 200, message: MESSAGE.SUCCESS_UPDATE };  
+            } else{
+                log.info(`Already update`);
+                return { status: true, code: 200, message: MESSAGE.ALREADY_UPDATE };  
             }
         }
 
     } catch (err) {
-        log.error(`An exception occurred while saving: ${err?.message}`);
+        log.error(`An exception occurred while update: ${err?.message}`);
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
     }
 };
 
-const saveLogin = async (request) => {
+const saveLogin = async (userInfo, request) => {
     let cols = ["oid", "loginId", "password", "name", "imagePath",
     "menuJson", "reportJson", "status", "roleOid"];
     let params = ["$1", "$2", "$3", "$4", "$5", 
@@ -168,7 +173,7 @@ const saveLogin = async (request) => {
     }
 
 };
-const updateLogin = async (request) => {
+const updateLogin = async (userInfo, request) => {
     const time =`${ new Date().toISOString().slice(0,10)} + ${ new Date().toISOString().slice(11,19) }`
     let cols = ["name = $1", "imagePath = $2", `menuJson = (select menuJson from ${ TABLE.ROLE } where oid = $3 )`, `reportJson = (select reportJson from ${ TABLE.ROLE } where oid = $4)`, "status = $5", "roleOid = $6", "editedBy = $7", "editedOn = $8"];
 
@@ -196,7 +201,7 @@ const updateLogin = async (request) => {
     }
 
     let sCols = cols.join(', ')
-    let query = `update ${ TABLE.LOGIN } set ${sCols} where 1 = 1 and oid = ${idx++}`;
+    let query = `update ${ TABLE.LOGIN } set ${sCols} where 1 = 1 and oid = $${idx++}`;
 
     data.push(request.payload["oid"])
     let sql = {
@@ -268,14 +273,14 @@ const savePeople = async (userInfo,request) => {
     }
 }
 
-const getCountPeople = async (request, today) => {
+const getCountPeople = async (userInfo, today) => {
     try{
 
         let query = `select count(*)+1 as count from ${ TABLE.EMPLOYEE } where 1 = 1 
             and CAST(createdon AS DATE) = to_date($1, 'yyyy-MM-dd') and companyOid = $2`;
         let sql = {
             text: query,
-            values: [ today, request.payload["companyOid"]]
+            values: [ today, userInfo["companyOid"]]
         }
         return await Dao.get_data(request.pg, sql)
     } 
