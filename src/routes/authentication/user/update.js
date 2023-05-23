@@ -10,15 +10,15 @@ const { autheticatedUserInfo } = require("../../../util/helper");
 const payload_scheme = Joi.object({
 
     oid: Joi.string().trim().min(1).max(128).required(),
-    companyName: Joi.string().trim().min(1).max(128).required(),
+    company_name: Joi.string().trim().min(1).max(128).required(),
     mnemonic: Joi.string().trim().min(1).max(32).required(),
-    packageOid: Joi.string().trim().min(1).max(128).required(),
+    package_oid: Joi.string().trim().min(1).max(128).required(),
     name: Joi.string().trim().min(1).max(256).required(),
-    mobileNo: Joi.string().trim().min(1).max(64).required(),
+    mobile_no: Joi.string().trim().min(1).max(64).required(),
     email: Joi.string().email().trim().min(1).max(128).required(),
-    imagePath: Joi.string().trim().min(1).max(256).required(),
-    companyAddress: Joi.string().trim().min(1).max(128).required(),
-    loginId: Joi.string().trim().min(1).max(128).required(),
+    image_path: Joi.string().trim().min(1).max(256).required(),
+    company_address: Joi.string().trim().min(1).max(128).required(),
+    login_id: Joi.string().trim().min(1).max(128).required(),
     password: Joi.string().trim().min(1).max(128).required(),
 });
 
@@ -75,7 +75,7 @@ const handle_request = async (request) => {
 
             const check_LoginId = await checkLoginId(request);
 
-            if(check_LoginId[0].loginid != request.payload["loginId"]) {
+            if(check_LoginId[0].login_id != request.payload["login_id"]) {
                 const peopleQuery = await savePeople(userInfo, request)
                 const userQuery = await saveLogin(userInfo, request)
                 
@@ -112,20 +112,20 @@ const handle_request = async (request) => {
 };
 
 const saveLogin = async (userInfo, request) => {
-    let cols = ["oid", "loginId", "password", "name", "imagePath",
+    let cols = ["oid", "login_id", "password", "name", "image_path",
     "menuJson", "reportJson", "status", "roleOid"];
     let params = ["$1", "$2", "$3", "$4", "$5", 
     `(select menuJson from ${ TABLE.ROLE }  where oid = $6), 
     (select reportJson from ${ TABLE.ROLE }  where oid = $7)`, 
     "$8", "$9"];
-    let data = [uuid.v4(), request.payload['loginId'], request.payload["password"], request.payload["name"], request.payload["imagePath"], request.payload["roleOid"], request.payload["roleOid"], CONSTANT.ACTIVE, request.payload["roleOid"]];
+    let data = [uuid.v4(), request.payload['login_id'], request.payload["password"], request.payload["name"], request.payload["image_path"], request.payload["roleOid"], request.payload["roleOid"], CONSTANT.ACTIVE, request.payload["roleOid"]];
 
     let idx = 10;
  
-    if(request.payload["mobileNo"]){
-        cols.push("mobileNo");
+    if(request.payload["mobile_no"]){
+        cols.push("mobile_no");
         params.push(`$${idx++}`);
-        data.push(request.payload["mobileNo"]);
+        data.push(request.payload["mobile_no"]);
     } 
     if(request.payload["email"]){
         cols.push("email");
@@ -135,7 +135,7 @@ const saveLogin = async (userInfo, request) => {
     if(request.payload["address"]){
         cols.push("address");
         params.push(`$${idx++}`);
-        data.push(request.payload["address"]);
+        data.push(request.payload["company_address"]);
     } 
     if(request.payload.companyOid){
         cols.push("companyOid");
@@ -175,15 +175,15 @@ const saveLogin = async (userInfo, request) => {
 };
 const updateLogin = async (userInfo, request) => {
     const time =`${ new Date().toISOString().slice(0,10)} + ${ new Date().toISOString().slice(11,19) }`
-    let cols = ["name = $1", "imagePath = $2", `menuJson = (select menuJson from ${ TABLE.ROLE } where oid = $3 )`, `reportJson = (select reportJson from ${ TABLE.ROLE } where oid = $4)`, "status = $5", "roleOid = $6", "editedBy = $7", "editedOn = $8"];
+    let cols = ["name = $1", "image_path = $2", `menuJson = (select menuJson from ${ TABLE.ROLE } where oid = $3 )`, `reportJson = (select reportJson from ${ TABLE.ROLE } where oid = $4)`, "status = $5", "roleOid = $6", "editedBy = $7", "editedOn = $8"];
 
-    let data = [request.payload["name"], request.payload["imagePath"], request.payload["roleOid"], request.payload["roleOid"], request.payload["roleOid"], CONSTANT.ACTIVE, request.payload["loginId"], time];
+    let data = [request.payload["name"], request.payload["image_path"], request.payload["roleOid"], request.payload["roleOid"], request.payload["roleOid"], CONSTANT.ACTIVE, request.payload["login_id"], time];
 
     let idx = 9;
  
-    if(request.payload["mobileNo"]){
-        cols.push(`mobileNo = $${idx++}`);
-        data.push(request.payload["mobileNo"]);
+    if(request.payload["mobile_no"]){
+        cols.push(`mobile_no = $${idx++}`);
+        data.push(request.payload["mobile_no"]);
     }
 
     if(request.payload["email"]){
@@ -192,7 +192,7 @@ const updateLogin = async (userInfo, request) => {
     }
     if(request.payload["address"]){
         cols.push(`address = $${idx++}`);
-        data.push(request.payload["address"]);
+        data.push(request.payload["company_address"]);
     } 
 
     if (request.payload['status'] == 'Submitted') {
@@ -221,10 +221,10 @@ const updateLogin = async (userInfo, request) => {
 const checkLoginId = async (request) => {
     try{
 
-        let query = `select oid, loginId from ${ TABLE.LOGIN }  where 1 = 1 and loginId = $1`;
+        let query = `select oid, login_id from ${ TABLE.LOGIN }  where 1 = 1 and login_id = $1`;
         let sql = {
             text: query,
-            values: [request.payload["loginId"]]
+            values: [request.payload["login_id"]]
         }
         return await Dao.get_data(request.pg, sql)
     } 
@@ -236,19 +236,16 @@ const checkLoginId = async (request) => {
 
 const savePeople = async (userInfo,request) => {
 
-    let cols = ["oid", "employeeId", "nameEn", "imagePath", "employeeType", "status", "companyOid"];
+    let cols = ["oid", "employeeId", "nameEn", "image_path", "employeeType", "status", "companyOid"];
     let params = ["$1", "$2", "$3", "$4", "$5", "$6", "$7"];
-    let data = [ request.payload["peopleOid"], request.payload["peopleId"], request.payload["name"], request.payload["imagePath"], request.payload["peopleType"], CONSTANT.ACTIVE, userInfo.companyOid ];
+    let data = [ request.payload["peopleOid"], request.payload["peopleId"], request.payload["name"], request.payload["image_path"], request.payload["peopleType"], CONSTANT.ACTIVE, userInfo.companyOid ];
 
     let idx = 8;
-    if(request.payload["companyOid"]){
-        console.log('sp',request.payload.companyOid)
-    }
-    console.log(request.payload)
-    if(request.payload["mobileNo"]){
-        cols.push("mobileNo");
+
+    if(request.payload["mobile_no"]){
+        cols.push("mobile_no");
         params.push(`$${idx++}`);
-        data.push(request.payload["mobileNo"]);
+        data.push(request.payload["mobile_no"]);
     }    
     if(request.payload["email"]){
         cols.push("email");

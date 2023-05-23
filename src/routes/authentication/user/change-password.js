@@ -13,7 +13,7 @@ const payload_scheme = Joi.object({
 
 const route_controller = {
     method: "POST",
-    path: API.CONTEXT + "v1/authentication/change-password",
+    path: API.CONTEXT + API.AUTHENTICATION_USER_CHANGE_PASSWORD_PATH,
     options: {
         auth: {
             mode: "required",
@@ -54,7 +54,8 @@ const route_controller = {
 
 const handle_request = async (request) => {
     try {
-        let data = await get_data(request)
+        let data = await get_password (request)
+
         if (!data) {
             log.info(`User data not found`)
             return { status: true, code: 201, message: 'User data not found' }
@@ -83,11 +84,11 @@ const handle_request = async (request) => {
 
 }
 
-const get_data = async (request) => {
+const get_password = async (request) => {
     let data = null
     let sql = {
-        text: `select password from ${TABLE.LOGIN} l
-            where 1 = 1 and loginid = $1`,
+        text: `select password from ${ TABLE.LOGIN } 
+             where 1 = 1 and loginId = $1`,
         values: [request.auth.credentials["loginid"]]
     }
     try {

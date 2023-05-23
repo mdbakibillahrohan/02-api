@@ -9,7 +9,7 @@ const { autheticatedUserInfo } = require("../../../util/helper");
 
 const payload_scheme = Joi.object({
     oid: Joi.string().trim().min(1).max(128).required(),
-    supplierOid: Joi.string().trim().min(1).max(128).required(),
+    supplier_oid: Joi.string().trim().min(1).max(128).required(),
 
 });
 
@@ -62,11 +62,11 @@ const handle_request = async (request) => {
 
 const deleteSupplierEmailService = async ( request) => {
     const userInfo = await autheticatedUserInfo(request);
-    let query = `delete from ${ TABLE.SUPPLIER_EMAIL_SERVICE }  where 1 = 1 and oid = $1 and supplierOid = $2 and companyoid = $3`;
+    let query = `delete from ${ TABLE.SUPPLIER_EMAIL_SERVICE }  where 1 = 1 and oid = $1 and supplier_oid = $2 and companyoid = $3`;
 
     let sql = {
         text: query,
-        values: [request.payload.oid, request.payload["supplierOid"], userInfo.companyoid]
+        values: [request.payload.oid, request.payload["supplier_oid"], userInfo.companyoid]
     }
     try{
       return await Dao.execute_value(request.pg, sql);

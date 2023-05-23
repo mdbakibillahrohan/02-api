@@ -11,18 +11,15 @@ const { API, MESSAGE, TABLE, CONSTANT, TEXT } = require("../../../util/constant"
 const { default: ms } = require("ms")
 
 const payload_scheme = Joi.object({
-    userId: Joi.string().trim().min(1).max(128).required(),
+    user_id: Joi.string().trim().min(1).max(128).required(),
     password: Joi.string().trim().min(1).max(128).required()
 });
 
 const get_list = {
     method: "POST",
-    path: API.CONTEXT + API.AUTHENTICATION_USER_PATH,
+    path: API.CONTEXT + API.AUTHENTICATION_USER_AUTHENTICATE_USER_PATH,
     options: {
-        auth: {
-            mode: "required",
-            strategy: "jwt",
-        },
+        auth: false,
         description: "Authentication user Api",
         plugins: { hapiAuthorization: false },
         validate: {
@@ -83,7 +80,7 @@ const getLogin = async (request) => {
 
     let sql = {
         text: query,
-        values: [request.payload["userId"], request.payload["password"]]
+        values: [request.payload["user_id"], request.payload["password"]]
     }
     try {
         let data_set = await Dao.get_data(request.pg, sql)

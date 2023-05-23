@@ -8,28 +8,28 @@ const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const payload_scheme = Joi.object({
-    customerId: Joi.string().trim().min(1).max(128).required(),
+    customer_id: Joi.string().trim().min(1).max(128).required(),
     name: Joi.string().trim().min(1).max(128).required(),
-    imagePath: Joi.string().trim().min(1).max(256).required(),
-    mobileNo: Joi.string().trim().min(1).max(128).required(),
+    image_path: Joi.string().trim().min(1).max(256).required(),
+    mobile_no: Joi.string().trim().min(1).max(128).required(),
     email: Joi.string().trim().email().required(),
     
     status: Joi.string().trim().min(1).max(32).optional(),
     address: Joi.string().trim().min(1).max(128).optional(),
-    initialBalance: Joi.number().optional(),
-    commissionType: Joi.string().trim().min(1).max(128).optional(),
-    commissionValue: Joi.number().optional(),
-    supplierType: Joi.string().trim().min(1).max(128).optional(),
-    serviceCharge: Joi.number().optional(),
+    initial_balance: Joi.number().optional(),
+    commission_type: Joi.string().trim().min(1).max(128).optional(),
+    commission_value: Joi.number().optional(),
+    supplier_type: Joi.string().trim().min(1).max(128).optional(),
+    service_charge: Joi.number().optional(),
 
-    emailService: Joi.array().items({
-            serviceType: Joi.string().trim().min(1).max(128).optional(),
-            toEmailAddrees: Joi.string().trim().min(1).max(128).optional(),
-            toCCEmailAddrees: Joi.string().trim().min(1).max(128).optional(),
-            contactNo: Joi.string().trim().min(1).max(128).optional(),
+    email_service: Joi.array().items({
+            service_type: Joi.string().trim().min(1).max(128).optional(),
+            to_email_addrees: Joi.string().trim().min(1).max(128).optional(),
+            to_cc_email_addrees: Joi.string().trim().min(1).max(128).optional(),
+            contact_no: Joi.string().trim().min(1).max(128).optional(),
             remarks: Joi.string().trim().optional(),
         }
-    )
+    ).optional()
 });
 
 const save_controller = {
@@ -77,13 +77,13 @@ const save_data = async (request) => {
 
         let save_data = await save(userInfo, supplierOid, request)
         let sortOrder = 1;
-        let emailService;
-        request.payload["emailService"].forEach(async email => {
+        let email_service;
+        request.payload["email_service"].forEach(async email => {
             let oid = uuid.v4()
             email.oid = oid
             email.supplierOid = supplierOid
             email.sortOrder = sortOrder ++ 
-            emailService = await saveSupplierEmailService(userInfo, email, request)
+            await saveSupplierEmailService(userInfo, email, request)
             
         });
     } catch ( err ){
@@ -92,14 +92,14 @@ const save_data = async (request) => {
 }
 const save = async (userInfo, oid, request) => {
 
-    let cols = ["oid", "customerId", "name", "imagePath", "companyOid"];
+    let cols = ["oid", "customer_id", "name", "image_path", "companyOid"];
     let params = ['$1', '$2', '$3', '$4', '$5'];
-    let data = [ oid, request.payload["customerId"], request.payload["name"], request.payload["imagePath"], userInfo.companyoid];
+    let data = [ oid, request.payload["customer_id"], request.payload["name"], request.payload["image_path"], userInfo.companyoid];
     let idx = 6;
-    if(request.payload["mobileNo"]){
-        cols.push("mobileNo");
+    if(request.payload["mobile_no"]){
+        cols.push("mobile_no");
         params.push(`$${idx++}`);
-        data.push(request.payload["mobileNo"]);
+        data.push(request.payload["mobile_no"]);
 
     }
     if(request.payload["email"]){
@@ -112,30 +112,30 @@ const save = async (userInfo, oid, request) => {
         params.push(`$${idx++}`);
         data.push(request.payload["address"]);
     }
-    if(request.payload["initialBalance"]){
-        cols.push("initialBalance");
+    if(request.payload["initial_balance"]){
+        cols.push("initial_balance");
         params.push(`$${idx++}`);
-        data.push(request.payload["initialBalance"]);
+        data.push(request.payload["initial_balance"]);
     }
-    if(request.payload["commissionType"]){
-        cols.push("commissionType");
+    if(request.payload["commission_type"]){
+        cols.push("commission_type");
         params.push(`$${idx++}`);
-        data.push(request.payload["commissionType"]);
+        data.push(request.payload["commission_type"]);
     }
-    if(request.payload["commissionValue"]){
-        cols.push("commissionValue");
+    if(request.payload["commission_value"]){
+        cols.push("commission_value");
         params.push(`$${idx++}`);
-        data.push(request.payload["commissionValue"]);
+        data.push(request.payload["commission_value"]);
     }
-    if(request.payload["supplierType"]){
-        cols.push("supplierType");
+    if(request.payload["supplier_type"]){
+        cols.push("supplier_type");
         params.push(`$${idx++}`);
-        data.push(request.payload["supplierType"]);
+        data.push(request.payload["supplier_type"]);
     }
-    if(request.payload["serviceCharge"] >= 0){
-        cols.push("serviceCharge");
+    if(request.payload["service_charge"] >= 0){
+        cols.push("service_charge");
         params.push(`$${idx++}`);
-        data.push(request.payload["serviceCharge"]);
+        data.push(request.payload["service_charge"]);
     }
 
     if (request.payload['status'] == 'Submitted') {
@@ -160,21 +160,21 @@ const save = async (userInfo, oid, request) => {
 };
 
 const saveSupplierEmailService = async (userInfo, email, request) => {
-    let cols = ["oid", "serviceType", "toEmailAddrees", "supplierOid", "sortOrder", "companyOid"];
+    let cols = ["oid", "service_type", "to_email_addrees", "supplierOid", "sortOrder", "companyOid"];
     let params = ['$1', '$2', '$3', '$4', '$5', '$6'];
-    let data = [ email.oid, email['serviceType'], email["toEmailAddrees"], email["supplierOid"], email["sortOrder"], userInfo.companyoid];
+    let data = [ email.oid, email['service_type'], email["to_email_addrees"], email["supplierOid"], email["sortOrder"], userInfo.companyoid];
 
     let idx = 7;
 
-    if( email["toCCEmailAddrees"] ){
-        cols.push("toCCEmailAddrees");
+    if( email["to_cc_email_addrees"] ){
+        cols.push("to_cc_email_addrees");
         params.push( `$${idx++}` );
-        data.push(email["toCCEmailAddrees"]);
+        data.push(email["to_cc_email_addrees"]);
     }
-    if( email["contactNo"] ){
-        cols.push("contactNo");
+    if( email["contact_no"] ){
+        cols.push("contact_no");
         params.push( `$${idx++}` );
-        data.push(email["contactNo"]);
+        data.push(email["contact_no"]);
     }
     if( email["remarks"] ){
         cols.push("remarks");
