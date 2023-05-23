@@ -41,7 +41,7 @@ const save_controller = {
             mode: "required",
             strategy: "jwt",
         },
-        description: "update customer",
+        description: "update miscelleaneouses",
         plugins: { hapiAuthorization: false },
         validate: {
             payload: payload_scheme,
@@ -80,8 +80,43 @@ const update_data = async (request) => {
     try {
         const userInfo = await autheticatedUserInfo(request);
         request.payload.userInfo = userInfo;
-
-
+        if (request.payload.invoice_for_whom.toLowerCase() === CONSTANT.CUSTOMER.toLowerCase()) {
+            const executed = await updateCustomerMiscellaneousesInvoice(request)
+            if (executed) {
+                return {
+                    message: "Success",
+                    status: true
+                }
+            }
+            return {
+                message: "Problem in updating customer miscellaneouses",
+                status: false
+            }
+        } else if (request.payload.invoice_for_whom.toLowerCase() === CONSTANT.SUPPLIER) {
+            const executed = await updateSupplierMiscellaneousesInvoice(request)
+            if (executed) {
+                return {
+                    message: "Success",
+                    status: true
+                }
+            }
+            return {
+                message: "Problem in updating supplier miscellaneouses",
+                status: false
+            }
+        } else if (request.payload.invoice_for_whom.toLowerCase() === CONSTANT.BOTH.toLowerCase()) {
+            const executed = await updateCustomerSupplierMiscellaneousesInvoice(request)
+            if (executed) {
+                return {
+                    message: "Success",
+                    status: true
+                }
+            }
+            return {
+                message: "Problem in updating customer and supplier miscellaneouses",
+                status: false
+            }
+        }
 
     } catch (error) {
         throw error;
@@ -91,7 +126,7 @@ const update_data = async (request) => {
 
 
 const updateCustomerMiscellaneousesInvoice = async (request) => {
-    const { sales_price, discount_amount, net_sales_price, receivable_amount, profit_amount, status, life_cycle, invoice_date, customer_oid, remarks, userInfo } = request.payload;
+    const { oid, sales_price, discount_amount, net_sales_price, receivable_amount, profit_amount, status, life_cycle, invoice_date, customer_oid, remarks, userInfo } = request.payload;
     let executed;
     let idx = 1;
     let cols = [`salesPrice = $${idx++}, discountAmount = $${idx++},
@@ -107,7 +142,7 @@ const updateCustomerMiscellaneousesInvoice = async (request) => {
 
     if (customer_oid) {
         cols.push(`customerOid = $${idx++}`);
-        data.push(email);
+        data.push(customer_oid);
     }
 
     if (remarks) {
@@ -123,7 +158,6 @@ const updateCustomerMiscellaneousesInvoice = async (request) => {
         text: query,
         values: data
     }
-    console.log(sql)
     try {
         executed = await Dao.execute_value(request.pg, sql);
     } catch (e) {
@@ -139,14 +173,14 @@ const updateCustomerMiscellaneousesInvoice = async (request) => {
 
 
 const updateSupplierMiscellaneousesInvoice = async (request) => {
-    const { purchase_price, commission_value, total_commission, remarks } = request.payload;
+    const { oid, purchase_price, commission_value, total_commission, profit_amount, status, life_cycle, userInfo, remarks, invoice_date, supplier_oid } = request.payload;
     let executed;
     let idx = 1;
     let cols = [`purchasePrice = $${idx++}, commissionValue = $${idx++}, totalCommission = $${idx++},
     netPurchasePrice = $${idx++}, payableAmount = $${idx++}, profitAmount = $${idx++},
     status = $${idx++}, lifeCycle = $${idx++}, editedBy = $${idx++}, editedOn = now()`];
 
-    let data = []
+    let data = [purchase_price, commission_value, total_commission, net_purchase_price, payable_amount, profit_amount, status, life_cycle, userInfo.loginid]
 
 
     if (invoice_date) {
@@ -154,9 +188,61 @@ const updateSupplierMiscellaneousesInvoice = async (request) => {
         data.push(new Date(invoice_date).toISOString().slice(0, 10));
     }
 
+    if (supplier_oid) {
+        cols.push(`supplierOid = $${idx++}`);
+        data.push(supplier_oid);
+    }
+
+
+    if (remarks) {
+        cols.push(`remarks = $${idx++}`);
+        data.push(remarks);
+    }
+
+
+    let scols = cols.join(', ')
+    let query = `update ${TABLE.TICKET_INVOICE} set ${scols} where 1 = 1 and oid = $${idx++}`;
+    data.push(oid);
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        executed = await Dao.execute_value(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    if (executed.rowCount > 0) {
+        return true;
+    }
+    return false;
+}
+
+const updateCustomerSupplierMiscellaneousesInvoice = async (request) => {
+    const { oid, sales_price, discount_amount, net_sales_price, receivable_amount, purchase_price, commission_value, total_commission, net_purchase_price, payable_amount, profit_amount, status, life_cycle, userInfo, invoice_date, customer_oid, supplier_oid, remarks } = request.payload;
+    let executed;
+    let idx = 1;
+    let cols = [`salesPrice = $${idx++}, discountAmount = $${idx++},
+    netSalesPrice = $${idx++}, receivableAmount = $${idx++}, purchasePrice = $${idx++}, commissionValue = $${idx++}, totalCommission = $${idx++},
+    netPurchasePrice = $${idx++}, payableAmount = $${idx++}, profitAmount = $${idx++},
+    status = $${idx++}, lifeCycle = $${idx++}, editedBy = $${idx++}, editedOn = now()`];
+
+    let data = [sales_price, discount_amount, net_sales_price, receivable_amount, purchase_price, commission_value, total_commission, net_purchase_price, payable_amount, profit_amount, status, life_cycle, userInfo.loginid]
+
+
+    if (invoice_date) {
+        cols.push(`invoiceDate = $${idx++}`);
+        data.push(new Date(invoice_date).toISOString().slice(0, 10));
+    }
+
+    if (supplier_oid) {
+        cols.push(`supplierOid = $${idx++}`);
+        data.push(supplier_oid);
+    }
+
     if (customer_oid) {
         cols.push(`customerOid = $${idx++}`);
-        data.push(email);
+        data.push(customer_oid);
     }
 
     if (remarks) {
@@ -172,7 +258,6 @@ const updateSupplierMiscellaneousesInvoice = async (request) => {
         text: query,
         values: data
     }
-    console.log(sql)
     try {
         executed = await Dao.execute_value(request.pg, sql);
     } catch (e) {
