@@ -11,7 +11,7 @@ const is_granted = async (request, api) => {
 }
 
 const autheticatedUserInfo = async (request) => {
-    const loginId = request.auth.credentials['loginid'];
+    const loginId = request.auth.credentials['login_id'];
     const sql = {
         text: `SELECT oid, loginid, name, email, companyoid FROM ${TABLE.LOGIN} WHERE loginid = $1`,
         values: [loginId]
