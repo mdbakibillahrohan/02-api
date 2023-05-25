@@ -4,24 +4,24 @@ const Joi = require("@hapi/joi");
 const log = require("../../../util/log");
 const Dao = require("../../../util/dao");
 const uuid = require('uuid');
-const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
+const { API, MESSAGE, CONSTANT, TABLE } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const payload_scheme = Joi.object({
     oid: Joi.string().trim().min(1).max(128).required(),
-    supplier_oid: Joi.string().trim().min(1).max(128).required(),
-
+    name: Joi.string().trim().min(1).max(128).required(),
+    ledger_type: Joi.string().trim().min(1).max(32).required()
 });
 
 const save_controller = {
     method: "POST",
-    path: API.CONTEXT + API.MASTER_SUPPLIER_EMAIL_SERVICE_DELETE_PATH,
+    path: API.CONTEXT + API.MASTER_LEDGER_UPDATE_PATH,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "supplier email service delete",
+        description: "update ledger",
         plugins: { hapiAuthorization: false },
         validate: {
             payload: payload_scheme,
@@ -43,15 +43,12 @@ const save_controller = {
 
 const handle_request = async (request) => {
     try {
-        let deleteSupplier = await deleteSupplierEmailService (request);
-        if( deleteSupplier["rowCount"] < 1){
-            return { status: true, code: 400, message: MESSAGE.USER_NOT_EXIST };
+        const update = await updateLedger(request);
+        
+        if (update["rowCount"] == 1){
+            log.info(`Successfully update`);
+            return { status: true, code: 200, message: MESSAGE.SUCCESS_UPDATE };
         }
-        else if( deleteSupplier["rowCount"] == 1){
-             log.info(`Successfully emailSupplier Delete`);
-            return { status: true, code: 200, message: MESSAGE.SUCCESS_DELETE };
-        }
-        return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
 
     } catch (err) {
         log.error(`An exception occurred while deleting: ${err?.message}`);
@@ -59,23 +56,29 @@ const handle_request = async (request) => {
     }
 };
 
-
-const deleteSupplierEmailService = async ( request) => {
+const updateLedger = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
-    let query = `delete from ${ TABLE.SUPPLIER_EMAIL_SERVICE }  where 1 = 1 and oid = $1 and supplier_oid = $2 and companyoid = $3`;
 
+    let cols = [ "name = $1", "ledgerType = $2"];
+
+    let data = [request.payload["name"], request.payload["ledger_type"], request.payload['oid'], userInfo.companyoid ];
+    
+
+    let scols = cols.join(', ')
+
+    let query = `update ${ TABLE.LEDGER } set ${scols} where 1 = 1 and oid = $3 and companyoid = $4`;
+    
     let sql = {
         text: query,
-        values: [request.payload.oid, request.payload["supplier_oid"], userInfo.companyoid]
+        values: data
     }
     try{
-      return await Dao.execute_value(request.pg, sql);
-    } catch(err) {
-        log.error(`DeleteSupplierEmailService error: ${err?.message}`)
-        return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
-
+        return await Dao.execute_value(request.pg, sql)
+    } 
+    catch(err) {
+        log.error(`An exception occurred while deleting: ${err?.message}`)
     }
-    
-}
+};
+
 
 module.exports = save_controller;
