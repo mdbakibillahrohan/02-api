@@ -43,12 +43,30 @@ const save_controller = {
 
 const handle_request = async (request) => {
     try {
-        const update = await updateLedger(request);
-        
-        if (update["rowCount"] == 1){
+        const userInfo = await autheticatedUserInfo(request);
+
+        if( request.payload.ledger_type == CONSTANT.EXPENSE ) {
+            request.payload.payment_type = "Debit";
+        } else  {
+            request.payload.payment_type = "Credit";
+        }
+        const update = await updateLedger(userInfo, request);
+        const update_payment = await updatePayment(userInfo, request)
+
+        if (update["rowCount"] == 1 || update_payment["rowCount"] == 1){
             log.info(`Successfully update`);
             return { status: true, code: 200, message: MESSAGE.SUCCESS_UPDATE };
+        } 
+        else if (update["rowCount"] == 0 && update_payment["rowCount"] == 0){
+            log.info(ALREADY_UPDATE);
+            return { status: true, code: 202, message: MESSAGE.ALREADY_UPDATE};
         }
+
+        else {
+            log.error(`An exception occurred while deleting: ${err?.message}`);
+            return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
+        }
+
 
     } catch (err) {
         log.error(`An exception occurred while deleting: ${err?.message}`);
@@ -56,8 +74,7 @@ const handle_request = async (request) => {
     }
 };
 
-const updateLedger = async (request) => {
-    const userInfo = await autheticatedUserInfo(request);
+const updateLedger = async (userInfo, request) => {
 
     let cols = [ "name = $1", "ledgerType = $2"];
 
@@ -76,9 +93,33 @@ const updateLedger = async (request) => {
         return await Dao.execute_value(request.pg, sql)
     } 
     catch(err) {
-        log.error(`An exception occurred while deleting: ${err?.message}`)
+        log.error(`An exception occurred while updating: ${err?.message}`)
     }
 };
+
+const updatePayment = async (userInfo, request) => {
+
+    let cols = [ "paymentType = $1", "referenceType = $2"];
+
+    let data = [request.payload["payment_type"], request.payload.ledger_type, request.payload['oid']];
+    
+    
+
+    let scols = cols.join(', ')
+
+    let query = `update ${ TABLE.PAYMENT } set ${scols} where 1 = 1 and referenceOid = $3 `;
+    
+    let sql = {
+        text: query,
+        values: data
+    }
+    try{
+        return await Dao.execute_value(request.pg, sql)
+    } 
+    catch(err) {
+        log.error(`An exception occurred while payment updating: ${err?.message}`)
+    }
+}
 
 
 module.exports = save_controller;
