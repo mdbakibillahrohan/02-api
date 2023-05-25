@@ -24,10 +24,10 @@ const payload_scheme = Joi.object({
     check_no:  Joi.string().trim().min(1).max(128).optional(),
 
     due_invoice_list: Joi.array().items({
-        ref_invoice_oid: Joi.string().trim().min(1).max(128).required(),
-        ref_invoice_type: Joi.string().trim().min(1).max(128).required(),
-        remarks: Joi.string().trim().min(1).max(128).required(),
-        amount: Joi.number().min(1).max(128).required(),
+        oid: Joi.string().trim().min(1).max(128).required(),
+        invoice_type: Joi.string().trim().min(1).max(32).required(),
+        remarks: Joi.string().trim().min(1).optional(),
+        amount: Joi.number().min(0).required(),
         status: Joi.string().valid('Draft', 'Active').required(),
         payment_oid: Joi.string().trim().min(1).max(128).required()
     })
@@ -138,7 +138,6 @@ const savePaymentReceived = async (userInfo, payment, request) => {
         values: data
     }
     try{
-        console.log('re')
         return await Dao.execute_value(request.pg, sql)
         
     } 
@@ -154,7 +153,6 @@ const saveInvoiceBillPayment = async (userInfo, invoice, request) => {
     let params = ['$1', '$2', '$3', '$4', '$5', '$6', '$7', '$8'];
 
     let data = [invoice["oid"], invoice["ref_invoice_type"], invoice["ref_invoice_oid"], invoice["amount"], invoice["remarks"], invoice["status"], invoice["payment_oid"], userInfo.companyoid ];
-
 
     let scols = cols.join(', ')
     let sparams = params.join(', ')
@@ -195,7 +193,7 @@ const ready = async (request, paymentOid) => {
             oid: paymentOid,
             payment_no: paymantId,
             reference_type: request.payload["reference_type"],
-            account_oid: request.payload["account_type"],
+            account_oid: request.payload["account_oid"],
             reference_oid: request.payload["reference_oid"],
             amount: request.payload["amount"],
             payment_date: request.payload["payment_date"],
