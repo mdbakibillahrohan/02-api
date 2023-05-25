@@ -63,13 +63,13 @@ const handle_request = async (request) => {
         }
 
         else {
-            log.error(`An exception occurred while deleting: ${err?.message}`);
+            log.error(`An exception occurred while updating: ${err?.message}`);
             return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
         }
 
 
     } catch (err) {
-        log.error(`An exception occurred while deleting: ${err?.message}`);
+        log.error(`An exception occurred while updating: ${err?.message}`);
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
     }
 };
