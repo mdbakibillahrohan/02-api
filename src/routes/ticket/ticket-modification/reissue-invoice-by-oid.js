@@ -6,12 +6,12 @@ const Dao = require("../../../util/dao");
 const { API, MESSAGE, TABLE } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
-const query_scheme = Joi.object({
+const payload_scheme = Joi.object({
     oid: Joi.string().trim().min(1).max(128).required()
 });
 
 const route_controller = {
-    method: "GET",
+    method: "POST",
     path: API.CONTEXT + API.TICKET_MODIFICATION_REISSUE_INVOICE_BY_OID_PATH,
     options: {
         auth: {
@@ -21,7 +21,7 @@ const route_controller = {
         description: "ticket departure card get by tickeoid",
         plugins: { hapiAuthorization: false },
         validate: {
-            query: query_scheme,
+            payload: payload_scheme,
             options: {
                 allowUnknown: false,
             },
@@ -31,7 +31,7 @@ const route_controller = {
         },
     },
     handler: async (request, h) => {
-        log.debug(`Request received - ${JSON.stringify(request.query)}`);
+        log.debug(`Request received - ${JSON.stringify(request.payload)}`);
         const response = await handle_request(request);
         log.debug(`Response sent - ${JSON.stringify(response)}`);
         return h.response(response);
@@ -44,9 +44,9 @@ const handle_request = async (request) => {
         let tax, route;
         let ticket_invoice = await getTicketInvoice(request);
         for(let i of ticket_invoice){
-            tax = await getTax(i);
+            tax = await getTax(i.oid);
             
-            route = await getRoute(i);
+            route = await getRoute(i.oid);
         }
         
         log.info(`data found by oid`);
@@ -71,7 +71,7 @@ const getTicketInvoice = async (request) => {
  
     let query = `select ti.oid, ti.invoiceNo as "invoice_no", t2.invoiceNo as "old_invoice_no", to_char(ti.invoiceDate, 'YYYY-MM-DD') as "invoice_date", to_char(t2.invoiceDate, 'YYYY-MM-DD') as "old_invoice_date", ti.purchasePrice as "purchase_price", ti.netPurchasePrice as "net_purchase_price", ti.salesPrice as "sales_price", ti.netSalesPrice as "net_sales_price", ti.netPurchasePrice as "previous_net_purchase_price", ti.netSalesPrice as "previous_net_sales_price", ti.payableAmount as "payable_amount", ti.payableAmount as "previous_payable_amount", ti.receivableAmount as "receivable_amount", ti.receivableAmount as "previous_receivable_amount", ti.profitAmount as "profit_amount", ti.profitAmount as "previous_profit_amount", ti.vendorAdditionalServiceAmount as "vendor_additional_service_amount", ti.customerAdditionalServiceAmount as "customer_additional_service_amount", ti.vendorAdditionalServiceAmount as "re_issue_vendor_additional_service_amount",  ti.customerAdditionalServiceAmount as "reIssue_customer_additional_service_amount", ti.customerAdcAmount as "customer_adc_amount", ti.vendorAdcAmount as "vendor_adc_amount", ti.customerAdcAmount as "previous_customer_adc_amount", ti.vendorAdcAmount as "previous_vendor_adc_amount", ti.remarks, ti.status, ti.lifeCycle as "life_cycle", ti.customerOid as "customer_oid", ti.supplierOid as "supplier_oid", ti.invoiceCloneOid as "invoice_clone_oid", ticket_invoice_received_amount(ti.customeroid, ti.oid) as "received_amount", ticket_invoice_paid_amount(ti.supplierOid, ti.oid) as "paid_amount", c.name as "customer_name", c.mobileNo as "customer_mobile_no", c.email as "customer_email", c.address as "customer_address", s.name as "supplier_name", s.mobileNo as "supplier_mobile_no", s.email as "supplier_email", s.address as "supplier_address" from ${ TABLE.TICKET_INVOICE } as ti  left join  ${ TABLE.TICKET_INVOICE } as t2 on ti.invoiceCloneOid = t2.oid left join  ${ TABLE.CUSTOMER } as  c on ti.customerOid = c.oid  left join  ${ TABLE.SUPPLIER } s on ti.supplierOid = s.oid  where 1 = 1 and ti.oid = $1 and companyOid = $2`;
     
-    data.push( request.query["oid"], userInfo.companyoid); 
+    data.push( request.payload["oid"], userInfo.companyoid); 
     
     let sql = {
         text: query,
