@@ -8,6 +8,7 @@ const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const payload_scheme = Joi.object({
+    oid: Joi.string().trim().min(1).required(),
     full_name: Joi.string().trim().min(1).required(),
     sur_name: Joi.string().trim().min(1).required(),
     given_name: Joi.string().trim().min(1).required(),
@@ -60,15 +61,15 @@ const payload_scheme = Joi.object({
 
 });
 
-const save_controller = {
+const update_controller = {
     method: "POST",
-    path: API.CONTEXT + API.MASTER_PASSPORT_SAVE_PATH,
+    path: API.CONTEXT + API.MASTER_PASSPORT_UPDATE_PATH,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "save Passport information",
+        description: "update Passport information",
         plugins: { hapiAuthorization: false },
         validate: {
             payload: payload_scheme,
@@ -89,21 +90,21 @@ const save_controller = {
 };
 
 const handle_request = async (request) => {
-    let save_data_return;
+    let update_data_return;
     try {
-        save_data_return = await save_data(request);
-        if (save_data_return.status) {
-            log.info(`Successfully saved`);
-            return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };
+        update_data_return = await upate_data(request);
+        if (update_data_return.status) {
+            log.info(`Successfully updated`);
+            return { status: true, code: 200, message: MESSAGE.SUCCESS_UPDATE };
         }
-        return { status: false, code: 409, message: save_data_return.message };
+        return { status: false, code: 409, message: update_data_return.message };
     } catch (err) {
-        log.error(`An exception occurred while saving passport info: ${err}`);
+        log.error(`An exception occurred while updating passport info: ${err}`);
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
     }
 };
 
-const save_data = async (request) => {
+const upate_data = async (request) => {
     try {
         const userInfo = await autheticatedUserInfo(request);
         request.payload.userInfo = userInfo;
@@ -116,11 +117,11 @@ const save_data = async (request) => {
             }
         }
         const passportOid = uuid.v4();
-        const save_passport = await savePassport(request, passportOid);
-        if (!save_passport) {
+        const update_passport = await updatePassport(request, passportOid);
+        if (!update_passport) {
             return {
                 status: false,
-                message: "Problem in save passport"
+                message: "Problem in update passport"
             }
         }
 
@@ -163,13 +164,13 @@ const save_data = async (request) => {
 
 
 
-const savePassport = async (request, passportId) => {
-    const { full_name, sur_name, given_name, gender, nationality, passport_number, customer_oid, userInfo, birth_date, passport_issue_date, passport_expiry_date, status, country_code, country_oid, mobile_no, email, personal_no, birth_registration_no, previous_passport_number, passport_image_path, issuing_authority, description } = request.payload;
+const updatePassport = async (request) => {
+    const { oid, full_name, sur_name, given_name, gender, nationality, passport_number, customer_oid, userInfo, birth_date, passport_issue_date, passport_expiry_date, status, country_code, country_oid, mobile_no, email, personal_no, birth_registration_no, previous_passport_number, passport_image_path, issuing_authority, description } = request.payload;
     let executed;
     let idx = 1;
-    let cols = ["oid", "fullName", "surName", "givenName", "gender", "nationality", "passportNumber", "customerOid", "companyOid"];
-    let params = [`$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`,];
-    let data = [passportId, full_name, sur_name, given_name, gender, nationality, passport_number, customer_oid, userInfo.companyoid]
+    let cols = [`oid = $${idx++},fullName = $${idx++}, surName = $${idx++}, givenName = $${idx++}, gender = $${idx++}, nationality = $${idx++}, passportNumber = $${idx++}, customerOid = $${idx++}, countryOid = $${idx++}, editedBy = $${idx++}, editedOn = now() `];
+
+    let data = [oid, full_name, sur_name, given_name, gender, nationality, passport_number, customer_oid, userInfo.companyoid]
 
 
     if (birth_date) {
@@ -464,6 +465,88 @@ const savePassportVisa = async (request, userInfo, passportVisa, sortOrderNo, pa
 }
 
 
+const deletePassportDetail = async (passportOid) => {
+    let executed;
+    let data = [passportOid]
+    let query = `delete from ${TABLE.PASSPORT_DETAIL}  where 1 = 1 and passportOid = $1`;
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        executed = await Dao.execute_value(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    if (executed.rowCount > 0) {
+        return true;
+    }
+    return false;
+}
+
+
+const deletePassportVisa = async (passportOid) => {
+    let executed;
+    let data = [passportOid]
+    let query = `delete from ${TABLE.PASSPORT_VISA_INFORMATION}  where 1 = 1 and passportOid = $1`;
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        executed = await Dao.execute_value(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    if (executed.rowCount > 0) {
+        return true;
+    }
+    return false;
+}
+
+
+const deletePassportCommand = async (passportOid) => {
+    let executed;
+    let data = [passportOid]
+    let query = `delete from ${TABLE.PASSPORT_COMMAND}  where 1 = 1 and passportOid = $1`;
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        executed = await Dao.execute_value(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    if (executed.rowCount > 0) {
+        return true;
+    }
+    return false;
+}
+
+
+
+const deleteNotificationSql = async (passportOid) => {
+    let executed;
+    let data = [passportOid]
+    let query = `delete from ${TABLE.PASSENGER_NOTIFICATION}  where 1 = 1 and passportOid = $1`;
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        executed = await Dao.execute_value(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    if (executed.rowCount > 0) {
+        return true;
+    }
+    return false;
+}
+
+
+
 const getCount = async (request) => {
     const { passport_number, customer_oid, userInfo } = request.payload;
     let count = 0;
@@ -488,4 +571,4 @@ const getCount = async (request) => {
 
 
 
-module.exports = save_controller;
+module.exports = update_controller;

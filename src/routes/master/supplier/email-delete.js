@@ -29,7 +29,7 @@ const save_controller = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 301, status: false, message: err?.message }).takeover();
+                return h.response({ code: 301, status: false, message: err }).takeover();
             },
         },
     },
@@ -43,39 +43,39 @@ const save_controller = {
 
 const handle_request = async (request) => {
     try {
-        let update = await deleteSupplierEmailService (request);
-        if( update["rowCount"] < 1){
+        let update = await deleteSupplierEmailService(request);
+        if (update["rowCount"] < 1) {
             return { status: true, code: 400, message: MESSAGE.USER_NOT_EXIST };
         }
-        else if( update["rowCount"] == 1){
-             log.info(`Successfully emailSupplier Delete`);
+        else if (update["rowCount"] == 1) {
+            log.info(`Successfully emailSupplier Delete`);
             return { status: true, code: 200, message: MESSAGE.SUCCESS_DELETE };
         }
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
 
     } catch (err) {
-        log.error(`An exception occurred while saving: ${err?.message}`);
+        log.error(`An exception occurred while saving: ${err}`);
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
     }
 };
 
 
-const deleteSupplierEmailService = async ( request) => {
+const deleteSupplierEmailService = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
-    let query = `delete from ${ TABLE.SUPPLIER_EMAIL_SERVICE }  where 1 = 1 and oid = $1 and supplierOid = $2 and companyoid = $3`;
+    let query = `delete from ${TABLE.SUPPLIER_EMAIL_SERVICE}  where 1 = 1 and oid = $1 and supplierOid = $2 and companyoid = $3`;
 
     let sql = {
         text: query,
         values: [request.payload.oid, request.payload["supplierOid"], userInfo.companyoid]
     }
-    try{
-      return await Dao.execute_value(request.pg, sql);
-    } catch(err) {
-        log.error(`DeleteSupplierEmailService error: ${err?.message}`)
+    try {
+        return await Dao.execute_value(request.pg, sql);
+    } catch (err) {
+        log.error(`DeleteSupplierEmailService error: ${err}`)
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
 
     }
-    
+
 }
 
 module.exports = save_controller;

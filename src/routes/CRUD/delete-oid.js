@@ -25,7 +25,7 @@ const delete_by_oid = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 301, status: false, message: err?.message }).takeover();
+                return h.response({ code: 301, status: false, message: err }).takeover();
             },
         },
     },
@@ -48,7 +48,7 @@ const handle_request = async (request) => {
             data: data
         };
     } catch (err) {
-        log.error(err?.message);
+        log.error(err);
     }
 };
 
@@ -60,7 +60,7 @@ const delete_data = async (request) => {
     try {
         await Dao.execute_value(sql)
     } catch (e) {
-        log.error(`An exception occurred while removing data by oid: ${e?.message}`);
+        log.error(`An exception occurred while removing data by oid: ${e}`);
     }
     return data;
 };

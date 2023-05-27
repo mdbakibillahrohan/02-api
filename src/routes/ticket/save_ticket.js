@@ -51,7 +51,7 @@ const save_controller = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 301, status: false, message: err?.message }).takeover();
+                return h.response({ code: 301, status: false, message: err }).takeover();
             },
         },
     },
@@ -69,7 +69,7 @@ const handle_request = async (request) => {
         log.info(`Successfully saved`);
         return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };
     } catch (err) {
-        log.error(`An exception occurred while saving: ${err?.message}`);
+        log.error(`An exception occurred while saving: ${err}`);
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
     }
 };

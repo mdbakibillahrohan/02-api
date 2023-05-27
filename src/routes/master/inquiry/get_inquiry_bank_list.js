@@ -24,7 +24,7 @@ const get_list = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 400, status: false, message: err?.message }).takeover();
+                return h.response({ code: 400, status: false, message: err }).takeover();
             },
         },
     },
@@ -49,7 +49,7 @@ const handle_request = async (request) => {
             data: data,
         };
     } catch (err) {
-        log.error(`An exception occurred while getting inquiry bank list data : ${err?.message}`);
+        log.error(`An exception occurred while getting inquiry bank list data : ${err}`);
         return {
             status: false,
             code: 500,

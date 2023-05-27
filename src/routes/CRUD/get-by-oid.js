@@ -25,7 +25,7 @@ const get_by_oid = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 301, status: false, message: err?.message }).takeover();
+                return h.response({ code: 301, status: false, message: err }).takeover();
             },
         },
     },
@@ -48,7 +48,7 @@ const handle_request = async (request) => {
             data: data
         };
     } catch (err) {
-        log.error(err?.message);
+        log.error(err);
     }
 };
 
@@ -63,7 +63,7 @@ const get_data = async (request) => {
         let data_set = await Dao.get_data(request.pg, sql);
         data = data_set.length < 1 ? null : data_set[0];
     } catch (e) {
-        log.error(`An exception occurred while getting data by oid: ${e?.message}`);
+        log.error(`An exception occurred while getting data by oid: ${e}`);
     }
     return data;
 };

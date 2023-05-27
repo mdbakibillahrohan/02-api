@@ -20,14 +20,14 @@ const route_controller = {
                 validateAclMethod: 'isGranted',
                 aclQuery: async (id, request) => {
                     return {
-                        isGranted: async (user, role) => { 
+                        isGranted: async (user, role) => {
                             // return await Helper.is_granted(request, API.GET_USER_INFO)
                             return true;
                         }
                     }
                 }
             }
-         }
+        }
     },
     handler: async (request, h) => {
         log.debug(`Request received - ${JSON.stringify(request.payload)}`)
@@ -58,7 +58,7 @@ const get_data = async (request) => {
         let data_set = await Dao.get_data(request.pg, sql)
         data = data_set.length > 0 ? data_set[0] : null
     } catch (e) {
-        log.error(`An exception occurred while getting user data: ${e?.message}`)
+        log.error(`An exception occurred while getting user data: ${e}`)
     }
     return data
 }

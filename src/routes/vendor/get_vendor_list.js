@@ -74,7 +74,7 @@ const get_data = async (request) => {
         let data_set = await Dao.get_data(request.pg, sql)
         data = data_set.length > 0 ? data_set : null
     } catch (e) {
-        log.error(`An exception occurred while getting SUPPLIER data: ${e?.message}`)
+        log.error(`An exception occurred while getting SUPPLIER data: ${e}`)
     }
     return data
 }

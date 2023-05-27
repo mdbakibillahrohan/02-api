@@ -73,7 +73,7 @@ const get_passport_data = async (request) => {
 
     }
     catch (e) {
-        log.error(`An exception occurred while getting passport data: ${e?.message}`)
+        log.error(`An exception occurred while getting passport data: ${e}`)
     }
     return data
 }

@@ -28,7 +28,7 @@ const update_controller = {
             },
             failAction: async (request, h, err) => {
                 return h
-                    .response({ code: 400, status: false, message: err?.message })
+                    .response({ code: 400, status: false, message: err })
                     .takeover();
             },
         },
@@ -47,7 +47,7 @@ const handle_request = async (request) => {
         log.info(`Successfully update`);
         return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };
     } catch (err) {
-        log.error(`An exception occurred while updating: ${err?.message}`);
+        log.error(`An exception occurred while updating: ${err}`);
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
     }
 };
