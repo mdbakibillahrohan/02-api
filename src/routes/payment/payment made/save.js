@@ -70,8 +70,12 @@ const handle_request = async (request) => {
         const save = await save_data(userInfo, payment, request);
         
         if(save.save_payment_received_rowCount != null && save.due_invoice_list_rowCount != null){
-            log.info(`Successfully saved`);
-            return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };            
+            if(save.save_payment_received_rowCount == 1 && save.due_invoice_list_rowCount == 1){
+                log.info(`Successfully saved`);
+                return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };         
+            }
+            log.info(MESSAGE.INTERNAL_SERVER_ERROR);
+            return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };         
         }
 
 
@@ -95,7 +99,7 @@ const save_data = async (userInfo, payment, request) => {
         // console.log("save_payment",save_payment_received)
         const output = {
             save_payment_received_rowCount: "number" == typeof(save_payment_received["rowCount"])? save_payment_received["rowCount"]: null,
-            due_invoice_list_rowCount: "number" == typeof(due_invoice_list["rowCount"])? due_invoice_list: null
+            due_invoice_list_rowCount: "number" == typeof(due_invoice_list["rowCount"])? due_invoice_list["rowCount"]: null
         }
 
         return output;
