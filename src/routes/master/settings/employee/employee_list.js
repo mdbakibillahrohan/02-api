@@ -114,7 +114,7 @@ const get_data = async (request) => {
     let list_data = [];
     let data = [];
     let query = `select e.oid, e.nameEn as "name_en", e.status, e.mobileNo as "mobile_no", e.email, e.imagePath as "image_path", e.nid, e.passportNo as "passport_no",
-    des.nameEn as "designation_name_en", d.nameEn as departmentNameEn
+    des.nameEn as "designation_name_en", d.nameEn as "department_name_en"
     from ${TABLE.EMPLOYEE} e 
     left join ${TABLE.DEPARTMENT} d on d.oid = e.departmentOid
     left join  ${TABLE.DESIGNATION} des on des.oid = e.departmentOid
@@ -146,8 +146,6 @@ const get_data = async (request) => {
         query += ` limit $${idx++}`;
         data.push(request.query.limit);
     }
-    console.log(query)
-    console.log(data)
     let sql = {
         text: query,
         values: data
