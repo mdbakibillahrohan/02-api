@@ -9,6 +9,7 @@ const uuid = require("uuid");
 
 
 const payload_scheme = Joi.object({
+    oid: Joi.string().trim().min(1).max(128).required(),
     payment_date: Joi.date().required(),
     amount: Joi.number().required(),
     image_path:  Joi.string().trim().min(1).max(256).required(),
@@ -34,7 +35,7 @@ const payload_scheme = Joi.object({
 
 const save_controller = {
     method: "POST",
-    path: API.CONTEXT + API.MASTER_PAYMENT_SAVE_PATH,
+    path: API.CONTEXT + API.MASTER_PAYMENT_UPDATE_PATH,
     options: {
         auth: {
             mode: "required",
@@ -63,19 +64,41 @@ const save_controller = {
 const handle_request = async (request) => {
     try {
         request.payload.payment_type = request.payload.reference_type == CONSTANT.SUPPLIER || request.payload.reference_type == CONSTANT.EXPENSE ? 'Debit' : 'Credit';
-        request.payload.payment_no =  `${new Date().toISOString().slice(0,10).replace(/-/g, '')}`+`${new Date().toISOString().slice(11,19).replace(/:/g, '')}`;
+
 
         const userInfo = await autheticatedUserInfo(request);
-        request.payload.vendor_name = await getVendorNameList(userInfo, request);
     
-        const save = await save_data(userInfo, request);
-
-        if(save["rowCount"] == 1){
-            log.info(`Successfully saved`);
-            return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };         
+        const update = await update_data(userInfo, request);
+        console.log(update)
+        if( update["rowCount"] == 1)
+        {
+            log.info(MESSAGE.SUCCESS_UPDATE );
+            return { 
+                status: true, 
+                code: 200, 
+                message: MESSAGE.SUCCESS_UPDATE 
+            };            
         }
-        log.info(MESSAGE.INTERNAL_SERVER_ERROR);
-        return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
+
+        else if( update["rowCount"] == 0 ) {
+            log.info(MESSAGE.ALREADY_UPDATE);
+            return {
+                    status: true, 
+                    code: 202, 
+                    message: MESSAGE.ALREADY_UPDATE 
+                };            
+        } 
+
+        else{
+            log.info(MESSAGE.USER_NOT_EXIST)
+            return {
+                status: true,
+                code: 204,
+                message: MESSAGE.USER_NOT_EXIST+ `or some other issue check oid`
+            }
+        }
+        
+
 
     } catch (err) {
         log.error(`An exception occurred while saving: ${err?.message}`);
@@ -83,75 +106,63 @@ const handle_request = async (request) => {
     }
 };
 
-const save_data = async (userInfo, request) => {
-    let cols = ["oid", "paymentNo", "paymentDate", "amount", "imagePath", 
-     "status", "paymentType", "referenceType", "referenceOid", "paymentNature",
-     "accountOid", "createdBy", "createdOn", "companyOid"];
-    let params = ['$1', '$2', '$3', '$4', '$5', '$6', '$7', '$8', '$9', '$10', '$11', '$12', '$13', '$14'];
+const update_data = async (userInfo, request) => {
+    let cols = ["paymentDate = $1" , "amount = $2", "imagePath = $3", "status = $4", "paymentType = $5", "referenceType = $6", "referenceOid = $7", "paymentNature = $8", "accountOid = $9", "editedBy = $10", "editedOn = $11"];
 
-    let data = [uuid.v4(), request.payload["payment_no"], request.payload["payment_date"], request.payload["amount"], request.payload["image_path"], request.payload["status"], request.payload["payment_type"], request.payload["reference_type"], request.payload["reference_oid"], request.payload["payment_nature"], request.payload["account_oid"], userInfo.loginid, 'now()', userInfo.companyoid ];
-    let idx = 15;
+    let data = [request.payload["payment_date"], request.payload["amount"], request.payload["image_path"], request.payload["status"], request.payload["payment_type"], request.payload["reference_type"], request.payload["reference_oid"], request.payload["payment_nature"], request.payload["account_oid"], userInfo.loginid, 'now()'];
+
+    let idx = 12;
 
 
     if(request.payload["check_no"]) {
-        cols.push("checkNo");
-        params.push(`$${idx++}`);
+        cols.push(`checkNo = $${idx++}`);
         data.push(request.payload["check_no"]);
     }
     if(request.payload["description"]) {
-        cols.push("description");
-        params.push(`$${idx++}`);
+        cols.push(`description = $${idx++}`);
         data.push(request.payload["description"]);
     }
     if(request.payload["account_holder_name"]) {
-        cols.push("accountHolderName");
-        params.push(`$${idx++}`);
+        cols.push(`accountHolderName = $${idx++}`);
         data.push(request.payload["account_holder_name"]);
     }
 
     if(request.payload["bank_account_no"]) {
-        cols.push("bankAccountNo");
-        params.push(`$${idx++}`);
+        cols.push(`bankAccountNo = $${idx++}`);
         data.push(request.payload["bank_account_no"]);
     }
     if(request.payload["bank_name"]) {
-        cols.push("bankName");
-        params.push(`$${idx++}`);
+        cols.push(`bankName = $${idx++}`);
         data.push(request.payload["bank_name"]);
     }
     if(request.payload["branch_name"]) {
-        cols.push("branchName");
-        params.push(`$${idx++}`);
+        cols.push(`branchName = $${idx++}`);
         data.push(request.payload["branch_name"]);
     }
     if(request.payload["payment_mode"]) {
-        cols.push("paymentMode");
-        params.push(`$${idx++}`);
+        cols.push(`paymentMode = $${idx++}`);
         data.push(request.payload["payment_mode"]);
     }
     if(request.payload["reference_by"]) {
-        cols.push("referenceBy");
-        params.push(`$${idx++}`);
+        cols.push(`referenceBy = $${idx++}`);
         data.push(request.payload["reference_by"]);
     }
     if(request.payload["reference_by_mobile_no"]) {
-        cols.push("referenceByMobileNo");
-        params.push(`$${idx++}`);
+        cols.push(`referenceByMobileNo = $${idx++}`);
         data.push(request.payload["reference_by_mobile_no"]);
     }
     if(request.payload["received_by"]) {
-        cols.push("receivedBy");
-        params.push(`$${idx++}`);
+        cols.push(`receivedBy = $${idx++}`);
         data.push(request.payload["received_by"]);
     }
     if(request.payload["cheque_issue_date"]) {
-        cols.push("chequeIssueDate");
-        params.push(`$${idx++}`);
+        cols.push(`chequeIssueDate = $${idx++}`);
         data.push(request.payload["cheque_issue_date"]);
     }
     let scols = cols.join(', ')
-    let sparams = params.join(', ')
-    let query = `insert into ${TABLE.PAYMENT} (${scols}) values (${sparams})`;
+
+    let query = `update ${ TABLE.PAYMENT } set ${scols} where 1 = 1 and oid = $${idx++}`;
+    data.push(request.payload["oid"])
     let sql = {
         text: query,
         values: data
@@ -165,29 +176,5 @@ const save_data = async (userInfo, request) => {
     }
 };
 
-const getVendorNameList = async (userInfo, request) => {
-    let list_data = [];
-    let data = [userInfo.companyoid, request.payload["reference_oid"]];
-
-    let table_name = TABLE.CUSTOMER;
-    if(request.payload.reference_type == CONSTANT.SUPPLIER) {
-        table_name = TABLE.SUPPLIER;
-    }
-    let query = `select oid, name from ${table_name} where 1 = 1  and companyOid = $1 and oid = $2`;
-    let idx = 3;
-
-    query += ` order by createdOn desc`;
-    let sql = {
-        text: query,
-        values: data
-    }
-    try {
-        let data_set = await Dao.get_data(request.pg, sql);
-        list_data = data_set.length < 1 ? null : data_set[0];
-    } catch (e) {
-        throw new Error(e);
-    }
-    return list_data;
-}
 
 module.exports = save_controller;

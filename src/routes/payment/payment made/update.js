@@ -69,7 +69,7 @@ const handle_request = async (request) => {
 
         if (update.update_payment_received_rowCount != null && update.due_invoice_list_rowCount != null && update.delete_invoice_bill_payment_rowCount != null) {
 
-            if( update.update_payment_received_rowCount != 1 || update.due_invoice_list_rowCount != 1 || update.delete_invoice_bill_payment_rowCount != 1 )
+            if( update.update_payment_received_rowCount == 1 || update.due_invoice_list_rowCount == 1 || update.delete_invoice_bill_payment_rowCount == 1 )
             {
                 log.info(MESSAGE.SUCCESS_UPDATE );
                 return { 
@@ -79,7 +79,7 @@ const handle_request = async (request) => {
                 };            
             }
 
-            else if( update.update_payment_received_rowCount != 0 && update.due_invoice_list_rowCount != 0 && update.delete_invoice_bill_payment_rowCount != 0 )
+            else if( update.update_payment_received_rowCount == 0 && update.due_invoice_list_rowCount == 0 && update.delete_invoice_bill_payment_rowCount == 0 )
             {
                 log.info(MESSAGE.ALREADY_UPDATE);
                 return {
