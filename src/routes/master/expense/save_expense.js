@@ -8,21 +8,22 @@ const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const payload_scheme = Joi.object({
-    expense_by: Joi.string().trim().min(1).required(), 
-    status: Joi.string().valid("Active", "Inactive").required(), 
-    description: Joi.string().trim().min(1).optional(), 
-    image_path: Joi.string().trim().min(1).optional(), 
-    reference_no: Joi.string().trim().min(1).required(),
+    expense_by: Joi.string().trim().min(1).required(),
+    status: Joi.string().valid("Active", "Inactive").required(),
+    description: Joi.string().trim().min(1).optional(),
+    image_path: Joi.string().trim().min(1).optional(),
+    reference_no: Joi.string().trim().min(1).optional(),
+    expense_date: Joi.date().required(),
 
     expense_detail_list: Joi.array().items(Joi.object({
         description: Joi.string().trim().min(1).optional(),
         amount: Joi.number().required(),
     })).required(),
-    
+
     expense_payment_list: Joi.array().items(Joi.object({
         payment_no: Joi.string().trim().min(1).required(),
         description: Joi.string().trim().min(1).optional(),
-        accountOid: Joi.string().trim().min(1).required(),
+        accountOid: Joi.string().valid("Cash", "Card").required(),
     })).required(),
 });
 
@@ -34,7 +35,7 @@ const save_controller = {
             mode: "required",
             strategy: "jwt",
         },
-        description: "save Passport information",
+        description: "save expense information",
         plugins: { hapiAuthorization: false },
         validate: {
             payload: payload_scheme,
@@ -64,7 +65,7 @@ const handle_request = async (request) => {
         }
         return { status: false, code: 409, message: save_data_return.message };
     } catch (err) {
-        log.error(`An exception occurred while saving passport info: ${err}`);
+        log.error(`An exception occurred while saving expense info: ${err}`);
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
     }
 };
@@ -73,50 +74,18 @@ const save_data = async (request) => {
     try {
         const userInfo = await autheticatedUserInfo(request);
         request.payload.userInfo = userInfo;
-        const { passport_detail_list, passport_command_list, passenger_notification_list, passport_visa_list } = request.payload;
-        const count = await getCount(request);
-        if (count > 0) {
-            return {
-                message: "Duplicate value",
-                status: false
-            }
-        }
-        const passportOid = uuid.v4();
-        const save_passport = await savePassport(request, passportOid);
-        if (!save_passport) {
+
+        const expenseSummary = ready(request);
+        const executeSaveExpense = await saveExpense(request, expenseSummary);
+        if (!executeSaveExpense) {
             return {
                 status: false,
-                message: "Problem in save passport"
+                message: "Save expense execution failed"
             }
         }
-
-        passport_detail_list.forEach(async (element, index) => {
-            const save_passport_detail = await savePassportDetail(request, userInfo, element, index, passportOid);
-            if (!save_passport_detail) {
-                return false;
-            }
-        });
-
-        passport_command_list.forEach(async (element, index) => {
-            const save_passport_detail = await savePassportCommand(request, userInfo, element, index, passportOid);
-            if (!save_passport_detail) {
-                return false;
-            }
-        });
-
-        passenger_notification_list.forEach(async (element, index) => {
-            const save_passport_detail = await savePassengerNotification(request, userInfo, element, index, passportOid);
-            if (!save_passport_detail) {
-                return false;
-            }
-        });
-
-        passport_visa_list.forEach(async (element, index) => {
-            const save_passport_detail = await savePassportVisa(request, userInfo, element, index, passportOid);
-            if (!save_passport_detail) {
-                return false;
-            }
-        });
+        expenseSummary.expenseDetailList.forEach(async (element) => {
+            await saveExpenseDetail(request, expenseSummary, element);
+        })
 
         return {
             status: true
@@ -129,88 +98,14 @@ const save_data = async (request) => {
 
 
 
-const savePassport = async (request, passportId) => {
-    const { full_name, sur_name, given_name, gender, nationality, passport_number, customer_oid, userInfo, birth_date, passport_issue_date, passport_expiry_date, status, country_code, country_oid, mobile_no, email, personal_no, birth_registration_no, previous_passport_number, passport_image_path, issuing_authority, description } = request.payload;
+const saveExpenseDetail = async (request, expenseSummary, expenseDetail) => {
+    const { oid, amount, sortOrder, description } = expenseDetail;
+    const { userInfo } = request.payload;
     let executed;
     let idx = 1;
-    let cols = ["oid", "fullName", "surName", "givenName", "gender", "nationality", "passportNumber", "customerOid", "companyOid"];
-    let params = [`$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`,];
-    let data = [passportId, full_name, sur_name, given_name, gender, nationality, passport_number, customer_oid, userInfo.companyoid]
-
-
-    if (birth_date) {
-        cols.push("birthDate");
-        params.push(`$${idx++}`);
-        data.push(new Date(birth_date).toISOString().slice(0, 10));
-    }
-
-
-    if (passport_issue_date) {
-        cols.push("passportIssueDate");
-        params.push(`$${idx++}`);
-        data.push(new Date(passport_issue_date).toISOString().slice(0, 10));
-    }
-
-    if (passport_expiry_date) {
-        cols.push("passportExpiryDate");
-        params.push(`$${idx++}`);
-        data.push(new Date(passport_expiry_date).toISOString().slice(0, 10));
-    }
-    if (status) {
-        cols.push("status");
-        params.push(`$${idx++}`);
-        data.push(status);
-    }
-    if (country_code) {
-        cols.push("countryCode");
-        params.push(`$${idx++}`);
-        data.push(country_code);
-    }
-    if (country_oid) {
-        cols.push("countryOid");
-        params.push(`$${idx++}`);
-        data.push(country_oid);
-    }
-    if (mobile_no) {
-        cols.push("mobileNo");
-        params.push(`$${idx++}`);
-        data.push(mobile_no);
-    }
-    if (email) {
-        cols.push("email");
-        params.push(`$${idx++}`);
-        data.push(email);
-    }
-    if (personal_no) {
-        cols.push("personalNo");
-        params.push(`$${idx++}`);
-        data.push(personal_no);
-    }
-    if (birth_registration_no) {
-        cols.push("birthRegistrationNo");
-        params.push(`$${idx++}`);
-        data.push(birth_registration_no);
-    }
-
-    if (previous_passport_number) {
-        cols.push("previousPassportNumber");
-        params.push(`$${idx++}`);
-        data.push(previous_passport_number);
-    }
-
-
-    if (passport_image_path) {
-        cols.push("passportImagePath");
-        params.push(`$${idx++}`);
-        data.push(passport_image_path);
-    }
-
-
-    if (issuing_authority) {
-        cols.push("issuingAuthority");
-        params.push(`$${idx++}`);
-        data.push(issuing_authority);
-    }
+    let cols = ["oid", "amount", "expenseOid", "sortOrder", "companyOid"];
+    let params = [`$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`];
+    let data = [oid, amount, expenseSummary.oid, sortOrder, userInfo.companyoid];
 
 
     if (description) {
@@ -219,9 +114,10 @@ const savePassport = async (request, passportId) => {
         data.push(description);
     }
 
+
     let scols = cols.join(', ')
     let sparams = params.join(', ')
-    let query = `insert into ${TABLE.PASSPORT} (${scols}) values (${sparams})`;
+    let query = `insert into ${TABLE.EXPENSE_DETAIL} (${scols}) values (${sparams})`;
     let sql = {
         text: query,
         values: data
@@ -238,11 +134,77 @@ const savePassport = async (request, passportId) => {
 }
 
 
-const ready = (request)=>{
-    const {expense_detail_list, expense_payment_list} = request.payload;
+const saveExpense = async (request, expense) => {
+    const { oid, expenseNo, expenseDate, expenseBy, status, imagePath, description, referenceNo, expenseAmount, paidAmount, dueAmount } = expense;
+    const { userInfo } = request.payload;
+    let executed;
+    let idx = 1;
+    let cols = ["oid", "expenseNo", "expenseDate", "expenseBy", "status", "createdBy", "companyOid"];
+    let params = [`$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`];
+    let data = [oid, expenseNo, expenseDate, expenseBy, status, userInfo.loginid, userInfo.companyoid];
+
+
+    if (imagePath) {
+        cols.push("imagePath");
+        params.push(`$${idx++}`);
+        data.push(imagePath);
+    }
+
+    if (description) {
+        cols.push("description");
+        params.push(`$${idx++}`);
+        data.push(description);
+    }
+
+    if (referenceNo) {
+        cols.push("referenceNo");
+        params.push(`$${idx++}`);
+        data.push(referenceNo);
+    }
+
+    if (expenseAmount && expenseAmount > 0) {
+        cols.push("expenseAmount");
+        params.push(`$${idx++}`);
+        data.push(expenseAmount);
+    }
+
+    if (paidAmount && paidAmount > 0) {
+        cols.push("paidAmount");
+        params.push(`$${idx++}`);
+        data.push(paidAmount);
+    }
+
+    if (dueAmount && dueAmount > 0) {
+        cols.push("dueAmount");
+        params.push(`$${idx++}`);
+        data.push(dueAmount);
+    }
+
+
+    let scols = cols.join(', ')
+    let sparams = params.join(', ')
+    let query = `insert into ${TABLE.EXPENSE_SUMMARY} (${scols}) values (${sparams})`;
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        executed = await Dao.execute_value(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    if (executed.rowCount > 0) {
+        return true;
+    }
+    return false;
+}
+
+
+const ready = (request) => {
+    const { expense_detail_list, expense_payment_list, expense_by, status, description, image_path, reference_no, expense_date } = request.payload;
     let expenseDetailList = [];
     let expenseAmount = 0;
-    expense_detail_list.forEach((ed, index)=>{
+    expense_detail_list.forEach((ed, index) => {
         const el = {
             oid: uuid.v4(),
             sortOrder: index,
@@ -250,20 +212,38 @@ const ready = (request)=>{
             description: ed.description
         }
         expenseDetailList.push(el);
-        expenseAmount+=amount;
+        expenseAmount += el.amount;
     });
 
 
     let paidAmount = 0;
-    expensePaymentList = [];
-    expense_payment_list.forEach((ep, index)=>{
+    let expensePaymentList = [];
+    expense_payment_list.forEach((ep, index) => {
         const el = {
             oid: uuid.v4(),
             amount: ep.amount,
             description: ep.description
         }
         expense_payment_list.push(el);
+        paidAmount += el.amount
     });
+
+    const dueAmount = expenseAmount - paidAmount;
+    const expenseSummary = {
+        oid: uuid.v4(),
+        expenseNo: new Date().getTime(),
+        expenseBy: expense_by,
+        status: status,
+        description: description,
+        imagePath: image_path,
+        referenceNo: reference_no,
+        expenseDate: new Date(expense_date).toISOString().slice(0, 10),
+        expenseAmount: expenseAmount,
+        paidAmount: paidAmount,
+        dueAmount: dueAmount,
+        expenseDetailList: expenseDetailList
+    }
+    return expenseSummary;
 }
 
 
