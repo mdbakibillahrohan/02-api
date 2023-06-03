@@ -21,6 +21,7 @@
         TICKET_DEPARTURE_CARD_RESOURCE: "ticket/departure/card/v1/",
         PAYMENT_RECEIVED_RESOURCE : "payment/received/v1/",
         PAYMENT_MADE_RESOURCE : "payment/made/v1/",
+        PACKAGE_RESOURCE: "package/v1/",
         UPLOAD_RESOURCE: "upload/v1/",
 
 
@@ -177,6 +178,7 @@ module.exports = {
         
         // Airport enpoint
         GET_AIRPORT: "v1/get-airport",
+        PACKAGE_GET_LIST_PATH: RESOURCES.PACKAGE_RESOURCE + "get-list",
         
         AUTHENTICATION_ROLE_GET_LIST_PATH: RESOURCES.AUTHENTICATION_ROLE_RESOURCE + "get-list",
 
