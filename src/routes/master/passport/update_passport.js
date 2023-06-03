@@ -116,7 +116,7 @@ const upate_data = async (request) => {
                 status: false
             }
         }
-        const passportOid = uuid.v4();
+        const passportOid = request.payload.oid;
         const update_passport = await updatePassport(request, passportOid);
         if (!update_passport) {
             return {
@@ -124,6 +124,11 @@ const upate_data = async (request) => {
                 message: "Problem in update passport"
             }
         }
+
+        const delete_passport_detail = await deletePassportDetail(request, passportOid);
+        const delete_notification = await deleteNotificationSql(request, passportOid);
+        const delete_passport_command = await deletePassportCommand(request, passportOid);
+        const delete_passport_visa = await deletePassportVisa(request, passportOid);
 
         passport_detail_list.forEach(async (element, index) => {
             const save_passport_detail = await savePassportDetail(request, userInfo, element, index, passportOid);
@@ -168,95 +173,92 @@ const updatePassport = async (request) => {
     const { oid, full_name, sur_name, given_name, gender, nationality, passport_number, customer_oid, userInfo, birth_date, passport_issue_date, passport_expiry_date, status, country_code, country_oid, mobile_no, email, personal_no, birth_registration_no, previous_passport_number, passport_image_path, issuing_authority, description } = request.payload;
     let executed;
     let idx = 1;
-    let cols = [`oid = $${idx++},fullName = $${idx++}, surName = $${idx++}, givenName = $${idx++}, gender = $${idx++}, nationality = $${idx++}, passportNumber = $${idx++}, customerOid = $${idx++}, countryOid = $${idx++}, editedBy = $${idx++}, editedOn = now() `];
+    let cols = [`fullName = $${idx++}, surName = $${idx++}, givenName = $${idx++}, gender = $${idx++}, nationality = $${idx++}, passportNumber = $${idx++}, customerOid = $${idx++}, countryOid = $${idx++}, editedBy = $${idx++}, editedOn = now() `];
 
     let data = [oid, full_name, sur_name, given_name, gender, nationality, passport_number, customer_oid, userInfo.companyoid]
 
 
     if (birth_date) {
-        cols.push("birthDate");
-        params.push(`$${idx++}`);
+        cols.push(`birthDate = $${idx++}`);
         data.push(new Date(birth_date).toISOString().slice(0, 10));
     }
 
 
     if (passport_issue_date) {
-        cols.push("passportIssueDate");
-        params.push(`$${idx++}`);
+        cols.push(`passportIssueDate = $${idx++}`);
         data.push(new Date(passport_issue_date).toISOString().slice(0, 10));
     }
 
     if (passport_expiry_date) {
-        cols.push("passportExpiryDate");
-        params.push(`$${idx++}`);
+        cols.push(`passportExpiryDate = $${idx++}`);
+
         data.push(new Date(passport_expiry_date).toISOString().slice(0, 10));
     }
     if (status) {
-        cols.push("status");
-        params.push(`$${idx++}`);
+        cols.push(`status = $${idx++}`);
+
         data.push(status);
     }
     if (country_code) {
-        cols.push("countryCode");
-        params.push(`$${idx++}`);
+        cols.push(`countryCode = $${idx++}`);
+
         data.push(country_code);
     }
     if (country_oid) {
-        cols.push("countryOid");
-        params.push(`$${idx++}`);
+        cols.push(`countryOid = $${idx++}`);
+
         data.push(country_oid);
     }
     if (mobile_no) {
-        cols.push("mobileNo");
-        params.push(`$${idx++}`);
+        cols.push(`mobileNo = $${idx++}`);
+
         data.push(mobile_no);
     }
     if (email) {
-        cols.push("email");
-        params.push(`$${idx++}`);
+        cols.push(`email = $${idx++}`);
+
         data.push(email);
     }
     if (personal_no) {
-        cols.push("personalNo");
-        params.push(`$${idx++}`);
+        cols.push(`personalNo = $${idx++}`);
+
         data.push(personal_no);
     }
     if (birth_registration_no) {
-        cols.push("birthRegistrationNo");
-        params.push(`$${idx++}`);
+        cols.push(`birthRegistrationNo = $${idx++}`);
+
         data.push(birth_registration_no);
     }
 
     if (previous_passport_number) {
-        cols.push("previousPassportNumber");
-        params.push(`$${idx++}`);
+        cols.push(`previousPassportNumber = $${idx++}`);
+
         data.push(previous_passport_number);
     }
 
 
     if (passport_image_path) {
-        cols.push("passportImagePath");
-        params.push(`$${idx++}`);
+        cols.push(`passportImagePath = $${idx++}`);
+
         data.push(passport_image_path);
     }
 
 
     if (issuing_authority) {
-        cols.push("issuingAuthority");
-        params.push(`$${idx++}`);
+        cols.push(`issuingAuthority = $${idx++}`);
+
         data.push(issuing_authority);
     }
 
 
     if (description) {
-        cols.push("description");
-        params.push(`$${idx++}`);
+        cols.push(`description = $${idx++}`);
+
         data.push(description);
     }
 
     let scols = cols.join(', ')
-    let sparams = params.join(', ')
-    let query = `insert into ${TABLE.PASSPORT} (${scols}) values (${sparams})`;
+    let query = `update ${TABLE.PASSPORT} set ${scols} where 1 = 1 and oid = ${oid}`;
     let sql = {
         text: query,
         values: data
@@ -465,7 +467,7 @@ const savePassportVisa = async (request, userInfo, passportVisa, sortOrderNo, pa
 }
 
 
-const deletePassportDetail = async (passportOid) => {
+const deletePassportDetail = async (request,passportOid) => {
     let executed;
     let data = [passportOid]
     let query = `delete from ${TABLE.PASSPORT_DETAIL}  where 1 = 1 and passportOid = $1`;
@@ -485,7 +487,7 @@ const deletePassportDetail = async (passportOid) => {
 }
 
 
-const deletePassportVisa = async (passportOid) => {
+const deletePassportVisa = async (request,passportOid) => {
     let executed;
     let data = [passportOid]
     let query = `delete from ${TABLE.PASSPORT_VISA_INFORMATION}  where 1 = 1 and passportOid = $1`;
@@ -505,7 +507,7 @@ const deletePassportVisa = async (passportOid) => {
 }
 
 
-const deletePassportCommand = async (passportOid) => {
+const deletePassportCommand = async (request,passportOid) => {
     let executed;
     let data = [passportOid]
     let query = `delete from ${TABLE.PASSPORT_COMMAND}  where 1 = 1 and passportOid = $1`;
@@ -526,7 +528,7 @@ const deletePassportCommand = async (passportOid) => {
 
 
 
-const deleteNotificationSql = async (passportOid) => {
+const deleteNotificationSql = async (request,passportOid) => {
     let executed;
     let data = [passportOid]
     let query = `delete from ${TABLE.PASSENGER_NOTIFICATION}  where 1 = 1 and passportOid = $1`;

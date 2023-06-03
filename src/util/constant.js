@@ -280,7 +280,8 @@ module.exports = {
 
         //Master Expense enpoints 
         MASTER_EXPENSE_GET_LIST: RESOURCES.MASTER_EXPENSE_RESOURCE + "get-list",
-
+        MASTER_EXPENSE_SAVE: RESOURCES.MASTER_EXPENSE_RESOURCE + "save",
+        MASTER_EXPENSE_UPDATE: RESOURCES.MASTER_EXPENSE_RESOURCE + "update",
 
         // Master Inquiry endpoints
         MASTER_INQUIRY_GET_LIST_PATH: RESOURCES.MASTER_INQUIRY_RESOURCE + "get-list",

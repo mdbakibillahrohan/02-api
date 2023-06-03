@@ -430,7 +430,7 @@ const savePassportVisa = async (request, userInfo, passportVisa, sortOrderNo, pa
     }
 
 
-
+    
     if (remarks) {
         cols.push("remarks");
         params.push(`$${idx++}`);
