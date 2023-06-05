@@ -8,12 +8,13 @@ const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const payload_scheme = Joi.object({
+    oid: Joi.string().trim().min(1).required(),
     expense_by: Joi.string().trim().min(1).required(),
     status: Joi.string().valid("Active", "Inactive").required(),
     description: Joi.string().trim().min(1).optional(),
     image_path: Joi.string().trim().min(1).optional(),
     reference_no: Joi.string().trim().min(1).optional(),
-    expense_date: Joi.date().required(),
+    expense_date: Joi.date().optional(),
 
     expense_detail_list: Joi.array().items(Joi.object({
         description: Joi.string().trim().min(1).optional(),
@@ -27,15 +28,15 @@ const payload_scheme = Joi.object({
     })).required(),
 });
 
-const save_controller = {
+const update_controller = {
     method: "POST",
-    path: API.CONTEXT + API.MASTER_EXPENSE_SAVE,
+    path: API.CONTEXT + API.MASTER_EXPENSE_UPDATE,
     options: {
         auth: {
             mode: "required",
             strategy: "jwt",
         },
-        description: "save expense information",
+        description: "update expense information",
         plugins: { hapiAuthorization: false },
         validate: {
             payload: payload_scheme,
@@ -56,33 +57,44 @@ const save_controller = {
 };
 
 const handle_request = async (request) => {
-    let save_data_return;
+    let update_data_return;
     try {
-        save_data_return = await save_data(request);
-        if (save_data_return.status) {
-            log.info(`Successfully saved`);
-            return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };
+        update_data_return = await update_data(request);
+        if (update_data_return.status) {
+            log.info(`Successfully updated`);
+            return { status: true, code: 200, message: MESSAGE.SUCCESS_UPDATE };
         }
-        return { status: false, code: 409, message: save_data_return.message };
+        return { status: false, code: 409, message: update_data_return.message };
     } catch (err) {
-        log.error(`An exception occurred while saving expense info: ${err}`);
+        log.error(`An exception occurred while updating expense info: ${err}`);
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
     }
 };
 
-const save_data = async (request) => {
+const update_data = async (request) => {
     try {
         const userInfo = await autheticatedUserInfo(request);
         request.payload.userInfo = userInfo;
 
         const expenseSummary = ready(request);
-        const executeSaveExpense = await saveExpense(request, expenseSummary);
-        if (!executeSaveExpense) {
+        const executeUpdateExpense = await updateExpense(request, expenseSummary);
+        if (!executeUpdateExpense) {
             return {
                 status: false,
-                message: "Save expense execution failed"
+                message: "update expense execution failed"
             }
         }
+
+        const executeDeleteExpenseDetail = await deleteExpenseDetail(request, expenseSummary.oid);
+        if(!executeDeleteExpenseDetail){
+            return {
+                status: false,
+                message: "delete expense execution failed"
+            }
+        }
+        await deletePayment(request, expenseSummary);
+
+        
         expenseSummary.expenseDetailList.forEach(async (element) => {
             await saveExpenseDetail(request, expenseSummary, element);
         })
@@ -134,56 +146,94 @@ const saveExpenseDetail = async (request, expenseSummary, expenseDetail) => {
 }
 
 
-const saveExpense = async (request, expense) => {
-    const { oid, expenseNo, expenseDate, expenseBy, status, imagePath, description, referenceNo, expenseAmount, paidAmount, dueAmount } = expense;
+const updateExpense = async (request, expense) => {
+    const { oid, expenseDate, expenseBy, status, imagePath, description, referenceNo, expenseAmount, paidAmount, dueAmount } = expense;
     const { userInfo } = request.payload;
     let executed;
     let idx = 1;
-    let cols = ["oid", "expenseNo", "expenseDate", "expenseBy", "status", "createdBy", "companyOid"];
-    let params = [`$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`, `$${idx++}`];
-    let data = [oid, expenseNo, new Date(expenseDate).toISOString().slice(0, 10), expenseBy, status, userInfo.loginid, userInfo.companyoid];
+    let cols = [`expenseBy = $${idx++}`, `status = $${idx++}`, `editedBy = $${idx++}`, `editedOn = now()`];
+    let data = [expenseBy, status, userInfo.loginid];
 
+
+    if (expenseDate) {
+        cols.push(`expenseDate = $${idx++}`);
+        data.push(expenseDate);
+    } else {
+        cols.push(`expenseDate = null`);
+    }
 
     if (imagePath) {
-        cols.push("imagePath");
-        params.push(`$${idx++}`);
+        cols.push(`imagePath = $${idx++}`);
         data.push(imagePath);
     }
 
     if (description) {
-        cols.push("description");
-        params.push(`$${idx++}`);
+        cols.push(`description = $${idx++}`);
         data.push(description);
     }
 
     if (referenceNo) {
-        cols.push("referenceNo");
-        params.push(`$${idx++}`);
+        cols.push(`referenceNo = $${idx++}`);
         data.push(referenceNo);
     }
 
     if (expenseAmount && expenseAmount > 0) {
-        cols.push("expenseAmount");
-        params.push(`$${idx++}`);
+        cols.push(`expenseAmount = $${idx++}`);
         data.push(expenseAmount);
     }
 
     if (paidAmount && paidAmount > 0) {
-        cols.push("paidAmount");
-        params.push(`$${idx++}`);
+        cols.push(`paidAmount = $${idx++}`);
         data.push(paidAmount);
     }
 
     if (dueAmount && dueAmount > 0) {
-        cols.push("dueAmount");
-        params.push(`$${idx++}`);
+        cols.push(`dueAmount = $${idx++}`);
         data.push(dueAmount);
     }
 
 
     let scols = cols.join(', ')
-    let sparams = params.join(', ')
-    let query = `insert into ${TABLE.EXPENSE_SUMMARY} (${scols}) values (${sparams})`;
+    let query = `update ${TABLE.EXPENSE_SUMMARY} set ${scols} where 1 = 1 and oid = $${idx++}`;
+    data.push(oid)
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        executed = await Dao.execute_value(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    if (executed.rowCount > 0) {
+        return true;
+    }
+    return false;
+}
+
+const deleteExpenseDetail = async (request, expenseOid) => {
+    let executed;
+    let data = [expenseOid];
+    let query = `delete from ${TABLE.EXPENSE_DETAIL} where 1 = 1 and expenseOid = $1`;
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        executed = await Dao.execute_value(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    if (executed.rowCount > 0) {
+        return true;
+    }
+    return false;
+}
+
+const deletePayment = async (request, expenseSummary) => {
+    let executed;
+    let data = [expenseSummary.oid, "Expense"];
+    let query = `delete from ${TABLE.PAYMENT} where 1 = 1 and referenceOid = $1 and referenceType = $2`;
     let sql = {
         text: query,
         values: data
@@ -230,7 +280,7 @@ const ready = (request) => {
 
     const dueAmount = expenseAmount - paidAmount;
     const expenseSummary = {
-        oid: uuid.v4(),
+        oid: request.payload["oid"],
         expenseNo: new Date().getTime(),
         expenseBy: expense_by,
         status: status,
@@ -247,4 +297,4 @@ const ready = (request) => {
 }
 
 
-module.exports = save_controller;
+module.exports = update_controller;
