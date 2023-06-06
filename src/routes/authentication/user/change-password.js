@@ -40,7 +40,7 @@ const route_controller = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 301, status: false, message: err?.message }).takeover();
+                return h.response({ code: 301, status: false, message: err }).takeover();
             },
         },
     },
@@ -78,7 +78,7 @@ const handle_request = async (request) => {
             }
         }
     } catch (err) {
-        log.error(`An exception occurred while updating: ${err?.message}`);
+        log.error(`An exception occurred while updating: ${err}`);
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
     }
 
@@ -95,7 +95,7 @@ const get_password = async (request) => {
         let data_set = await Dao.get_data(request.pg, sql)
         data = data_set.length > 0 ? data_set[0] : null
     } catch (e) {
-        log.error(`An exception occurred while changing password: ${e?.message}`)
+        log.error(`An exception occurred while changing password: ${e}`)
     }
     return data
 }
@@ -109,7 +109,7 @@ const change_password = async (request, new_password) => {
     try {
         await Dao.execute_value(request.pg, sql)
     } catch (e) {
-        log.error(`An exception occurred while changing password: ${e?.message}`)
+        log.error(`An exception occurred while changing password: ${e}`)
     }
 }
 

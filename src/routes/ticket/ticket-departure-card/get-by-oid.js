@@ -26,7 +26,7 @@ const route_controller = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 301, status: false, message: err?.message }).takeover();
+                return h.response({ code: 301, status: false, message: err }).takeover();
             },
         },
     },
@@ -41,7 +41,7 @@ const route_controller = {
 const handle_request = async (request) => {
     try {
         let data = await get_data(request);
-        
+
         log.info(`data found by oid`);
         return {
             status: true,
@@ -50,18 +50,18 @@ const handle_request = async (request) => {
             data: data
         };
     } catch (err) {
-        log.error(err?.message);
+        log.error(err);
     }
 }
 const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
- 
-    let query = `select  oid, passengerName as "passenger_name", gender, nationality, passportNumber as "passport_number", flightNumber as "flight_number", addressForForeigners as "address_for_foreigners", visaNumber as "visa_number", visaType as "visa_type", purposeOfVisit as "purpose_of_visit", companyOid as "company_oid", to_char(birthDate, 'YYYY-MM-DD') as "birth_date", to_char(passportExpiryDate, 'YYYY-MM-DD') as "passport_expiry_date", to_char(departureDate, 'YYYY-MM-DD') as "departure_date", to_char(visaExpiryDate, 'YYYY-MM-DD') as "visa_expiry_date" from ${ TABLE.DEPARTURE_CARD } where 1 = 1 and oid = $1 and companyoid = $2 `;
-    
-    data.push( request.query["oid"], userInfo.companyoid); 
-    
+
+    let query = `select  oid, passengerName as "passenger_name", gender, nationality, passportNumber as "passport_number", flightNumber as "flight_number", addressForForeigners as "address_for_foreigners", visaNumber as "visa_number", visaType as "visa_type", purposeOfVisit as "purpose_of_visit", companyOid as "company_oid", to_char(birthDate, 'YYYY-MM-DD') as "birth_date", to_char(passportExpiryDate, 'YYYY-MM-DD') as "passport_expiry_date", to_char(departureDate, 'YYYY-MM-DD') as "departure_date", to_char(visaExpiryDate, 'YYYY-MM-DD') as "visa_expiry_date" from ${TABLE.DEPARTURE_CARD} where 1 = 1 and oid = $1 and companyoid = $2 `;
+
+    data.push(request.query["oid"], userInfo.companyoid);
+
     let sql = {
         text: query,
         values: data
@@ -70,7 +70,7 @@ const get_data = async (request) => {
         let data_set = await Dao.get_data(request.pg, sql);
         list_data = data_set.length < 1 ? null : data_set[0];
     } catch (e) {
-        log.error(`An exception occurred while getting data by oid: ${e?.message}`);
+        log.error(`An exception occurred while getting data by oid: ${e}`);
     }
     return list_data;
 }

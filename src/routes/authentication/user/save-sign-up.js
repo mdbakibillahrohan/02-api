@@ -32,7 +32,7 @@ const save_controller = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 301, status: false, message: err?.message }).takeover();
+                return h.response({ code: 301, status: false, message: err }).takeover();
             },
         },
     },
@@ -89,7 +89,7 @@ const handle_request = async (request) => {
 
 
     } catch (err) {
-        log.error(`An exception occurred while saving: ${err?.message}`);
+        log.error(`An exception occurred while saving: ${err}`);
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
     }
 };
@@ -146,19 +146,19 @@ const saveLogin = async (request) => {
         text: query,
         values: data
     }
-    
+
     try {
-       return await Dao.execute_value(request.pg, sql) 
+        return await Dao.execute_value(request.pg, sql)
     }
     catch (err) {
-        log.error(err?.message);
+        log.error(err);
 
     }
 
 };
 
 const checkLoginId = async (request) => {
-    try{
+    try {
 
         let query = `select oid, loginId as login_id from ${ TABLE.LOGIN }  where 1 = 1 and loginId = $1`;
         let sql = {
@@ -166,11 +166,11 @@ const checkLoginId = async (request) => {
             values: [request.payload["login_id"]]
         }
         return await Dao.get_data(request.pg, sql)
-    } 
+    }
     catch (err) {
         log.error(`CheckLoginId error : ${err}`)
     }
-    
+
 }
 const saveCompany = async  (request) => {
 
@@ -178,7 +178,7 @@ const saveCompany = async  (request) => {
     let params = ["$1", "$2", "$3", "$4", "$5"];
     let data = [request.payload.companyOid, request.payload['company_name'], request.payload["mnemonic"], request.payload["company_address"], request.payload.package_oid];
     let idx = 6;
- 
+
     let scols = cols.join(', ')
     let sparams = params.join(', ')
     let query = `insert into ${TABLE.COMPANY} (${scols}) values (${sparams})`;
@@ -190,10 +190,10 @@ const saveCompany = async  (request) => {
 
         return await Dao.execute_value(request.pg, sql)
     }
-    catch (err){
-        log.error(`savaCompany Funtion error: ${err?.message}`)
+    catch (err) {
+        log.error(`savaCompany Funtion error: ${err}`)
     }
-} 
+}
 
 const savePeople = async (request) => {
 
@@ -221,12 +221,12 @@ const savePeople = async (request) => {
         text: query,
         values: data
     }
-    
+
     try {
-       return await Dao.execute_value(request.pg, sql) 
+        return await Dao.execute_value(request.pg, sql)
     }
     catch (err) {
-        log.error("An Error in savePeople :",err?.message);
+        log.error("An Error in savePeople :", err);
 
     }
 }

@@ -13,7 +13,7 @@ const payload_scheme = Joi.object({
     image_path: Joi.string().trim().min(1).max(256).required(),
     mobile_no: Joi.string().trim().min(1).max(128).required(),
     email: Joi.string().trim().email().required(),
-    
+
     status: Joi.string().trim().min(1).max(32).optional(),
     address: Joi.string().trim().min(1).max(128).optional(),
     initial_balance: Joi.number().optional(),
@@ -48,7 +48,7 @@ const save_controller = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 301, status: false, message: err?.message }).takeover();
+                return h.response({ code: 301, status: false, message: err }).takeover();
             },
         },
     },
@@ -66,12 +66,12 @@ const handle_request = async (request) => {
         log.info(`Successfully saved`);
         return { status: true, code: 200, message: MESSAGE.SUCCESS_SAVE };
     } catch (err) {
-        log.error(`An exception occurred while saving: ${err?.message}`);
+        log.error(`An exception occurred while saving: ${err}`);
         return { status: false, code: 500, message: MESSAGE.INTERNAL_SERVER_ERROR };
     }
 };
 const save_data = async (request) => {
-    try{
+    try {
         const userInfo = await autheticatedUserInfo(request);
         const supplierOid = uuid.v4();
 
@@ -86,8 +86,8 @@ const save_data = async (request) => {
             await saveSupplierEmailService(userInfo, email, request)
             
         });
-    } catch ( err ){
-        log.error(`${err?.message}`)
+    } catch (err) {
+        log.error(`${err}`)
     }
 }
 const save = async (userInfo, oid, request) => {
@@ -102,12 +102,12 @@ const save = async (userInfo, oid, request) => {
         data.push(request.payload["mobile_no"]);
 
     }
-    if(request.payload["email"]){
+    if (request.payload["email"]) {
         cols.push("email");
         params.push(`$${idx++}`);
         data.push(request.payload["email"]);
     }
-    if(request.payload["address"]){
+    if (request.payload["address"]) {
         cols.push("address");
         params.push(`$${idx++}`);
         data.push(request.payload["address"]);
@@ -144,17 +144,17 @@ const save = async (userInfo, oid, request) => {
     }
     let scols = cols.join(', ')
     let sparams = params.join(', ')
-    let query = `insert into ${ TABLE.SUPPLIER } (${scols}) values (${sparams})`;
+    let query = `insert into ${TABLE.SUPPLIER} (${scols}) values (${sparams})`;
     let sql = {
         text: query,
         values: data
     }
     let execute;
-    try{
-       execute =  await Dao.execute_value(request.pg, sql);
+    try {
+        execute = await Dao.execute_value(request.pg, sql);
 
-    } catch(err) {
-        log.error(`saveSupplier Error: ${err?.message}`)
+    } catch (err) {
+        log.error(`saveSupplier Error: ${err}`)
     }
     return execute
 };
@@ -176,24 +176,24 @@ const saveSupplierEmailService = async (userInfo, email, request) => {
         params.push( `$${idx++}` );
         data.push(email["contact_no"]);
     }
-    if( email["remarks"] ){
+    if (email["remarks"]) {
         cols.push("remarks");
-        params.push( `$${idx++}` );
+        params.push(`$${idx++}`);
         data.push(email["remarks"]);
     }
 
     let scols = cols.join(', ')
     let sparams = params.join(', ')
-    let query = `insert into ${ TABLE.SUPPLIER_EMAIL_SERVICE } (${scols}) values (${sparams})`;
+    let query = `insert into ${TABLE.SUPPLIER_EMAIL_SERVICE} (${scols}) values (${sparams})`;
     let sql = {
         text: query,
         values: data
     }
     let execute;
-    try{
-       execute =  await Dao.execute_value(request.pg, sql);
-    } catch(err) {
-        log.error(`saveSupplierEmailService error: ${err?.message}`)
+    try {
+        execute = await Dao.execute_value(request.pg, sql);
+    } catch (err) {
+        log.error(`saveSupplierEmailService error: ${err}`)
     }
     return execute
 }

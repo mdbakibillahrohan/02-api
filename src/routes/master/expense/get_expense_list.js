@@ -28,7 +28,7 @@ const get_list = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 400, status: false, message: err?.message }).takeover();
+                return h.response({ code: 400, status: false, message: err }).takeover();
             },
         },
     },
@@ -59,7 +59,7 @@ const handle_request = async (request) => {
             count: count
         };
     } catch (err) {
-        log.error(`An exception occurred while getting master expense list data : ${err?.message}`);
+        log.error(`An exception occurred while getting master expense list data : ${err}`);
         return {
             status: false,
             code: 500,
@@ -105,8 +105,8 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
-    let query = `select oid, customerId, name, address, mobileNo, email, imagePath,
-     initialBalance, commissionType, commissionValue, serviceCharge, supplier_balance(oid) as balance, supplier_creditnote_balance(oid) as vendorCreditBalance, (select coalesce(sum(amount), 0) from ${TABLE.PAYMENT} where 1 = 1 and status = $1 and referenceType = $2 and referenceOid = oid) as paidAmount from ${TABLE.SUPPLIER} where 1 = 1`;
+    let query = `select oid, customerId as "customer_id", name, address, mobileNo as "mobile_no", email, imagePath as "image_path",
+     initialBalance as "initial_balance", commissionType as "comission_type", commissionValue as "comission_value", serviceCharge as "service_charge", supplier_balance(oid) as "balance", supplier_creditnote_balance(oid) as "vendor_credit_balance", (select coalesce(sum(amount), 0) from ${TABLE.PAYMENT} where 1 = 1 and status = $1 and referenceType = $2 and referenceOid = oid) as "paid_amount" from ${TABLE.SUPPLIER} where 1 = 1`;
     data.push(CONSTANT.ACTIVE, CONSTANT.SUPPLIER);
     let idx = 3;
     query += ` and companyoid = $${idx}`;

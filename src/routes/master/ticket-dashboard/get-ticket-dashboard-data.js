@@ -27,7 +27,7 @@ const route_controller = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 301, status: false, message: err?.message }).takeover();
+                return h.response({ code: 301, status: false, message: err }).takeover();
             },
         },
     },
@@ -44,16 +44,16 @@ const handle_request = async (request) => {
         let userInfo = await autheticatedUserInfo(request)
 
         let from = new Date(request.query["fromDate"]);
-        from.setDate( from.getDate() + 1 )
+        from.setDate(from.getDate() + 1)
 
         let to = new Date(`${request.query["toDate"]}`);
-        to.setDate( to.getDate() + 1 )
+        to.setDate(to.getDate() + 1)
 
-        request.query.fromDate = from.toISOString().slice(0,10);
-        request.query.toDate = to.toISOString().slice(0,10)
-        
+        request.query.fromDate = from.toISOString().slice(0, 10);
+        request.query.toDate = to.toISOString().slice(0, 10)
+
         const data = await getData(userInfo, request);
-        
+
         return {
             status: true,
             code: 200,
@@ -61,7 +61,7 @@ const handle_request = async (request) => {
             data
         };
     } catch (err) {
-        log.error(err?.message);
+        log.error(err);
         return {
             status: false,
             code: 500,
@@ -84,45 +84,45 @@ const getData = async (userInfo, request) => {
             total_sales_ticket_count,
             total_ticket_sales_amount,
             total_ticket_received_amount,
-            total_ticket_due_amount: ( total_ticket_sales_amount - total_ticket_received_amount ),
+            total_ticket_due_amount: (total_ticket_sales_amount - total_ticket_received_amount),
             total_ticket_bill_amount,
             total_ticket_bill_paid_amount,
-            total_ticket_payable_amount: ( total_ticket_bill_amount - total_ticket_bill_paid_amount),
+            total_ticket_payable_amount: (total_ticket_bill_amount - total_ticket_bill_paid_amount),
             total_ticket_vendor_payment_amount,
-            total_ticket_profit_amount: ( total_ticket_sales_amount - total_ticket_bill_amount),
+            total_ticket_profit_amount: (total_ticket_sales_amount - total_ticket_bill_amount),
             total_ticket_segment: segment,
 
         }
         return data_list;
 
-    } catch(err) {
-        log.error(`an error in get ticket dashboard data ${ err?.message }`)
+    } catch (err) {
+        log.error(`an error in get ticket dashboard data ${err}`)
 
     }
-     
+
 }
 const getTicketSalesAmount = async (userInfo, request) => {
     let list_data = [];
     let data = [];
     console.log(request.query)
-    let query = `select coalesce(sum(netsalesprice), 0) from ${ TABLE.TICKET_INVOICE }
+    let query = `select coalesce(sum(netsalesprice), 0) from ${TABLE.TICKET_INVOICE}
         where 1 = 1 and companyOid = $1 and status = $2 and invoiceDate between 
-        '${ request.query['fromDate'] }' and
-        '${ request.query['toDate'] }' `;
+        '${request.query['fromDate']}' and
+        '${request.query['toDate']}' `;
 
     data.push(userInfo.companyoid, CONSTANT.ACTIVE);
     let sql = {
         text: query,
         values: data
     }
-    try{
+    try {
         list_data = await Dao.get_data(request.pg, sql);
 
     }
-    catch(err) {
-        log.error(`An exception occurred while getting sales amount : ${err?.message}`)
+    catch (err) {
+        log.error(`An exception occurred while getting sales amount : ${err}`)
         // throw new Error(e);
-        
+
     }
     return list_data;
 }
@@ -130,26 +130,26 @@ const getReceivedAmount = async (userInfo, request) => {
     let list_data = [];
     let data = [];
 
-    let query = `select coalesce(sum(ibp.amount), 0) from ${ TABLE.TICKET_INVOICE } as ti 
-        ${ TABLE.INVOICE_BILL_PAYMENT } as ibp, ${ TABLE.PAYMENT } as p 
+    let query = `select coalesce(sum(ibp.amount), 0) from ${TABLE.TICKET_INVOICE} as ti 
+        ${TABLE.INVOICE_BILL_PAYMENT} as ibp, ${TABLE.PAYMENT} as p 
         where 1 = 1 and ti.oid = ibp.refInvoiceOid and ibp.paymentOid = p.oid 
         and ti.companyOid = $1 and p.referenceType = $2 
-        and ti.invoiceDate between '${ request.query['fromDate'] }' and
-        '${ request.query['toDate'] }' `;
+        and ti.invoiceDate between '${request.query['fromDate']}' and
+        '${request.query['toDate']}' `;
 
     data.push(userInfo.companyoid, CONSTANT.CUSTOMER);
     let sql = {
         text: query,
         values: data
     }
-    try{
+    try {
         list_data = await Dao.get_data(request.pg, sql);
 
     }
-    catch(err) {
-        log.error(`An exception occurred while getting received amount : ${err?.message}`)
+    catch (err) {
+        log.error(`An exception occurred while getting received amount : ${err}`)
         // throw new Error(e);
-        
+
     }
     return list_data;
 }
@@ -159,24 +159,24 @@ const getTicketBillAmount = async (userInfo, request) => {
     let data = [];
 
     let query = `select coalesce(sum(purchasePrice), 0)
-        from ${ TABLE.TICKET_INVOICE }
+        from ${TABLE.TICKET_INVOICE}
         where 1 = 1 and companyOid = $1 and status = $2 
-        and invoiceDate between '${ request.query['fromDate'] }' and
-        '${ request.query['toDate'] }' `;
+        and invoiceDate between '${request.query['fromDate']}' and
+        '${request.query['toDate']}' `;
 
     data.push(userInfo.companyoid, CONSTANT.ACTIVE);
     let sql = {
         text: query,
         values: data
     }
-    try{
+    try {
         list_data = await Dao.get_data(request.pg, sql);
 
     }
-    catch(err) {
-        log.error(`An exception occurred while getting ticket bill amount : ${err?.message}`)
+    catch (err) {
+        log.error(`An exception occurred while getting ticket bill amount : ${err}`)
         // throw new Error(e);
-        
+
     }
     return list_data;
 }
@@ -186,25 +186,25 @@ const getBillPaidAmount = async (userInfo, request) => {
     let data = [];
 
     let query = `select coalesce(sum(ibp.amount), 0)
-        from ${ TABLE.TICKET_INVOICE } as ti, ${ TABLE.INVOICE_BILL_PAYMENT } as ibp, 
-        ${ TABLE.PAYMENT } as p where 1 = 1 and ti.oid = ibp.refInvoiceOid and 
+        from ${TABLE.TICKET_INVOICE} as ti, ${TABLE.INVOICE_BILL_PAYMENT} as ibp, 
+        ${TABLE.PAYMENT} as p where 1 = 1 and ti.oid = ibp.refInvoiceOid and 
         ibp.paymentOid = p.oid and ti.companyOid = $1 and p.referenceType = $2 and 
-        ti.invoiceDate between '${ request.query['fromDate'] }' 
-        and '${ request.query['toDate'] }' `;
+        ti.invoiceDate between '${request.query['fromDate']}' 
+        and '${request.query['toDate']}' `;
 
     data.push(userInfo.companyoid, CONSTANT.SUPPLIER);
     let sql = {
         text: query,
         values: data
     }
-    try{
+    try {
         list_data = await Dao.get_data(request.pg, sql);
 
     }
-    catch(err) {
-        log.error(`An exception occurred while getting bill paid amount : ${err?.message}`)
+    catch (err) {
+        log.error(`An exception occurred while getting bill paid amount : ${err}`)
         // throw new Error(e);
-        
+
     }
     return list_data;
 }
@@ -212,47 +212,47 @@ const getSalesTicketCount = async (userInfo, request) => {
     let list_data = [];
     let data = [];
 
-    let query = `select coalesce(count(t.oid), 0) from ${ TABLE.TICKET_INVOICE } as ti,
-        ${ TABLE.TICKET } as t where 1 = 1 and ti.oid = t.ticketInvoiceOid and 
+    let query = `select coalesce(count(t.oid), 0) from ${TABLE.TICKET_INVOICE} as ti,
+        ${TABLE.TICKET} as t where 1 = 1 and ti.oid = t.ticketInvoiceOid and 
         ti.companyOid = $1 and ti.status = $2 and ti.invoiceDate between 
-        '${ request.query['fromDate'] }' and '${ request.query['toDate'] }' `;
+        '${request.query['fromDate']}' and '${request.query['toDate']}' `;
 
     data.push(userInfo.companyoid, CONSTANT.ACTIVE);
     let sql = {
         text: query,
         values: data
     }
-    try{
+    try {
         list_data = await Dao.get_data(request.pg, sql);
 
     }
-    catch(err) {
+    catch (err) {
         log.error(err)
         // throw new Error(e);
-        
+
     }
     return list_data;
 }
 const getSegment = async (userInfo, request) => {
     let list_data = [];
     let data = [];
-    
-    let query = `select coalesce(count(*), 0) from ${ TABLE.ROUTE }
+
+    let query = `select coalesce(count(*), 0) from ${TABLE.ROUTE}
     where 1 = 1 and companyOid = $1 `;
-    
+
     data.push(userInfo.companyoid);
     let sql = {
         text: query,
         values: data
     }
-    try{
+    try {
         list_data = await Dao.get_data(request.pg, sql);
-        
+
     }
-    catch(err) {
-        log.error(`An exception occurred while getting segment : ${err?.message}`)
+    catch (err) {
+        log.error(`An exception occurred while getting segment : ${err}`)
         // throw new Error(e);
-        
+
     }
     return list_data;
 }
@@ -260,23 +260,23 @@ const getVendorPaymentAmount = async (userInfo, request) => {
     let list_data = [];
     let data = [];
 
-    let query = `select coalesce(sum(purchaseprice), 0) from ${ TABLE.TICKET_INVOICE } 
+    let query = `select coalesce(sum(purchaseprice), 0) from ${TABLE.TICKET_INVOICE} 
         where 1 = 1 and companyOid = $1 and invoiceDate between  
-        '${ request.query['fromDate'] }' and '${ request.query['toDate'] }' `;
+        '${request.query['fromDate']}' and '${request.query['toDate']}' `;
 
     data.push(userInfo.companyoid, CONSTANT.ACTIVE);
     let sql = {
         text: query,
         values: data
     }
-    try{
+    try {
         list_data = await Dao.get_data(request.pg, sql);
 
     }
-    catch(err) {
-        log.error(`An exception occurred while getting vendor payment amount : ${err?.message}`)
+    catch (err) {
+        log.error(`An exception occurred while getting vendor payment amount : ${err}`)
         // throw new Error(e);
-        
+
     }
     return list_data;
 }

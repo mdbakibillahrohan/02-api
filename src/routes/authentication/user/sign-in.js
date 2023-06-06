@@ -28,7 +28,7 @@ const route_controller = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 301, status: false, message: err?.message }).takeover()
+                return h.response({ code: 301, status: false, message: err }).takeover()
             },
         },
     },
@@ -54,7 +54,7 @@ const handle_request = async (request, h) => {
     console.log(user)
     let token = JWT.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: process.env.ACCESS_TOKEN_SECRET_EXPIRE,
-        algorithm:TEXT.ALGORITHM 
+        algorithm: TEXT.ALGORITHM
     })
     // await Dao.set_token(request.redis_db, token, JSON.stringify(data), process.env.ACCESS_TOKEN_SECRET_EXPIRE)
     await Dao.set_value(request.redis_db, token, JSON.stringify(data), process.env.ACCESS_TOKEN_SECRET_EXPIRE);
@@ -74,7 +74,7 @@ const get_data = async (request) => {
         let data_set = await Dao.get_data(request.pg, sql)
         data = data_set.length == 1 ? data_set[0] : null
     } catch (e) {
-        log.error(`An exception occurred while getting user data: ${e?.message}`)
+        log.error(`An exception occurred while getting user data: ${e}`)
     }
     return data
 }
@@ -82,7 +82,7 @@ const get_data = async (request) => {
 const save_data = async (request, login_oid) => {
     let oid = uuid.v4()
     let cols = ['oid', 'ipaddress', 'loginOid', 'loginTime', 'logoutTime', 'status']
-    let params = ['$1', '$2', '$3', 'clock_timestamp()', `clock_timestamp() + interval '${ms(process.env.ACCESS_TOKEN_SECRET_EXPIRE)/(1000*60*60*24)} days'`, '$4']
+    let params = ['$1', '$2', '$3', 'clock_timestamp()', `clock_timestamp() + interval '${ms(process.env.ACCESS_TOKEN_SECRET_EXPIRE) / (1000 * 60 * 60 * 24)} days'`, '$4']
     let data = [oid, requestIp.getClientIp(request), login_oid, 'Login']
     let col = cols.join(', ')
     let param = params.join(', ')
@@ -92,7 +92,7 @@ const save_data = async (request, login_oid) => {
     try {
         await Dao.execute_value(request.pg, sql)
     } catch (e) {
-        log.error(`An exception occurred while saving login log : ${e?.message}`)
+        log.error(`An exception occurred while saving login log : ${e}`)
     }
 }
 

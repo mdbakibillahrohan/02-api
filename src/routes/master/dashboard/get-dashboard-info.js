@@ -7,7 +7,7 @@ const { API, MESSAGE, TABLE, CONSTANT } = require("../../../util/constant");
 const { autheticatedUserInfo } = require("../../../util/helper");
 
 const query_scheme = Joi.object({
-    
+
 })
 
 const route_controller = {
@@ -27,14 +27,14 @@ const route_controller = {
             options: {
                 allowUnknown: false,
             },
-            failAction: async(request, h, err) => {
+            failAction: async (request, h, err) => {
                 return h.response({
-                    code: 400, status: false, message: err?.message
+                    code: 400, status: false, message: err
                 }).takeover();
             },
         },
     },
-    handler: async(request, h) => {
+    handler: async (request, h) => {
         log.info(`Request received - ${JSON.stringify(request.query)}`);
         const response = await handle_request(request, h);
         log.debug(`Response sent - ${JSON.stringify(response)}`)
@@ -45,12 +45,12 @@ const route_controller = {
 const handle_request = async (request, h) => {
     try {
         const data = await get_data(request);
-        if ( data.length < 1){
+        if (data.length < 1) {
             log.info(MESSAGE.NO_DATA_FOUND);
-            return { 
-                status: false, 
-                code:400,
-                message: MESSAGE.NO_DATA_FOUND 
+            return {
+                status: false,
+                code: 400,
+                message: MESSAGE.NO_DATA_FOUND
             };
         }
         return {
@@ -60,8 +60,8 @@ const handle_request = async (request, h) => {
             data,
 
         }
-    } catch( err ){
-        log.error(`An exception occurred while getting dashboard info list data: ${err?.message}`);
+    } catch (err) {
+        log.error(`An exception occurred while getting dashboard info list data: ${err}`);
         return {
             status: false,
             code: 500,
@@ -70,7 +70,7 @@ const handle_request = async (request, h) => {
     }
 }
 const get_data = async (request) => {
-    try{
+    try {
         const userInfo = await autheticatedUserInfo(request);
 
         const total_receivable_amount = await getReceivableAmount(userInfo, request)
@@ -86,22 +86,22 @@ const get_data = async (request) => {
         const debit_amount = await getAmount(userInfo, request, months.month, CONSTANT.DEBIT);
         const start_balance = await getAccountBalanceBeforeDate(userInfo, request, months.startDate)
         const end_balance = await getAccountBalanceTillDate(userInfo, request, months.endDate);
-        const total_incoming = await getPaymentAmountByDateRange(userInfo, request, CONSTANT.CREDIT, months.startDate, months.endDate );
+        const total_incoming = await getPaymentAmountByDateRange(userInfo, request, CONSTANT.CREDIT, months.startDate, months.endDate);
         const total_outgoing = await getPaymentAmountByDateRange(userInfo, request, CONSTANT.DEBIT, months.startDate, months.endDate);
 
         const data_list = {
             total_receivable_amount,
             paid_receivable_amount,
-            due_receivable_amount: ( total_receivable_amount - paid_receivable_amount ),
+            due_receivable_amount: (total_receivable_amount - paid_receivable_amount),
             total_payble_amount,
             paid_payble_amount,
-            due_payable: ( total_payble_amount - paid_payble_amount ),
+            due_payable: (total_payble_amount - paid_payble_amount),
             total_vendor_credit_amount,
             paid_vendor_credit_amount,
-            due_vendor_credit: ( total_vendor_credit_amount - paid_vendor_credit_amount),
+            due_vendor_credit: (total_vendor_credit_amount - paid_vendor_credit_amount),
             total_credit_note_amount,
             paid_credit_note_amount,
-            due_credit_note: ( total_credit_note_amount - paid_credit_note_amount),
+            due_credit_note: (total_credit_note_amount - paid_credit_note_amount),
             months: months.month,
             startDate: months.startDate,
             endDate: months.endDate,
@@ -115,10 +115,10 @@ const get_data = async (request) => {
         }
 
         return data_list;
-        
+
     }
-    catch (err){
-        log.error(`An exception occurred while getting dashboard info list data: ${err?.message}`);
+    catch (err) {
+        log.error(`An exception occurred while getting dashboard info list data: ${err}`);
         return {
             status: false,
             code: 500,
@@ -128,30 +128,30 @@ const get_data = async (request) => {
 }
 
 const getLastTwelveMonths = async () => {
-    let months = { month: []};
+    let months = { month: [] };
     const now = new Date();
     now.setDate(1);
 
     const totalMonth = 12;
-    for(let i = 1; i <= totalMonth; i++){
-        let d = `${ now.getMonth() < 9? '0'+(now.getMonth() + 1): now.getMonth() + 1}-${now.getFullYear()}`;
+    for (let i = 1; i <= totalMonth; i++) {
+        let d = `${now.getMonth() < 9 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1}-${now.getFullYear()}`;
         now.setMonth(now.getMonth() - 1);
         months.month.push(d);
-        if( i == totalMonth ){
-            let startDate = `${ now.getFullYear() }-${ now.getMonth() < 9? '0'+(now.getMonth() + 1): now.getMonth() + 1}-${ now.getDate() < 9? '0'+(now.getDate() + 1) : now.getDate() + 1 }`;
+        if (i == totalMonth) {
+            let startDate = `${now.getFullYear()}-${now.getMonth() < 9 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1}-${now.getDate() < 9 ? '0' + (now.getDate() + 1) : now.getDate() + 1}`;
             months.startDate = startDate;
-        }else if( i == 1 ){
+        } else if (i == 1) {
             const nowDate = new Date();
-            months.endDate = `${ nowDate.getFullYear()}-${ nowDate.getMonth() < 9? '0'+(nowDate.getMonth() + 1): nowDate.getMonth() + 1}-${ nowDate.getDate() < 9? '0'+(nowDate.getDate() + 1) : nowDate.getDate() + 1 }`
-        }   
+            months.endDate = `${nowDate.getFullYear()}-${nowDate.getMonth() < 9 ? '0' + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1}-${nowDate.getDate() < 9 ? '0' + (nowDate.getDate() + 1) : nowDate.getDate() + 1}`
+        }
     }
-   
+
     return months;
 
 }
 const getAmount = async (user, request, months, paymentType) => {
     let amount = [];
-    for(let month of months) {
+    for (let month of months) {
         const a = await getPaymentAmountByMonth(user, request, paymentType, month);
         amount.push(a);
     }
@@ -170,7 +170,7 @@ const getReceivableAmount = async (userInfo, request) => {
 
     try {
         let getData = await Dao.get_data(request.pg, sql);
-        if(getData.length < 1){
+        if (getData.length < 1) {
             log.info(` Receivable amount not found `);
         }
         receivableAmount = getData;
@@ -192,7 +192,7 @@ const getPaidReceivableAmount = async (userInfo, request) => {
     }
     try {
         let getData = await Dao.get_data(request.pg, sql);
-        if(getData.length < 1){
+        if (getData.length < 1) {
             log.info(` Receivable paid amount not found `);
         }
         paidReceivableAmount = getData;
@@ -214,7 +214,7 @@ const getPaybleAmount = async (userInfo, request) => {
     }
     try {
         let getData = await Dao.get_data(request.pg, sql);
-        if(getData.length < 1){
+        if (getData.length < 1) {
             log.info(` payble amount not found `);
         }
         paybleAmount = getData;
@@ -236,7 +236,7 @@ const getPaidPaybleAmount = async (userInfo, request) => {
     }
     try {
         let getData = await Dao.get_data(request.pg, sql);
-        if(getData.length < 1){
+        if (getData.length < 1) {
             log.info(` paid payble amount not found `);
         }
         paidPaybleAmount = getData;
@@ -258,7 +258,7 @@ const getVendorCreditAmount = async (userInfo, request) => {
     }
     try {
         let getData = await Dao.get_data(request.pg, sql);
-        if(getData.length < 1){
+        if (getData.length < 1) {
             log.info(` paid vendor credit data not found `);
         }
         vendorCreditAmount = getData;
@@ -280,7 +280,7 @@ const getPaidVendorCreditAmount = async (userInfo, request) => {
     }
     try {
         let getData = await Dao.get_data(request.pg, sql);
-        if(getData.length < 1){
+        if (getData.length < 1) {
             log.info(` paid vendor credit no data found `);
         }
         paidVendorCreditAmount = getData;
@@ -302,7 +302,7 @@ const getCreditNoteAmount = async (userInfo, request) => {
     }
     try {
         let getData = await Dao.get_data(request.pg, sql);
-        if(getData.length < 1){
+        if (getData.length < 1) {
             log.info(` credit Note Amount no data found `);
         }
         creditNoteAmount = getData;
@@ -324,7 +324,7 @@ const getPaidCreditNoteAmount = async (userInfo, request) => {
     }
     try {
         let getData = await Dao.get_data(request.pg, sql);
-        if(getData.length < 1){
+        if (getData.length < 1) {
             log.info(` paid credit Note Amount no data found `);
         }
         paidCreditNoteAmount = getData;
@@ -337,16 +337,16 @@ const getPaidCreditNoteAmount = async (userInfo, request) => {
 const getPaymentAmountByMonth = async (userInfo, request, paymentType, month) => {
     let paymentAmountByMonth = [];
     let data = [];
-    let query = `select coalesce(sum(amount), 0) from ${ TABLE.PAYMENT } where 1 = 1 and companyOid = $1 and status = $2 and paymentType = $3 and to_char(paymentdate, 'Mon-YY') = $4 `;
+    let query = `select coalesce(sum(amount), 0) from ${TABLE.PAYMENT} where 1 = 1 and companyOid = $1 and status = $2 and paymentType = $3 and to_char(paymentdate, 'Mon-YY') = $4 `;
 
-    data.push(userInfo.companyoid, CONSTANT.ACTIVE, paymentType, month );
+    data.push(userInfo.companyoid, CONSTANT.ACTIVE, paymentType, month);
     let sql = {
         text: query,
         values: data
     }
     try {
         let getData = await Dao.get_data(request.pg, sql);
-        if(getData.length < 1){
+        if (getData.length < 1) {
             log.info(` payment Amount by month no data found `);
         }
         paymentAmountByMonth = getData;
@@ -359,16 +359,16 @@ const getPaymentAmountByMonth = async (userInfo, request, paymentType, month) =>
 const getAccountBalanceBeforeDate = async (userInfo, request, date) => {
     let accountBalance = [];
     let data = [];
-    let query = `select coalesce(sum(account_balance_before_date(oid, $1)), 0) from ${ TABLE.ACCOUNT } where 1 = 1 and companyOid = $2 and status = $3 `;
+    let query = `select coalesce(sum(account_balance_before_date(oid, $1)), 0) from ${TABLE.ACCOUNT} where 1 = 1 and companyOid = $2 and status = $3 `;
 
-    data.push( date, userInfo.companyoid, CONSTANT.ACTIVE );
+    data.push(date, userInfo.companyoid, CONSTANT.ACTIVE);
     let sql = {
         text: query,
         values: data
     }
     try {
         let getData = await Dao.get_data(request.pg, sql);
-        if(getData.length < 1){
+        if (getData.length < 1) {
             log.info(` no data found `);
         }
         accountBalance = getData;
@@ -382,16 +382,16 @@ const getAccountBalanceTillDate = async (userInfo, request, date) => {
     let data_list = [];
     let data = [];
     let query = `select coalesce(sum(account_balance_till_date(oid, $1)), 0)
-     from ${ TABLE.ACCOUNT } where 1 = 1 and companyOid = $2 and status = $3 `;
+     from ${TABLE.ACCOUNT} where 1 = 1 and companyOid = $2 and status = $3 `;
 
-    data.push( date, userInfo.companyoid, CONSTANT.ACTIVE );
+    data.push(date, userInfo.companyoid, CONSTANT.ACTIVE);
     let sql = {
         text: query,
         values: data
     }
     try {
         let getData = await Dao.get_data(request.pg, sql);
-        if(getData.length < 1){
+        if (getData.length < 1) {
             log.info(` no data found `);
         }
         data_list = getData;
@@ -409,20 +409,20 @@ const getPaymentAmountByDateRange = async (userInfo, request, paymentType, start
     paymentdate >= to_date($4, 'YYYY-MM-DD')::date and 
      paymentdate <= to_date($5, 'YYYY-MM-DD')::date `;   */
 
-    let query = `select coalesce(sum(amount), 0) from ${ TABLE.PAYMENT } 
+    let query = `select coalesce(sum(amount), 0) from ${TABLE.PAYMENT} 
     where 1 = 1 and companyOid = $1 and status = $2 and paymentType = $3  and 
     accountoid is not null and accountoid <> '' and 
     paymentdate >= to_date($4, 'YYYY-MM-DD')::date and 
     paymentdate <= to_date($5, 'YYYY-MM-DD')::date `;
 
-    data.push( userInfo.companyoid, CONSTANT.ACTIVE, paymentType, startDate, endDate);
+    data.push(userInfo.companyoid, CONSTANT.ACTIVE, paymentType, startDate, endDate);
     let sql = {
         text: query,
         values: data
     }
     try {
         let getData = await Dao.get_data(request.pg, sql);
-        if(getData.length < 1){
+        if (getData.length < 1) {
             log.info(` no data found `);
         }
         data_list = getData;
@@ -435,4 +435,3 @@ const getPaymentAmountByDateRange = async (userInfo, request, paymentType, start
 
 
 module.exports = route_controller;
- 

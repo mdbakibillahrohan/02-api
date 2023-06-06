@@ -21,19 +21,19 @@ const route_controller = {
                 validateAclMethod: 'isGranted',
                 aclQuery: async (id, request) => {
                     return {
-                        isGranted: async (user, role) => { 
+                        isGranted: async (user, role) => {
                             return await Helper.is_granted(request, API.SIGN_OUT)
                         }
                     }
                 }
             }
-         },
+        },
         validate: {
             options: {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 301, status: false, message: err?.message }).takeover()
+                return h.response({ code: 301, status: false, message: err }).takeover()
             },
         },
     },
@@ -67,7 +67,7 @@ const update_data = async (request, token) => {
         await Dao.execute_value(request.pg, sql)
         await Dao.del_value(request.redis_wdb, token)
     } catch (e) {
-        log.error(`An exception occurred while updating login log : ${e?.message}`)
+        log.error(`An exception occurred while updating login log : ${e}`)
     }
 }
 

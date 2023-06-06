@@ -24,7 +24,7 @@ const get_list = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 400, status: false, message: err?.message }).takeover();
+                return h.response({ code: 400, status: false, message: err }).takeover();
             },
         },
     },
@@ -51,7 +51,7 @@ const handle_request = async (request) => {
             },
         };
     } catch (err) {
-        log.error(`An exception occurred while getting ticket form data list : ${err?.message}`);
+        log.error(`An exception occurred while getting ticket form data list : ${err}`);
         return {
             status: false,
             code: 500,

@@ -26,7 +26,7 @@ const route_controller = {
                 allowUnknown: false,
             },
             failAction: async (request, h, err) => {
-                return h.response({ code: 301, status: false, message: err?.message }).takeover();
+                return h.response({ code: 301, status: false, message: err }).takeover();
             },
         },
     },
@@ -41,7 +41,7 @@ const route_controller = {
 const handle_request = async (request) => {
     try {
         let data = await get_data(request);
-        
+
         log.info(`data found by oid`);
         return {
             status: true,
@@ -50,19 +50,19 @@ const handle_request = async (request) => {
             data: data
         };
     } catch (err) {
-        log.error(err?.message);
+        log.error(err);
     }
 }
 const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
- 
+
     let query = `select t.oid as "ticket_oid", t.paxName as "passenger_name",
-    p.gender, p.nationality, p.passportNumber as "passport_number", to_char(p.birthDate, 'YYYY-MM-DD') as "birth_date", to_char(p.passportExpiryDate, 'YYYY-MM-DD') as "passport_expiry_date"  from ${ TABLE.TICKET } as t, ${ TABLE.PASSPORT } as p where 1 = 1 and t.oid = $1 and t.passportOid = p.oid and t.companyoid = $2`;
-    
-    data.push( request.query["oid"], userInfo.companyoid); 
-    
+    p.gender, p.nationality, p.passportNumber as "passport_number", to_char(p.birthDate, 'YYYY-MM-DD') as "birth_date", to_char(p.passportExpiryDate, 'YYYY-MM-DD') as "passport_expiry_date"  from ${TABLE.TICKET} as t, ${TABLE.PASSPORT} as p where 1 = 1 and t.oid = $1 and t.passportOid = p.oid and t.companyoid = $2`;
+
+    data.push(request.query["oid"], userInfo.companyoid);
+
     let sql = {
         text: query,
         values: data
@@ -71,7 +71,7 @@ const get_data = async (request) => {
         let data_set = await Dao.get_data(request.pg, sql);
         list_data = data_set.length < 1 ? null : data_set[0];
     } catch (e) {
-        log.error(`An exception occurred while getting data by oid: ${e?.message}`);
+        log.error(`An exception occurred while getting data by oid: ${e}`);
     }
     return list_data;
 }

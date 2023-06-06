@@ -19,11 +19,11 @@
         INVOICE_TICKET_RESOURCE: "invoice/ticket/v1/",
         TICKET_MODIFICATION_RESOURCE: "ticket/modification/v1/",
         TICKET_DEPARTURE_CARD_RESOURCE: "ticket/departure/card/v1/",
-        PAYMENT_RECEIVED_RESOURCE : "payment/received/v1/",
-        PAYMENT_MADE_RESOURCE : "payment/made/v1/",
         PACKAGE_RESOURCE: "package/v1/",
+        PAYMENT_RECEIVED_RESOURCE: "payment/received/v1/",
+        PAYMENT_MADE_RESOURCE: "payment/made/v1/",
+        MASTER_SETTINGS_RESOURCE: "master/settings/v1/",
         UPLOAD_RESOURCE: "upload/v1/",
-
 
     };
 
@@ -36,63 +36,63 @@ module.exports = {
         ALGORITHM: "HS256"
     },
     TABLE: {
-        ANTARIKA_REQUEST_LOG  : "AntarikaRequestLog",
-        ROLE  : "Role",
-        LOGIN  : "Login" ,
-        LOGIN_TRAIL  : "LoginLog" ,
-        SMS_INFORMATION  : "SmsLog" ,
-        METAPROPERTY  : "MetaProperty" ,
-        COMPANY  : "Company" ,
-        CATEGORY  : "Category" ,
-        LEDGER  : "Ledger" ,
-        PRODUCT  : "Product" ,
-        PACKAGE : "Package" ,
-        COUNTRY : "Country" ,
-        SUPPLIER  : "Supplier" ,
-        EXPENSE_SUMMARY  : "ExpenseSummary" ,
-        EXPENSE_DETAIL  : "ExpenseDetail" ,
-        SUPPLIER_EMAIL_SERVICE  : "SupplierEmailService" ,
-        CUSTOMER  : "Customer" ,
-        PASSPORT  : "Passport" ,
-        PASSPORT_DETAIL  : "PassportDetail" ,
-        PASSPORT_COMMAND  : "PassportCommand" ,
-        PASSENGER_NOTIFICATION  : "PassengerNotification" ,
-        PASSPORT_VISA_INFORMATION  : "PassportVisaInformation" ,
-        AIRPORT  : "Airport" ,
-        AIRLINE  : "Airline" ,
-        DEPARTURE_CARD  : "DepartureCard" ,
-        TICKET_INVOICE  : "TicketInvoice" ,
-        TICKET  : "Ticket" ,
-        DRAFT_TICKET  : "DraftTicket" ,
-        ROUTE  : "Route" ,
-        TAX  : "Tax" ,
-        TICKET_INVOICE_LOG  : "TicketInvoiceLog" ,
-        TICKET_LOG  : "TicketLog" ,
-        ACCOUNT  : "Account" ,
-        PAYMENT  : "Payment" ,
-        INVOICE_BILL_PAYMENT  : "InvoiceBillPayment" ,
-        ACCOUNT_TRANSACTION  : "AccountTransaction" ,
-        V_SUPPLIER_LEDGER  : "v_supplier_ledger" ,
-        V_CUSTOMER_LEDGER  : "v_customer_ledger" ,
-        V_SUPPLIER_TICKET_LEDGER  : "v_supplier_ticket_ledger" ,
-        V_CUSTOMER_TICKET_LEDGER  : "v_customer_ticket_ledger" ,
-      
-  
-        DEPARTMENT  : "Department" ,
-        DESIGNATION  : "Designation" ,
-        EMPLOYEE  : "Employee" ,
-        BANK  : "Bank" ,
-        CALENDAR  : "Calendar" ,
-        COMPANY_CALENDAR  : "CompanyCalendar" ,
-        EMPLOYEE_SALARY  : "EmployeeSalary" ,
-        MOBILE_BILL  : "MobileBill" ,
+        ANTARIKA_REQUEST_LOG: "AntarikaRequestLog",
+        ROLE: "Role",
+        LOGIN: "Login",
+        LOGIN_TRAIL: "LoginLog",
+        SMS_INFORMATION: "SmsLog",
+        METAPROPERTY: "MetaProperty",
+        COMPANY: "Company",
+        CATEGORY: "Category",
+        LEDGER: "Ledger",
+        PRODUCT: "Product",
+        PACKAGE: "Package",
+        COUNTRY: "Country",
+        SUPPLIER: "Supplier",
+        EXPENSE_SUMMARY: "ExpenseSummary",
+        EXPENSE_DETAIL: "ExpenseDetail",
+        SUPPLIER_EMAIL_SERVICE: "SupplierEmailService",
+        CUSTOMER: "Customer",
+        PASSPORT: "Passport",
+        PASSPORT_DETAIL: "PassportDetail",
+        PASSPORT_COMMAND: "PassportCommand",
+        PASSENGER_NOTIFICATION: "PassengerNotification",
+        PASSPORT_VISA_INFORMATION: "PassportVisaInformation",
+        AIRPORT: "Airport",
+        AIRLINE: "Airline",
+        DEPARTURE_CARD: "DepartureCard",
+        TICKET_INVOICE: "TicketInvoice",
+        TICKET: "Ticket",
+        DRAFT_TICKET: "DraftTicket",
+        ROUTE: "Route",
+        TAX: "Tax",
+        TICKET_INVOICE_LOG: "TicketInvoiceLog",
+        TICKET_LOG: "TicketLog",
+        ACCOUNT: "Account",
+        PAYMENT: "Payment",
+        INVOICE_BILL_PAYMENT: "InvoiceBillPayment",
+        ACCOUNT_TRANSACTION: "AccountTransaction",
+        V_SUPPLIER_LEDGER: "v_supplier_ledger",
+        V_CUSTOMER_LEDGER: "v_customer_ledger",
+        V_SUPPLIER_TICKET_LEDGER: "v_supplier_ticket_ledger",
+        V_CUSTOMER_TICKET_LEDGER: "v_customer_ticket_ledger",
+
+
+        DEPARTMENT: "Department",
+        DESIGNATION: "Designation",
+        EMPLOYEE: "Employee",
+        BANK: "Bank",
+        CALENDAR: "Calendar",
+        COMPANY_CALENDAR: "CompanyCalendar",
+        EMPLOYEE_SALARY: "EmployeeSalary",
+        MOBILE_BILL: "MobileBill",
 
         LOGIN: "login",
         LOGIN_LOG: "loginlog",
         ROLE: "role",
 
         PASSPORT: "passport",
-        PASSPORT_DETAIL: "passportdetail", 
+        PASSPORT_DETAIL: "passportdetail",
         PASSPORT_VISA_INFORMATION: "passportvisainformation",
         PASSPORT_COMMAND: "passportcommand",
         AIRLINE: "airline",
@@ -195,19 +195,22 @@ module.exports = {
         AUTHENTICATION_USER_CHANGE_PASSWORD_PATH: RESOURCES.AUTHENTICATION_USER_RESOURCE + "change-password",
 
 
+
+        AUTHENTICATION_SAVE_SIGNUP_PATH: RESOURCES.AUTHENTICATION_RESOURCE + "save-signup",
         // image upload enpoint
         IMAGE_UPLOAD_PARH: RESOURCES.UPLOAD_RESOURCE + "image",
-        
+
         // master supplier enpoint
-        MASTER_GET_SUPPLIER_LIST_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "get-list",
-        MASTER_GET_SUPPLIER_BY_OID_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "get-by-oid",
-        MASTER_SUPPLIER_SAVE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "save",
-        MASTER_SUPPLIER_UPDATE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "update",
-        MASTER_SUPPLIER_DELETE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "delete",
-        MASTER_SUPPLIER_EMAIL_SERVICE_DELETE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE+ "email-delete",
+        MASTER_GET_SUPPLIER_LIST_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "get-list",
+        MASTER_GET_SUPPLIER_BY_OID_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "get-by-oid",
+        MASTER_SUPPLIER_SAVE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "save",
+        MASTER_SUPPLIER_UPDATE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "update",
+        MASTER_SUPPLIER_DELETE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "delete",
+        MASTER_SUPPLIER_EMAIL_SERVICE_DELETE_PATH: RESOURCES.MASTER_SUPPLIER_RESOURCE + "email-delete",
 
         // master passport enpoint 
-        MASTER_PASSPORT_SAVE_UPDATE_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "save-update",
+        MASTER_PASSPORT_SAVE_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "save",
+        MASTER_PASSPORT_UPDATE_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "update",
         MASTER_PASSPORT_GET_LIST_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "get-list",
         MASTER_PASSPORT_GET_BY_OID_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "get-by-oid",
         MASTER_PASSPORT_PROFILE_PATH: RESOURCES.MASTER_PASSPORT_RESOURCE + "passport-profile",
@@ -231,9 +234,9 @@ module.exports = {
         MASTER_TRANSACTION_UPDATE_PATH: RESOURCES.MASTER_TRANSACTION_RESOURCE + "update",
 
         // master account enpoint
-        MASTER_ACCOUNT_GET_LIST_PATH : RESOURCES.MASTER_ACCOUNT_RESOURCE + "get-list",
-        MASTER_ACCOUNT_SAVE_PATH : RESOURCES.MASTER_ACCOUNT_RESOURCE + "save",
-        MASTER_ACCOUNT_UPDATE_PATH : RESOURCES.MASTER_ACCOUNT_RESOURCE + "update",
+        MASTER_ACCOUNT_GET_LIST_PATH: RESOURCES.MASTER_ACCOUNT_RESOURCE + "get-list",
+        MASTER_ACCOUNT_SAVE_PATH: RESOURCES.MASTER_ACCOUNT_RESOURCE + "save",
+        MASTER_ACCOUNT_UPDATE_PATH: RESOURCES.MASTER_ACCOUNT_RESOURCE + "update",
 
         // Combobox endpoints
         COMBOBOX_GET_SUPPLIER_LIST: RESOURCES.COMBOBOX_RESOURCE + "supplier-list",
@@ -245,32 +248,35 @@ module.exports = {
 
         // payment enpoint
         // payment recive v1 enpint 
-        PAYMENT_RECEIVED_GET_CREDIT_NOTE_BALANCE_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-credit-note-balance",
-        PAYMENT_RECEIVED_GET_DUE_INVOICE_LIST_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-due-invoice-list",
-        PAYMENT_RECEIVED_GET_BY_OID_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-by-oid",
-        PAYMENT_RECEIVED_PAYMENT_REPORT_BY_OID_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "payment-report-by-oid",
-        PAYMENT_RECEIVED_DELETE_BY_OID_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "delete-by-oid",
-        PAYMENT_RECEIVED_SAVE_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "save",
-        PAYMENT_RECEIVED_UPDATE_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "update",
-        PAYMENT_RECEIVED_GET_LIST_PATH : RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-list",
+        PAYMENT_RECEIVED_GET_CREDIT_NOTE_BALANCE_PATH: RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-credit-note-balance",
+        PAYMENT_RECEIVED_GET_DUE_INVOICE_LIST_PATH: RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-due-invoice-list",
+        PAYMENT_RECEIVED_GET_BY_OID_PATH: RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-by-oid",
+        PAYMENT_RECEIVED_PAYMENT_REPORT_BY_OID_PATH: RESOURCES.PAYMENT_RECEIVED_RESOURCE + "payment-report-by-oid",
+        PAYMENT_RECEIVED_DELETE_BY_OID_PATH: RESOURCES.PAYMENT_RECEIVED_RESOURCE + "delete-by-oid",
+        PAYMENT_RECEIVED_SAVE_PATH: RESOURCES.PAYMENT_RECEIVED_RESOURCE + "save",
+        PAYMENT_RECEIVED_UPDATE_PATH: RESOURCES.PAYMENT_RECEIVED_RESOURCE + "update",
+
+        PAYMENT_RECEIVED_GET_LIST_PATH: RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-list",
+        PAYMENT_RECEIVED_GET_CREDIT_NOTE_BALANCE: RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-credit-note-balance",
+        PAYMENT_RECEIVED_GET_DUE_INVOICE_LIST: RESOURCES.PAYMENT_RECEIVED_RESOURCE + "get-due-invoice-list",
 
         // payment made v1 enpoint
-        PAYMENT_MADE_GET_CREDIT_NOTE_BALANCE_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "get-credit-note-balance",
-        PAYMENT_MADE_GET_DUE_INVOICE_LIST_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "get-due-invoice-list",
-        PAYMENT_MADE_GET_BY_OID_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "get-by-oid",
-        PAYMENT_MADE_DELETE_BY_OID_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "delete-by-oid",
-        PAYMENT_MADE_GET_LIST_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "get-list",
-        PAYMENT_MADE_SAVE_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "save",
-        PAYMENT_MADE_UPDATE_PATH : RESOURCES.PAYMENT_MADE_RESOURCE + "update",
+        PAYMENT_MADE_GET_CREDIT_NOTE_BALANCE_PATH: RESOURCES.PAYMENT_MADE_RESOURCE + "get-credit-note-balance",
+        PAYMENT_MADE_GET_DUE_INVOICE_LIST_PATH: RESOURCES.PAYMENT_MADE_RESOURCE + "get-due-invoice-list",
+        PAYMENT_MADE_GET_BY_OID_PATH: RESOURCES.PAYMENT_MADE_RESOURCE + "get-by-oid",
+        PAYMENT_MADE_DELETE_BY_OID_PATH: RESOURCES.PAYMENT_MADE_RESOURCE + "delete-by-oid",
+        PAYMENT_MADE_GET_LIST_PATH: RESOURCES.PAYMENT_MADE_RESOURCE + "get-list",
+        PAYMENT_MADE_SAVE_PATH: RESOURCES.PAYMENT_MADE_RESOURCE + "save",
+        PAYMENT_MADE_UPDATE_PATH: RESOURCES.PAYMENT_MADE_RESOURCE + "update",
 
         // ticket enpoint
         // ticket-departure-card enpoint 
-        TICKET_DEPARTURE_CARD_GET_LIST_PATH : RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "get-list",
-        TICKET_DEPARTURE_CARD_GET_BY_OID_PATH : RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "get-by-oid",
-        TICKET_DEPARTURE_CARD_GET_BY_TICKET_OID_PATH : RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "get-by-ticketoid",
-        TICKET_DEPARTURE_CARD_SAVE_PATH : RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "save",
-        TICKET_DEPARTURE_CARD_UPDATE_PATH : RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "update",
-        TICKET_DEPARTURE_CARD_DELETE_BY_OID_PATH : RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "delete-by-oid",
+        TICKET_DEPARTURE_CARD_GET_LIST_PATH: RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "get-list",
+        TICKET_DEPARTURE_CARD_GET_BY_OID_PATH: RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "get-by-oid",
+        TICKET_DEPARTURE_CARD_GET_BY_TICKET_OID_PATH: RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "get-by-ticketoid",
+        TICKET_DEPARTURE_CARD_SAVE_PATH: RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "save",
+        TICKET_DEPARTURE_CARD_UPDATE_PATH: RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "update",
+        TICKET_DEPARTURE_CARD_DELETE_BY_OID_PATH: RESOURCES.TICKET_DEPARTURE_CARD_RESOURCE + "delete-by-oid",
         // ticket modification enpoint
         TICKET_MODIFICATION_GET_LIST_PATH: RESOURCES.TICKET_MODIFICATION_RESOURCE + "get-list",
         TICKET_MODIFICATION_REISSUE_INVOICE_UPDATE_PATH: RESOURCES.TICKET_MODIFICATION_RESOURCE + "reissue-invoice-update",
@@ -285,12 +291,18 @@ module.exports = {
 
         // Master Ticket Dashboard enpoint
         TICKET_DASHBOARD_GET_DASHBOARD_INFO_PATH: RESOURCES.TICKET_DASHBOARD_RESOURCE + "get-ticket-dashboard-data",
+
         //Master Customer enpoint
         MASTER_CUSTOMER_GET_LIST: RESOURCES.MASTER_CUSTOMER_RESOURCE + "get-list",
+        MASTER_CUSTOMER_SAVE: RESOURCES.MASTER_CUSTOMER_RESOURCE + "save",
+        MASTER_CUSTOMER_UPDATE: RESOURCES.MASTER_CUSTOMER_RESOURCE + "update",
+        MASTER_CUSTOMER_GET_BY_OID: RESOURCES.MASTER_CUSTOMER_RESOURCE + "get-by-oid",
 
         //Master Expense enpoints 
         MASTER_EXPENSE_GET_LIST: RESOURCES.MASTER_EXPENSE_RESOURCE + "get-list",
-
+        MASTER_EXPENSE_GET_BY_OID: RESOURCES.MASTER_EXPENSE_RESOURCE + "get-by-oid",
+        MASTER_EXPENSE_SAVE: RESOURCES.MASTER_EXPENSE_RESOURCE + "save",
+        MASTER_EXPENSE_UPDATE: RESOURCES.MASTER_EXPENSE_RESOURCE + "update",
 
         // Master Inquiry endpoints
         MASTER_INQUIRY_GET_LIST_PATH: RESOURCES.MASTER_INQUIRY_RESOURCE + "get-list",
@@ -302,16 +314,39 @@ module.exports = {
         MASTER_INQUIRY_GET_BANK_LIST: RESOURCES.MASTER_INQUIRY_RESOURCE + "bank-list",
 
         // Invoice miscellaneuses endpoints
-        INVOICE_MISCELLANEOUSES_GET_LIST_PATH : RESOURCES.INVOICE_MISCELLANEOUSES_RESOURCE + "get-list",
-        INVOICE_MISCELLANEOUSES_GET_BY_OID_PATH : RESOURCES.INVOICE_MISCELLANEOUSES_RESOURCE + "get-by-oid",
-        INVOICE_MISCELLANEOUSES_SAVE_PATH : RESOURCES.INVOICE_MISCELLANEOUSES_RESOURCE + "save",
-        INVOICE_MISCELLANEOUSES_UPDATE_PATH : RESOURCES.INVOICE_MISCELLANEOUSES_RESOURCE + "update",
+        INVOICE_MISCELLANEOUSES_GET_LIST_PATH: RESOURCES.INVOICE_MISCELLANEOUSES_RESOURCE + "get-list",
+        INVOICE_MISCELLANEOUSES_GET_BY_OID_PATH: RESOURCES.INVOICE_MISCELLANEOUSES_RESOURCE + "get-by-oid",
+        INVOICE_MISCELLANEOUSES_SAVE_PATH: RESOURCES.INVOICE_MISCELLANEOUSES_RESOURCE + "save",
+        INVOICE_MISCELLANEOUSES_UPDATE_PATH: RESOURCES.INVOICE_MISCELLANEOUSES_RESOURCE + "update",
 
 
         // Invoice Ticket endpoints 
         INVOICE_TICKET_GET_LIST: RESOURCES.INVOICE_TICKET_RESOURCE + "get-list",
         INVOICE_TICKET_GET_TICKET_LIST: RESOURCES.INVOICE_TICKET_RESOURCE + "ticket-list",
         INVOICE_TICKET_GET_DRAFT_TICKET_LIST: RESOURCES.INVOICE_TICKET_RESOURCE + "draft-ticket-list",
+
+        // Master settings enpoints 
+        MASTER_SETTINGS_GET_DEPARTMENT_LIST: RESOURCES.MASTER_SETTINGS_RESOURCE + "department-list",
+        MASTER_SETTINGS_GET_DEPARTMENT_BY_OID: RESOURCES.MASTER_SETTINGS_RESOURCE + "get-department-by-oid",
+        MASTER_SETTINGS_SAVE_DEPARTMENT: RESOURCES.MASTER_SETTINGS_RESOURCE + "department-save",
+        MASTER_SETTINGS_UPDATE_DEPARTMENT: RESOURCES.MASTER_SETTINGS_RESOURCE + "department-update",
+
+        MASTER_SETTINGS_GET_DESIGNATION_LIST: RESOURCES.MASTER_SETTINGS_RESOURCE + "designation-list",
+        MASTER_SETTINGS_GET_DESIGNATION_BY_OID: RESOURCES.MASTER_SETTINGS_RESOURCE + "get-designation-by-oid",
+        MASTER_SETTINGS_SAVE_DESIGNATION: RESOURCES.MASTER_SETTINGS_RESOURCE + "designation-save",
+        MASTER_SETTINGS_UPDATE_DESIGNATION: RESOURCES.MASTER_SETTINGS_RESOURCE + "designation-update",
+
+        MASTER_SETTINGS_GET_EMPLOYEE_LIST: RESOURCES.MASTER_SETTINGS_RESOURCE + "employee-list",
+        MASTER_SETTINGS_GET_EMPLOYEE_BY_OID: RESOURCES.MASTER_SETTINGS_RESOURCE + "get-employee-by-oid",
+        MASTER_SETTINGS_SAVE_EMPLOYEE: RESOURCES.MASTER_SETTINGS_RESOURCE + "employee-save",
+        MASTER_SETTINGS_UPDATE_EMPLOYEE: RESOURCES.MASTER_SETTINGS_RESOURCE + "employee-update",
+
+        MASTER_SETTINGS_SAVE_COMPANY: RESOURCES.MASTER_SETTINGS_RESOURCE + "company-save",
+        MASTER_SETTINGS_UPDATE_COMPANY: RESOURCES.MASTER_SETTINGS_RESOURCE + "company-update",
+        MASTER_SETTINGS_GET_COMPANY_BY_OID: RESOURCES.MASTER_SETTINGS_RESOURCE + "get-company-by-oid",
+
+        MASTER_SETTINGS_SAVE_USER_PROFILE: RESOURCES.MASTER_SETTINGS_RESOURCE + "user-profile-save",
+        MASTER_SETTINGS_UPDATE_USER_PROFILE: RESOURCES.MASTER_SETTINGS_RESOURCE + "user-profile-update",
 
     },
 
@@ -322,6 +357,7 @@ module.exports = {
         SUCCESS_DELETE: "Successfully Delete data into database",
         SUCCESS_GET_LIST: "Successfully get list data",
         ALREADY_UPDATE: "Data Already update into database",
+        SUCCESS_GET_BY_OID: "Successfully get data by oid",
         INTERNAL_SERVER_ERROR: "Internal server error",
         REQUEST_MSG_PREFIX: "request_",
         FAIL_HEADER_INVALID_REQUEST_CLIENT: "fail_header_invalid_request_client",
@@ -562,7 +598,7 @@ module.exports = {
         SEND_TICKET_EMAIL: "sendticketemail",
         SEND_INVOICE_EMAIL: "sendinvoiceemail",
         SEND_PASSPORT_EMAIL: "sendpassportemail",
-        
+
 
         CUSTOMER_WELCOME_EMAIL: "customerwelcomeemail",
         NEW_CUSTOMER_REGISTRATION_EMAIL: "customerregistrationemail",

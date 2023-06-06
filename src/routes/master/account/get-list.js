@@ -8,7 +8,7 @@ const { autheticatedUserInfo } = require("../../../util/helper");
 
 const query_scheme = Joi.object({
 
-    offset: Joi.number().allow(null,'').max(100000000000).optional(),
+    offset: Joi.number().allow(null, '').max(100000000000).optional(),
     limit: Joi.number().allow(null, '').max(100000000000).optional(),
 })
 
@@ -29,14 +29,14 @@ const route_controller = {
             options: {
                 allowUnknown: false,
             },
-            failAction: async(request, h, err) => {
+            failAction: async (request, h, err) => {
                 return h.response({
-                    code: 400, status: false, message: err?.message
+                    code: 400, status: false, message: err
                 }).takeover();
             },
         },
     },
-    handler: async(request, h) => {
+    handler: async (request, h) => {
         log.info(`Request received - ${JSON.stringify(request.query)}`);
         const response = await handle_request(request);
         log.debug(`Response sent - ${JSON.stringify(response)}`)
@@ -48,17 +48,17 @@ const handle_request = async (request) => {
     try {
         let count = await get_count(request);
         let data = [];
-        if (count == 0){
+        if (count == 0) {
             log.info(MESSAGE.NO_DATA_FOUND);
-            return { 
-                status: false, 
-                code:400,
-                message: MESSAGE.NO_DATA_FOUND 
+            return {
+                status: false,
+                code: 400,
+                message: MESSAGE.NO_DATA_FOUND
             };
         }
         data = await get_data(request);
         log.info(`[${count}] found`)
-        
+
         return {
             status: true,
             code: 200,
@@ -66,8 +66,8 @@ const handle_request = async (request) => {
             data,
             count
         };
-    } catch( err ){
-        log.error(`An exception occurred while getting Transaction list data: ${err?.message}`);
+    } catch (err) {
+        log.error(`An exception occurred while getting Transaction list data: ${err}`);
         return {
             status: false,
             code: 500,
@@ -79,12 +79,12 @@ const get_count = async (request) => {
     let userInfo = await autheticatedUserInfo(request)
     let count = 0;
     let data = [];
-    
-    let query = `select count(oid) from ${ TABLE.ACCOUNT } where 1 = 1 
-    and companyOid = $1`;   
+
+    let query = `select count(oid) from ${TABLE.ACCOUNT} where 1 = 1 
+    and companyOid = $1`;
 
     data.push(userInfo.companyoid);
- 
+
     let sql = {
         text: query,
         values: data
@@ -103,9 +103,9 @@ const get_data = async (request) => {
     const userInfo = await autheticatedUserInfo(request);
     let list_data = [];
     let data = [];
- 
-    let query = `select oid, name, accountNumber as account_number, accountType as account_type, initialBalance as initial_balance, account_balance(oid) as balance from ${ TABLE.ACCOUNT } where 1 = 1 and companyOid = $1`;
-    
+
+    let query = `select oid, name, accountNumber as "account_number", accountType as "account_type", initialBalance as "initial_balance", account_balance(oid) as "balance" from ${TABLE.ACCOUNT} where 1 = 1 and companyOid = $1`;
+
 
     data.push(userInfo.companyoid);
 
@@ -122,7 +122,7 @@ const get_data = async (request) => {
     }
     let sql = {
         text: query,
-        values: data 
+        values: data
     }
     try {
         list_data = await Dao.get_data(request.pg, sql);
@@ -132,4 +132,3 @@ const get_data = async (request) => {
     return list_data;
 }
 module.exports = route_controller;
- 

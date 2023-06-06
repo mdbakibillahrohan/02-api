@@ -1,0 +1,132 @@
+"use strict";
+
+const Joi = require("@hapi/joi");
+const log = require("../../../../util/log");
+const Dao = require("../../../../util/dao");
+const { API, MESSAGE, TABLE } = require("../../../../util/constant");
+const { autheticatedUserInfo } = require("../../../../util/helper");
+
+const query_scheme = Joi.object({
+    searchText: Joi.string().trim().allow(null, '').max(128).optional(),
+    offset: Joi.number().allow(null, '').max(99999999).optional(),
+    limit: Joi.number().allow(null, '').max(99999999).optional(),
+});
+
+const get_list = {
+    method: "GET",
+    path: API.CONTEXT + API.MASTER_SETTINGS_GET_DESIGNATION_LIST,
+    options: {
+        auth: {
+            mode: "required",
+            strategy: "jwt",
+        },
+        description: "master setting designation list",
+        plugins: { hapiAuthorization: false },
+        validate: {
+            query: query_scheme,
+            options: {
+                allowUnknown: false,
+            },
+            failAction: async (request, h, err) => {
+                return h.response({ code: 400, status: false, message: err }).takeover();
+            },
+        },
+    },
+    handler: async (request, h) => {
+        log.info(`Request received - ${JSON.stringify(request.query)}`);
+        const response = await handle_request(request);
+        log.debug(`Response sent - ${JSON.stringify(response)}`);
+        return h.response(response);
+    },
+};
+
+const handle_request = async (request) => {
+    try {
+
+        let count = await get_count(request);
+        let data = [];
+        data = await get_data(request)
+        if (count == 0) {
+            log.info(`No data found`);
+            return { status: false, code: 400, message: `No data found` };
+        }
+        log.info(`[${count}] found`);
+        return {
+            status: true,
+            code: 200,
+            message: MESSAGE.SUCCESS_GET_LIST,
+            data: data,
+            count: count
+        };
+    } catch (err) {
+        log.error(`An exception occurred while getting master settings designation list data : ${err}`);
+        return {
+            status: false,
+            code: 500,
+            message: MESSAGE.INTERNAL_SERVER_ERROR
+        };
+    }
+};
+
+const get_count = async (request) => {
+    const userInfo = await autheticatedUserInfo(request);
+    let count = 0;
+    let data = [];
+    let query = `select count(oid)::int4 as total from ${TABLE.DESIGNATION} where 1 = 1`;
+    let idx = 1;
+    query += ` and companyoid = $${idx++}`;
+    data.push(userInfo.companyoid);
+    if (request.query['searchText']) {
+        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
+        query += ` and nameEn ilike $${idx} or nameBn ilike $${idx} or status ilike $${idx++}`
+        data.push(searchText);
+    }
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        let data_set = await Dao.get_data(request.pg, sql);
+        count = data_set[0]["total"];
+    } catch (e) {
+        throw new Error(e);
+    }
+    return count;
+};
+
+const get_data = async (request) => {
+    const userInfo = await autheticatedUserInfo(request);
+    let list_data = [];
+    let data = [];
+    let query = `select oid, nameEn as "name_en", nameBn as "name_bn", status, sortOrder as "sort_order" from ${TABLE.DESIGNATION} where 1 = 1`;
+    let idx = 1;
+    query += ` and companyoid = $${idx++}`;
+    data.push(userInfo.companyoid);
+    if (request.query['searchText']) {
+        const searchText = '%' + request.query['searchText'].trim().toLowerCase() + '%';
+        query += ` and nameEn ilike $${idx} or nameBn ilike $${idx} or status ilike $${idx++}`
+        data.push(searchText);
+    }
+    query += ` order by createdon desc`;
+    if (request.query.offset) {
+        query += ` offset $${idx++}`;
+        data.push(request.query.offset);
+    }
+    if (request.query.limit) {
+        query += ` limit $${idx++}`;
+        data.push(request.query.limit);
+    }
+
+    let sql = {
+        text: query,
+        values: data
+    }
+    try {
+        list_data = await Dao.get_data(request.pg, sql);
+    } catch (e) {
+        throw new Error(e);
+    }
+    return list_data;
+};
+
+module.exports = get_list;
