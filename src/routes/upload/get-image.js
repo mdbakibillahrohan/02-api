@@ -14,32 +14,18 @@ const payload_scheme = Joi.object({
 
 
 const save_controller = {
-    method: "POST",
-    path: API.CONTEXT + API.IMAGE_UPLOAD_PARH,
+    method: "get",
+    path: API.CONTEXT+ `file`,
 
     options: {
-        auth: {
-            mode: "required",
-            strategy: "jwt",
-        },
+        auth: false,
         description: "image upload",
         plugins: { hapiAuthorization: false },
-        validate: {
-            payload: payload_scheme
-            ,
-            options: {
-                allowUnknown: false,
-            },
-            failAction: async (request, h, err) => {
-                return h.response({ code: 301, status: false, message: err?.message }).takeover();
-            },
-        },
+
     },
     handler: async (request, h) => {
-        log.info(`Request received - ${JSON.stringify(request.payload)}`);
-        const response = await handle_request(request);
-        log.debug(`Response sent - ${JSON.stringify(response)}`);
-        return h.response(response);
+        console.log("image call")
+        return h.file('../../public/upload/file.js')
     },
 };
 

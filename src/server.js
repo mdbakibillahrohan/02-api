@@ -7,6 +7,7 @@ const log = require("./util/log");
 const Dao = require("./util/dao")
 const Hapi = require("@hapi/hapi")
 const Redis = require("redis")
+const inert = require("@hapi/inert")
 let Bluebird = require("bluebird")
 Bluebird.promisifyAll(Redis.RedisClient.prototype)
 Bluebird.promisifyAll(Redis.Multi.prototype)
@@ -49,8 +50,10 @@ const start_server = async () => {
             cors: {
                 origin: ["*"],
             },
+
         },
     })
+    await server.register(require("@hapi/inert"))
 
     await server.register(require("hapi-auth-jwt2"))
     await server.auth.strategy("jwt", "jwt", {
