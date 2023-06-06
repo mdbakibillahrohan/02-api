@@ -348,6 +348,7 @@ module.exports = {
         MASTER_SETTINGS_SAVE_USER_PROFILE: RESOURCES.MASTER_SETTINGS_RESOURCE + "user-profile-save",
         MASTER_SETTINGS_UPDATE_USER_PROFILE: RESOURCES.MASTER_SETTINGS_RESOURCE + "user-profile-update",
 
+        UPLOAD_DOCUMENT: "document/upload"
     },
 
 
