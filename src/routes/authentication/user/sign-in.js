@@ -9,6 +9,7 @@ const JWT = require("jsonwebtoken")
 const requestIp = require('request-ip')
 const { API, TABLE, TEXT } = require("../../../util/constant")
 const { default: ms } = require("ms")
+require("dotenv").config({ path: `./src/env/.env.${process.env.NODE_ENV}` })
 
 const payload_scheme = Joi.object({
     user_id: Joi.string().trim().min(1).max(128).required(),

@@ -1,7 +1,7 @@
-"use strict";
+"use strict"
 
 const uuid = require("uuid")
-const Joi = require("@hapi/joi");
+const Joi = require("@hapi/joi")
 const _ = require("underscore")
 const log = require("../../../util/log")
 const Dao = require("../../../util/dao")
@@ -9,6 +9,7 @@ const JWT = require("jsonwebtoken")
 const requestIp = require('request-ip')
 const { API, MESSAGE, TABLE, CONSTANT, TEXT } = require("../../../util/constant");
 const { default: ms } = require("ms")
+require("dotenv").config({ path: `./src/env/.env.${process.env.NODE_ENV}` })
 
 const payload_scheme = Joi.object({
     user_id: Joi.string().trim().min(1).max(128).required(),
