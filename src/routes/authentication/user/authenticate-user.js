@@ -48,7 +48,7 @@ const handle_request = async (request) => {
             log.warn(`[${request.payload["user_id"]}] - Invalid user_id/password`)
             return { status: false, code: 201, message: `Invalid user_id/password` }
         }
-        if (data['status'] !== 'Active') {
+        if (data['status'] != 'Active') {
             log.warn(`[${request.payload["user_id"]}] - is not active`)
             return { status: false, code: 201, message: `User is not active` }
         }
@@ -59,9 +59,10 @@ const handle_request = async (request) => {
         })
         // await Dao.set_token(request.redis_db, token, JSON.stringify(data), process.env.ACCESS_TOKEN_SECRET_EXPIRE)
         
-        await Dao.set_value(request.redis_db, token, JSON.stringify(data), process.env.ACCESS_TOKEN_SECRET_EXPIRE);
+        // await Dao.set_value(request.redis_db, token, JSON.stringify(data), process.env.ACCESS_TOKEN_SECRET_EXPIRE);
         await insertLoginTrail(request, data["oid"]);
         log.info(`[${request.payload["user_id"]}] - signin`)
+        
         return { status: true, code: 200, token: { access_token: token }, menu_json: data["menu_json"], mesage: 'Successfully sign in' }
     }
 
