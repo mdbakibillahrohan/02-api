@@ -14,6 +14,16 @@ Accept: application/json
 }
 
 ###
+POST https://dev.gdsflight.com/api/v1/sign-in
+Content-Type: application/json
+Accept: application/json
+
+{
+    "user_id": "gtatravel",
+    "password": "123456"
+}
+
+###
 POST https://dev.gdsflight.com/api/authentication/user/v1/authenticate-user
 Content-Type: application/json
 Accept: application/json
@@ -27,6 +37,16 @@ Accept: application/json
 GET {{BASE_API_URL}}/sign-out
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
+
+###
+POST {{BASE_API_URL}}/v1/sign-in
+Content-Type: application/json
+Accept: application/json
+
+{
+    "user_id": "gtatravel",
+    "password": "123456"
+}
 
 ###
 GET {{BASE_API_URL}}/get-user-info

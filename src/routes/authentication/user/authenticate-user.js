@@ -76,7 +76,7 @@ const getLogin = async (request) => {
     let data = [];
 
     let query = `select l.oid, l.loginId as login_id, l.password, l.status, l.name, 
-        r.roleId, l.menuJson as menu_json from ${ TABLE.LOGIN } as l, ${ TABLE.ROLE } as  r
+        r.roleId, r.menuJson as menu_json from ${ TABLE.LOGIN } as l, ${ TABLE.ROLE } as  r
         where 1 = 1 and r.oid = l.roleOid and l.loginId = $1 and password = $2`;
 
     let sql = {
