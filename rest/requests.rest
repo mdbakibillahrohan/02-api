@@ -1,16 +1,16 @@
 @BASE_API_URL = http://0.0.0.0:3000/api
 # @BASE_API_URL = https://dev.gdsflight.com/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWNhcyIsImNsaWVudF9pZCI6ImFjYXMiLCJzY2hlbWEiOiJhY2FzIiwiaWF0IjoxNjY2MDI3Njc2LCJleHAiOjE2NjYxMTQwNzZ9.UzyoaDqVl0BtMsia56pAK7TjyQmAaUhyM8kOqRdbRMQ
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9N2JlMTI2ZjYtNTRjZC00NjU0LTg4MzAtOTAzMjE3MjAwNTUwIiwiaWF0IjoxNjg2OTg5MjU3LCJleHAiOjE2ODcwNzU2NTd9.NnuzDeqjMeYYB-PuZh5jpS-o2vROqgyZDniKNhz2KXo
 
 ###
-POST https://dev.gdsflight.com/api/authentication/user/v1/authenticate-user
+POST {{BASE_API_URL}}/v1/user/signin
 Content-Type: application/json
 Accept: application/json
 
 {
-    "user_id": "gtatravel",
-    "password": "123456"
+    "login_id": "admin",
+    "password": "sa"
 }
 
 ###
@@ -19,8 +19,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "user_id": "gtatravel",
-    "password": "123456"
+    "user_id": "admin",
+    "password": "sa"
 }
 
 ###
