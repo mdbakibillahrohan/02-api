@@ -52,7 +52,7 @@ const get_data = async (request) => {
 	let index = 1
 	let data, param = []
 	let query = `select oid, division_code, name_en, name_bn
-		from ${TABLE.DIVISION} where 1=1 `
+		from ${TABLE.DIVISION} where 1 = 1 `
 
 	if (request.payload.search_text) {
 		query += ` and (lower(division_code) ilike $${index} or lower(name_en) ilike $${index} or lower(name_bn) ilike $${index++})`

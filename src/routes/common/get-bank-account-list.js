@@ -18,7 +18,7 @@ const route_controller = {
 			mode: "required",
 			strategy: "jwt",
 		},
-		description: "get designation list by any text",
+		description: "get bank account list by any text",
 		plugins: { hapiAuthorization: false },
 		validate: {
 			payload: payload_scheme,
@@ -41,22 +41,20 @@ const route_controller = {
 const handle_request = async (request) => {
 	let data = await get_data(request)
 	if (data.length == 0) {
-		log.warn(`designation list not found`)
+		log.warn(`bank account list not found`)
 		return { status: false, code: 201, message: `No data found` }
 	}
-	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - get designation list`)
-	return { status: true, code: 200, message: `Successfully get designation list`, data: data }
+	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - get bank account list`)
+	return { status: true, code: 200, message: `Successfully get bank account list`, data: data }
 }
 
 const get_data = async (request) => {
 	let index = 1
 	let data, param = []
-	let query = `select oid, account_no, account_name, branch_name, 
-		initial_balance, status, bank_oid
-		from ${TABLE.BANK_ACCOUNT} where 
-        company_oid = $${index++} `
-		
-    param.push(request.auth.credentials.company_oid)
+	let query = `select oid, account_no, account_name, branch_name, initial_balance, status, bank_oid
+		from ${TABLE.BANK_ACCOUNT} where company_oid = $${index++}`
+
+	param.push(request.auth.credentials.company_oid)
 
 	if (request.payload.search_text) {
 		query += ` and (lower(account_name) ilike $${index} or lower(status) $${index}or lower(account_no) $${index} or lower(branch_name)  $${index++})`
@@ -69,7 +67,7 @@ const get_data = async (request) => {
 	try {
 		data = await Dao.get_data(request.pg, sql)
 	} catch (e) {
-		log.error(`An exception occurred while getting designation list : ${e?.message}`)
+		log.error(`An exception occurred while getting bank account list : ${e?.message}`)
 	}
 	return data
 }

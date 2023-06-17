@@ -61,6 +61,8 @@ const get_data = async (request) => {
 		query += ` and (lower(name) ilike $${index} or lower(sort_order) $${index}  or lower(status) $${index++})`
 		param.push(`%${request.payload.search_text}%`)
 	}
+	query += ` order by sort_order asc`
+
 	let sql = {
 		text: query,
 		values: param,

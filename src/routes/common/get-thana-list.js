@@ -53,7 +53,7 @@ const get_data = async (request) => {
 	let index = 1
 	let data, param = []
 	let query = `select oid, thana_code, name_en, name_bn, district_oid
-		from ${TABLE.THANA} where district_oid = $${index++} `
+		from ${TABLE.THANA} where district_oid = $${index++}`
 		
     param.push(request.payload.district_oid)
 

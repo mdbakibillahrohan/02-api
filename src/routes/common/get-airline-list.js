@@ -18,7 +18,7 @@ const route_controller = {
 			mode: "required",
 			strategy: "jwt",
 		},
-		description: "get ariport list by any text",
+		description: "get ariline list by any text",
 		plugins: { hapiAuthorization: false },
 		validate: {
 			payload: payload_scheme,
@@ -52,7 +52,7 @@ const get_data = async (request) => {
 	let index = 1
 	let data, param = []
 	let query = `select oid, airline_id, airline_name, alias_name, country, 
-        iata, icao, callsign,  status
+        iata, icao, callsign, status
 		from ${TABLE.AIRLINE} where status = $${index++}`
 
 	param.push('Active')

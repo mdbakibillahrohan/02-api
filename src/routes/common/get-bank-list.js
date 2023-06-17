@@ -51,8 +51,7 @@ const handle_request = async (request) => {
 const get_data = async (request) => {
 	let index = 1
 	let data, param = []
-	let query = `select oid, name_en, name_bn
-		from ${TABLE.BANK} where 1=1 `
+	let query = `select oid, name_en, name_bn from ${TABLE.BANK} where 1 = 1 `
 
 	if (request.payload.search_text) {
 		query += ` and (lower(name_en) ilike $${index} or lower(name_bn) ilike $${index++})`
