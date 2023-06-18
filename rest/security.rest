@@ -9,7 +9,7 @@ Accept: application/json
 
 {
     "login_id": "admin",
-    "password": "sa"
+    "password": "swwra"
 }
 
 

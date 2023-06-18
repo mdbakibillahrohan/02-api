@@ -1,0 +1,52 @@
+@API_URL = http://localhost:3000/api
+
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9NGUxY2RjNTgtMDc0MS00Mzk1LWE5ODktYTAwNTYwMjAzNzExIiwiaWF0IjoxNjg3MDcxNTUyLCJleHAiOjE2ODcxNTc5NTJ9.-OYEom9s1QPjLN5cUCvSWWNSrJw061xPES_5Bb1-AwY
+
+###
+POST {{API_URL}}/v1/setting/department/get-list
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "search_text": "",
+    "offset": "0",
+    "limit": "",
+    "status": "Active"
+
+}
+
+###
+POST {{API_URL}}/v1/setting/department/get-by-oid
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "oid": "Dept-NOC"
+
+}
+
+###
+POST {{API_URL}}/v1/setting/department/save
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "name": "Sub",
+    "sort_order": "14",
+    "status": "Active"
+
+}
+
+###
+POST {{API_URL}}/v1/setting/department/get-by-oid
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "oid": "Dept-NOC"
+
+}

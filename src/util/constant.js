@@ -73,6 +73,12 @@ module.exports = {
 		GET_DEPARTMENT_LIST: "/v1/department/get-list",
 		GET_BANK_ACCOUNT_LIST: "/v1/bank-account/get-list",
 
+		DEPARTMENT_GET_LIST_PATH: "/v1/setting/department/get-list",
+		DEPARTMENT_GET_BY_OID_PATH: "/v1/setting/department/get-by-oid",
+		DEPARTMENT_SAVE_PATH: "/v1/setting/department/save",
+		DEPARTMENT_UPDATE_PATH: "/v1/setting/department/update",
+		DEPARTMENT_DELETE_PATH: "/v1/setting/department/delete",
+
 		CHANGE_PASSWORD: "/v1/user/change-password",
 		GET_COMPANY_LIST: "/v1/company/get-list",
 		GET_DESIGNATION_LIST: "/v1/designation/get-list",
