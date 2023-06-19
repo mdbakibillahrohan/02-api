@@ -3,7 +3,7 @@
 @TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9M2RkMTY3MDAtOGQxYi00NWY5LWJiNjYtNGIwMTIxNzQ5N2NhIiwiaWF0IjoxNjg3MTU4MTA2LCJleHAiOjE2ODcyNDQ1MDZ9.EqE0PycF5W3Jr-taGJNay9JETxZXyVAvUmFOm6vFKkQ
 
 ###
-POST {{API_URL}}/v1/setting/department/get-list
+POST {{API_URL}}/v1/setting/people/get-list
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
@@ -11,55 +11,62 @@ Authorization: Bearer {{TOKEN}}
 { 
     "search_text": "",
     "offset": "0",
-    "limit": "",
-    "status": "Active"
-
+    "limit": "2",
+    "status": "Inactive",
+    "people_type": ["Supplier"]
 }
 
 ###
-POST {{API_URL}}/v1/setting/department/get-by-oid
+POST {{API_URL}}/v1/setting/people/get-by-oid
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-    "oid": "c7dbabfd-2e16-428e-b661-6309dac8fe74"
+    "oid": "f0a25e42-61be-42ca-86fa-ad1c577756ac"
 
 }
 
 ###
-POST {{API_URL}}/v1/setting/department/save
+POST {{API_URL}}/v1/setting/people/save
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-    "name": "Sub",
-    "sort_order": "14",
-    "status": "Active"
+      
+      "name": "REGENT AIRWAYS",
+      "email": "info@gtabd.com",
+      "status": "Active",
+      "image_path": null,
+      "mobile_no": "028919117",
+      "payable_balance": 0,
+      "receivable_balance": 0,
+      "people_type": ["Supplier"]
 
 }
 
 ###
-POST {{API_URL}}/v1/setting/department/update
+POST {{API_URL}}/v1/setting/people/update
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-    "oid": "c7dbabfd-2e16-428e-b661-6309dac8fe74",
-    "name": "Save",
-    "sort_order": "8",
-    "status": "Active"
+    "oid": "f0a25e42-61be-42ca-86fa-ad1c577756ac",
+    "name": "REGENT AIRWAYS",
+    "email": "info@gtabd.com",
+    "status": "Inactive",
+    "payable_balance": 10
 
 }
 ###
-POST {{API_URL}}/v1/setting/department/delete
+POST {{API_URL}}/v1/setting/people/delete
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-    "oid": "0b8d29a6-87a8-43b7-b9de-aef628a55568"
+    "oid": "f0a25e42-61be-42ca-86fa-ad1c577756ac"
 
 }

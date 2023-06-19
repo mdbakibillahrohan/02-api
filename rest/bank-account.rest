@@ -3,63 +3,69 @@
 @TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9M2RkMTY3MDAtOGQxYi00NWY5LWJiNjYtNGIwMTIxNzQ5N2NhIiwiaWF0IjoxNjg3MTU4MTA2LCJleHAiOjE2ODcyNDQ1MDZ9.EqE0PycF5W3Jr-taGJNay9JETxZXyVAvUmFOm6vFKkQ
 
 ###
-POST {{API_URL}}/v1/setting/department/get-list
+POST {{API_URL}}/v1/setting/bank-account/get-list
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
     "search_text": "",
-    "offset": "0",
+    "offset": "",
     "limit": "",
     "status": "Active"
 
 }
 
 ###
-POST {{API_URL}}/v1/setting/department/get-by-oid
+POST {{API_URL}}/v1/setting/bank-account/get-by-oid
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-    "oid": "c7dbabfd-2e16-428e-b661-6309dac8fe74"
+    "oid": "2135171f-1919-4e63-b31c-4b2e3c2ca5f4"
 
 }
 
 ###
-POST {{API_URL}}/v1/setting/department/save
+POST {{API_URL}}/v1/setting/bank-account/save
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-    "name": "Sub",
-    "sort_order": "14",
-    "status": "Active"
+      "account_no": "3784762188",
+      "account_name": "Demo2",
+      "branch_name": "Shaymoli Branch2",
+      "initial_balance": "1.00",
+      "status": "Active",
+      "bank_oid": "Bank-1017"
 
 }
 
 ###
-POST {{API_URL}}/v1/setting/department/update
+POST {{API_URL}}/v1/setting/bank-account/update
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-    "oid": "c7dbabfd-2e16-428e-b661-6309dac8fe74",
-    "name": "Save",
-    "sort_order": "8",
-    "status": "Active"
+    "oid": "2135171f-1919-4e63-b31c-4b2e3c2ca5f4",
+    "account_no": "3784762188",
+    "account_name": "Demo2",
+    "branch_name": "Shaymoli Branch2",
+    "initial_balance": "10.00",
+    "status": "Active",
+    "bank_oid": "Bank-1017"
 
 }
 ###
-POST {{API_URL}}/v1/setting/department/delete
+POST {{API_URL}}/v1/setting/bank-account/delete
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-    "oid": "0b8d29a6-87a8-43b7-b9de-aef628a55568"
+    "oid": "7ff1c6c4-ff6e-4316-8799-cc0afe1e60cf"
 
 }

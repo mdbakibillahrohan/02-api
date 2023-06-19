@@ -16,13 +16,13 @@ const payload_scheme = Joi.object({
 
 const route_controller = {
 	method: "POST",
-	path: API.CONTEXT + API.DEPARTMENT_SAVE_PATH,
+	path: API.CONTEXT + API.DESIGNATION_SAVE_PATH,
 	options: {
 		auth: {
 			mode: "required",
 			strategy: "jwt",
 		},
-		description: "Save Department",
+		description: "Save Designation",
 		plugins: { hapiAuthorization: false },
 		validate: {
 			payload: payload_scheme,
@@ -42,9 +42,9 @@ const route_controller = {
 const handle_request = async (request) => {
 	let res_data = await post_data(request)
 	if (res_data == null) {
-		return { status: false, code: 201, message: `Unable to save department` }
+		return { status: false, code: 201, message: `Unable to save designation` }
 	}
-	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - department save - ${request.payload.name}`)
+	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - designation save - ${request.payload.name}`)
 	return { status: true, code: 200, message: `Successfully save ${request.payload.name}` }
 	
 }
@@ -58,7 +58,7 @@ const post_data = async (request) => {
 
     let scols = cols.join(', ')
     let sparams = params.join(', ')
-    let query = `insert into ${TABLE.DEPARTMENT} (${scols}) values (${sparams})`
+    let query = `insert into ${TABLE.DESIGNATION} (${scols}) values (${sparams})`
 
 	let sql = {
 		text: query,
@@ -66,9 +66,10 @@ const post_data = async (request) => {
 	}
 	try {
 		const data_set =  await Dao.execute_value(request.pg, sql)
+		console.log(data_set)
 		return data_set['rowCount'] >= 0 ? data_set['rowCount'] : null
 	} catch (e) {
-		log.error(`An exception occurred while saving department : ${e?.message}`)
+		log.error(`An exception occurred while saving designation : ${e?.message}`)
 	}
 	
 }
