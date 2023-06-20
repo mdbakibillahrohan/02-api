@@ -11,8 +11,8 @@ const payload_scheme = Joi.object({
 	limit: Joi.number().optional().allow(null, ""),
 	search_text: Joi.string().trim().allow(null, "").optional(),
 	status: Joi.array().items(Joi.string().trim().required().valid('Active', 'Inactive')).optional(),
-
 })
+
 const route_controller = {
 	method: "POST",
 	path: API.CONTEXT + API.MASTER_SETTING_DEPARTMENT_GET_LIST_PATH,
@@ -60,15 +60,14 @@ const get_count = async (request) => {
 
 	param.push(request.auth.credentials.company_oid)
 
-	if (request.payload.status ) {
-		query += ` and status = $${index++}`
-        param.push(request.payload.status)
+	if (request.payload.status && request.payload.status.length > 0) {
+		let status = request.payload.status.map((x) => `'${x}'`).join(", ")
+		query += ` and status in (${status})`
 	}
 
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
-		query += ` and (lower(name) ilike $${index} or lower(status)  ilike $${index++})`
+		query += ` and (lower(name) ilike $${index++})`
 		param.push(`%${request.payload.search_text}%`)
-
 	}
 
 	let sql = {
@@ -87,18 +86,18 @@ const get_count = async (request) => {
 const get_data = async (request) => {
 	let index = 1
 	let data, param = []
-	let query = `select oid, name, sort_order, status from ${TABLE.DEPARTMENT} 
+	let query = `select oid, name, status from ${TABLE.DEPARTMENT} 
 		where 1 = 1 and company_oid = $${index++}`
 
 	param.push(request.auth.credentials.company_oid)
 
-	if (request.payload.status ) {
-		query += ` and status = $${index++}`
-        param.push(request.payload.status)
+	if (request.payload.status && request.payload.status.length > 0) {
+		let status = request.payload.status.map((x) => `'${x}'`).join(", ")
+		query += ` and status in (${status})`
 	}
 
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
-		query += ` and (lower(name) ilike $${index} or lower(status)  ilike $${index++})`
+		query += ` and (lower(name) ilike $${index++})`
 		param.push(`%${request.payload.search_text}%`)
 	}
 

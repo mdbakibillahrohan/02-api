@@ -8,9 +8,7 @@ const { API, TABLE } = require("../../../../util/constant")
 const payload_scheme = Joi.object({
 	oid: Joi.string().trim().min(1).max(128).required(),
 	name: Joi.string().trim().min(1).max(128).required(),
-	sort_order: Joi.string().trim().min(1).max(128).required(),
 	status: Joi.string().trim().valid('Active', 'Inactive').required(),
-
 })
 
 const route_controller = {
@@ -21,7 +19,7 @@ const route_controller = {
 			mode: "required",
 			strategy: "jwt",
 		},
-		description: "Update Department",
+		description: "update department",
 		plugins: { hapiAuthorization: false },
 		validate: {
 			payload: payload_scheme,
@@ -48,10 +46,11 @@ const handle_request = async (request) => {
 }
 
 const post_data = async (request) => {
-    let cols = [ 'name = $1', 'sort_order = $2', 'status = $3']
+	let result = null
+    let cols = [ 'name = $1', 'status = $2']
 
-	let data = [request.payload.name, request.payload.sort_order, request.payload.status]
-    let index = 4;
+	let data = [request.payload.name, request.payload.status]
+    let index = 3;
     let scols = cols.join(', ')
     let query = `update ${TABLE.DEPARTMENT} set ${scols} where 1 = 1 and oid = $${index++} and company_oid = $${index++}`
 
@@ -64,11 +63,11 @@ const post_data = async (request) => {
 	}
 	try {
 		const data_set =  await Dao.execute_value(request.pg, sql)
-		return data_set['rowCount'] >= 0? data_set['rowCount'] : null
+		result = data_set['rowCount'] >= 0? data_set['rowCount'] : null
 	} catch (e) {
 		log.error(`An exception occurred while updating department : ${e?.message}`)
 	}
-	
+	return result
 }
 
 module.exports = route_controller
