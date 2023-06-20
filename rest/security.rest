@@ -10,7 +10,7 @@ Accept: application/json
 
 {
     "login_id": "admin",
-    "password": "swwra"
+    "password": "ssdf"
 }
 
 

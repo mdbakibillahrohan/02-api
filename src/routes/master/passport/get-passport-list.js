@@ -2,23 +2,23 @@
 
 const _ = require("underscore")
 const Joi = require("@hapi/joi")
-const Dao = require("../../util/dao")
-const log = require("../../util/log")
-const { API, TABLE } = require("../../util/constant")
+const Dao = require("../../../util/dao")
+const log = require("../../../util/log")
+const { API, TABLE } = require("../../../util/constant")
 
 const payload_scheme = Joi.object({
 	offset: Joi.number().optional().allow(null, ""),
 	limit: Joi.number().optional().allow(null, ""),
 	search_text: Joi.string().trim().allow(null, "").optional(),
 	status: Joi.string().trim().allow(null, '').valid('Active', 'Inactive').optional(),
-	oid: Joi.string().trim().min(1).max(128).optional(),
+	issuing_authority: Joi.string().trim().min(1).max(128).optional(),
 	country_code: Joi.string().trim().min(1).max(128).optional(),
 	country: Joi.string().trim().min(1).max(128).optional(),
 
 })
 const route_controller = {
 	method: "POST",
-	path: API.CONTEXT + API.PASSPORT_GET_LIST_PATH,
+	path: API.CONTEXT + API.MASTER_PASSPORT_GET_LIST_PATH,
 	options: {
 		auth: {
 			mode: "required",
@@ -70,6 +70,19 @@ const get_count = async (request) => {
 		query += ` and pa.status = $${index++}`
 		param.push(request.payload.status)
 	}
+	if (request.payload.country_code ) {
+		query += ` and pa.country_code = $${index++}`
+		param.push(request.payload.country_code)
+	}
+	if (request.payload.country ) {
+		query += ` and cu.name = $${index++}`
+		param.push(request.payload.country)
+	}
+
+	if (request.payload.issuing_authority ) {
+		query += ` and pa.issuing_authority = $${index++}`
+		param.push(request.payload.issuing_authority)
+	}
 
 	if (request.payload.search_text) {
 		query += ` and (lower(pa.full_name) ilike $${index} or 
@@ -102,8 +115,8 @@ const get_data = async (request) => {
 	let data, param = []
 	let query = `select pa.oid, pa.passenger_id, pa.full_name, pa.sur_name, 
         pa.given_name, pa.gender, pa.mobile_no, pa.email, pa.nationality,
-        pa.country_code, pa.birth_registration_no, pa.personal_no, pa.passport_number, pa.previous_passport_number, pa.birth_date, pa.passport_issue_date, pa.passport_expiry_date, pa.passport_image_path, 
-        pa.issuing_authority, pa.description, pa.passport_json, pa.status, cu.name as country, pe.name as people_name from ${TABLE.PASSPORT} pa
+        pa.country_code, pa.birth_registration_no, pa.personal_no, pa.passport_number, pa.previous_passport_number, pa.birth_date, pa.passport_issue_date, pa.passport_expiry_date, pa.passport_image_path, pa.issuing_authority, 
+		pa.description, pa.passport_json, pa.status, cm.name as company_name, cu.name as country, pe.name as people_name from ${TABLE.PASSPORT} pa
 		left join ${TABLE.COMPANY} cm on pa.company_oid = cm.oid
 		left join ${TABLE.COUNTRY} cu on pa.country_oid = cu.oid
 		left join ${TABLE.PEOPLE} pe on pa.people_oid = pe.oid
@@ -125,7 +138,7 @@ const get_data = async (request) => {
 	}
 
 	if (request.payload.oid ) {
-		query += ` and pa.oid = $${index++}`
+		query += ` and pa.issuing_authority = $${index++}`
 		param.push(request.payload.oid)
 	}
 
