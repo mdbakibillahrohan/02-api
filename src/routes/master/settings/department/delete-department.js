@@ -1,6 +1,5 @@
 "use strict"
 
-const uuid = require("uuid");
 const _ = require("underscore")
 const Joi = require("@hapi/joi")
 const Dao = require("../../../../util/dao")
@@ -19,7 +18,7 @@ const route_controller = {
 			mode: "required",
 			strategy: "jwt",
 		},
-		description: "Delete Department",
+		description: "delete department",
 		plugins: { hapiAuthorization: false },
 		validate: {
 			payload: payload_scheme,
@@ -41,27 +40,24 @@ const handle_request = async (request) => {
 	if (res_data == null) {
 		return { status: false, code: 201, message: `Unable to delete department` }
 	}
-
 	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - department delete - ${request.payload.oid}`)
 	return { status: true, code: 200, message: `Successfully delete ${request.payload.oid}` }
-	
 }
 
 const post_data = async (request) => {
-
+	let result = null
     let query = `delete from ${TABLE.DEPARTMENT} where 1 = 1 and oid = $1 and company_oid = $2`
-
 	let sql = {
 		text: query,
-		values: [request.payload.oid, request.auth.credentials.company_oid],
+		values: [ request.payload.oid, request.auth.credentials.company_oid ],
 	}
 	try {
 		const data_set =  await Dao.execute_value(request.pg, sql)
-		return data_set['rowCount'] > 0 ? data_set['rowCount'] : null
+		result = data_set['rowCount'] > 0 ? data_set['rowCount'] : null
 	} catch (e) {
 		log.error(`An exception occurred while deleting department : ${e?.message}`)
 	}
-	
+	return result
 }
 
 module.exports = route_controller

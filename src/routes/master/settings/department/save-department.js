@@ -9,9 +9,7 @@ const { API, TABLE } = require("../../../../util/constant")
 
 const payload_scheme = Joi.object({
 	name: Joi.string().trim().min(1).max(128).required(),
-	sort_order: Joi.string().trim().min(1).max(128).required(),
 	status: Joi.string().trim().valid('Active', 'Inactive').required(),
-
 })
 
 const route_controller = {
@@ -50,11 +48,11 @@ const handle_request = async (request) => {
 }
 
 const post_data = async (request) => {
-    let cols = [ 'oid', 'name', 'sort_order', 'status', 'company_oid', 'created_on', 'created_by' ]
-
-    let params = ['$1', '$2', '$3', '$4', '$5', '$6', '$7']
-
-	let data = [uuid.v4(), request.payload.name, request.payload.sort_order, request.payload.status, request.auth.credentials.company_oid, 'now()', request.auth.credentials.login_id ]
+	let result = null
+    let cols = ['oid', 'name', 'sort_order', 'status', 'company_oid', 'created_by' ]
+    let params = ['$1', '$2', '$3', '$4', '$5', '$6']
+	let data = [uuid.v4(), request.payload.name, 1, request.payload.status, 
+		request.auth.credentials.company_oid, request.auth.credentials.login_id ]
 
     let scols = cols.join(', ')
     let sparams = params.join(', ')
@@ -66,11 +64,11 @@ const post_data = async (request) => {
 	}
 	try {
 		const data_set =  await Dao.execute_value(request.pg, sql)
-		return data_set['rowCount'] >= 0 ? data_set['rowCount'] : null
+		result = data_set['rowCount'] >= 0 ? data_set['rowCount'] : null
 	} catch (e) {
 		log.error(`An exception occurred while saving department : ${e?.message}`)
 	}
-	
+	return result
 }
 
 module.exports = route_controller
