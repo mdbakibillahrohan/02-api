@@ -52,9 +52,9 @@ const get_data = async (request) => {
 	let index = 1
 	let data, param = []
 	let query = `select oid, account_no, account_name, branch_name, initial_balance, status, bank_oid
-		from ${TABLE.BANK_ACCOUNT} where company_oid = $${index++}`
+		from ${TABLE.BANK_ACCOUNT} where status = $${index++} and company_oid = $${index++}`
 
-	param.push(request.auth.credentials.company_oid)
+	param.push('Active', request.auth.credentials.company_oid)
 
 	if (request.payload.search_text) {
 		query += ` and (lower(account_name) ilike $${index} or lower(status) $${index}or lower(account_no) $${index} or lower(branch_name)  $${index++})`

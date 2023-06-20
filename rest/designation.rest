@@ -1,0 +1,65 @@
+@API_URL = http://localhost:3000/api
+
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9M2RkMTY3MDAtOGQxYi00NWY5LWJiNjYtNGIwMTIxNzQ5N2NhIiwiaWF0IjoxNjg3MTU4MTA2LCJleHAiOjE2ODcyNDQ1MDZ9.EqE0PycF5W3Jr-taGJNay9JETxZXyVAvUmFOm6vFKkQ
+
+###
+POST {{API_URL}}/v1/setting/designation/get-list
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "search_text": "",
+    "offset": "",
+    "limit": "",
+    "status": "Active"
+
+}
+
+###
+POST {{API_URL}}/v1/setting/designation/get-by-oid
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "oid": "75570838-bf72-4e97-b301-8f90fe6abecc"
+
+}
+
+###
+POST {{API_URL}}/v1/setting/designation/save
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "name": "Save",
+    "sort_order": "10",
+    "status": "Active"
+
+}
+
+###
+POST {{API_URL}}/v1/setting/designation/update
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "oid": "75570838-bf72-4e97-b301-8f90fe6abecc",
+    "name": "Save",
+    "sort_order": "8",
+    "status": "Active"
+
+}
+###
+POST {{API_URL}}/v1/setting/designation/delete
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "oid": "75570838-bf72-4e97-b301-8f90fe6abecc"
+
+}

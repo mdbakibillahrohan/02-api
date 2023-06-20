@@ -19,8 +19,9 @@ const execute_value = async (pool, query) => {
     const client = await pool.connect();
     try {
         await client.query("BEGIN");
-        await client.query(query);
+        const executedQuery = await client.query(query);
         await client.query("COMMIT");
+        return executedQuery;
     } catch (e) {
         await client.query("ROLLBACK");
         log.error("Unable to execute statement in database: ", e);

@@ -59,7 +59,7 @@ const get_data = async (request) => {
 
 	if (request.payload.search_text) {
 		query += ` and (lower(airport_name) ilike $${index} or lower(city) ilike $${index} 
-			or lower(country) ilike $${index} or lower(iata) ilike $${index})`
+			or lower(country) ilike $${index} or lower(iata) ilike $${index} or lower(icao) ilike $${index++})`
 		param.push(`%${request.payload.search_text}%`)
 	}
 	let sql = {

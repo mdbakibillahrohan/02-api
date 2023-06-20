@@ -1,0 +1,71 @@
+@API_URL = http://localhost:3000/api
+
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9M2RkMTY3MDAtOGQxYi00NWY5LWJiNjYtNGIwMTIxNzQ5N2NhIiwiaWF0IjoxNjg3MTU4MTA2LCJleHAiOjE2ODcyNDQ1MDZ9.EqE0PycF5W3Jr-taGJNay9JETxZXyVAvUmFOm6vFKkQ
+
+###
+POST {{API_URL}}/v1/setting/bank-account/get-list
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "search_text": "",
+    "offset": "",
+    "limit": "",
+    "status": "Active"
+
+}
+
+###
+POST {{API_URL}}/v1/setting/bank-account/get-by-oid
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "oid": "2135171f-1919-4e63-b31c-4b2e3c2ca5f4"
+
+}
+
+###
+POST {{API_URL}}/v1/setting/bank-account/save
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+      "account_no": "3784762188",
+      "account_name": "Demo2",
+      "branch_name": "Shaymoli Branch2",
+      "initial_balance": "1.00",
+      "status": "Active",
+      "bank_oid": "Bank-1017"
+
+}
+
+###
+POST {{API_URL}}/v1/setting/bank-account/update
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "oid": "2135171f-1919-4e63-b31c-4b2e3c2ca5f4",
+    "account_no": "3784762188",
+    "account_name": "Demo2",
+    "branch_name": "Shaymoli Branch2",
+    "initial_balance": "10.00",
+    "status": "Active",
+    "bank_oid": "Bank-1017"
+
+}
+###
+POST {{API_URL}}/v1/setting/bank-account/delete
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "oid": "7ff1c6c4-ff6e-4316-8799-cc0afe1e60cf"
+
+}
