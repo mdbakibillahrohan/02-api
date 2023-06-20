@@ -2,26 +2,14 @@
 
 @TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9ODc1ODEwODctYWEwNS00ZmI3LWE4MDgtYmNiZDA5YTdlYzVkIiwiaWF0IjoxNjg3MTY3MzAwLCJleHAiOjE2ODcyNTM3MDB9.ULJk4NihmGVByCrszvA5XLnqErOAoYMQN-nKnuX7oTs
 
-
 ###
-POST {{API_URL}}/v1/user/signin
+POST {{API_URL}}/v1/people/get-list
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{TOKEN}}
 
 {
-    "login_id": "admin",
-    "password": "ssdf"
+    "status": ["Active"],
+    "offset": 1,
+    "limit": 10
 }
-
-
-###
-GET {{API_URL}}/v1/user/signout
-Accept: application/json
-Authorization: Bearer {{TOKEN}}
-
-
-###
-GET {{API_URL}}/v1/user/get-user-profile
-Accept: application/json
-Authorization: Bearer {{TOKEN}}
-
