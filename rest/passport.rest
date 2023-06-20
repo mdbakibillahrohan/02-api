@@ -1,9 +1,9 @@
 @API_URL = http://localhost:3000/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9M2RkMTY3MDAtOGQxYi00NWY5LWJiNjYtNGIwMTIxNzQ5N2NhIiwiaWF0IjoxNjg3MTU4MTA2LCJleHAiOjE2ODcyNDQ1MDZ9.EqE0PycF5W3Jr-taGJNay9JETxZXyVAvUmFOm6vFKkQ
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9MzkyZWYwYTItYmE3NC00YWU1LWI5YmMtNWYxOWMyZDY0MDI1IiwiaWF0IjoxNjg3MjQ3ODY5LCJleHAiOjE2ODczMzQyNjl9.fKHU9GNpUo9jcY0hy-Hk_nFQLS_Ix477Gb1AS-mLycQ
 
 ###
-POST {{API_URL}}/v1/setting/passport/get-list
+POST {{API_URL}}/v1/master/passport/get-list
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
@@ -16,18 +16,18 @@ Authorization: Bearer {{TOKEN}}
 }
 
 ###
-POST {{API_URL}}/v1/setting/passport/get-by-oid
+POST {{API_URL}}/v1/master/passport/get-by-oid
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-    "oid": "f0a25e42-61be-42ca-86fa-ad1c577756ac"
+    "oid": "pass-001"
 
 }
 
 ###
-POST {{API_URL}}/v1/setting/passport/save
+POST {{API_URL}}/v1/master/passport/save
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
@@ -46,7 +46,7 @@ Authorization: Bearer {{TOKEN}}
 }
 
 ###
-POST {{API_URL}}/v1/setting/passport/update
+POST {{API_URL}}/v1/master/passport/update
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
@@ -60,7 +60,7 @@ Authorization: Bearer {{TOKEN}}
 
 }
 ###
-POST {{API_URL}}/v1/setting/passport/delete
+POST {{API_URL}}/v1/master/passport/delete
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
