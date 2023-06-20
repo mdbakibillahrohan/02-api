@@ -1,6 +1,6 @@
 @API_URL = http://localhost:3000/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9M2RkMTY3MDAtOGQxYi00NWY5LWJiNjYtNGIwMTIxNzQ5N2NhIiwiaWF0IjoxNjg3MTU4MTA2LCJleHAiOjE2ODcyNDQ1MDZ9.EqE0PycF5W3Jr-taGJNay9JETxZXyVAvUmFOm6vFKkQ
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9NTc5YzFjMzMtYzhjYi00NDM5LWFjMDctYWQ1NTBiN2I4OWZjIiwiaWF0IjoxNjg3MjgyMDUwLCJleHAiOjE2ODczNjg0NTB9.sLtx5YPv4UiVatxcCqyP5EhhXMi8pQAHjzSmvOAbPQk
 
 ###
 POST {{API_URL}}/v1/master/setting/department/get-list
@@ -28,16 +28,14 @@ Authorization: Bearer {{TOKEN}}
 }
 
 ###
-POST {{API_URL}}/v1/master/setting/department/save
+POST {{API_URL}}/v1/master/setting/department/save-update
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-    "name": "Sub",
-    "sort_order": "14",
+    "name": "Supply Chain",
     "status": "Active"
-
 }
 
 ###

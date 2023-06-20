@@ -80,8 +80,7 @@ module.exports = {
 
 		MASTER_SETTING_DEPARTMENT_GET_LIST_PATH: "/v1/master/setting/department/get-list",
 		MASTER_SETTING_DEPARTMENT_GET_BY_OID_PATH: "/master/v1/setting/department/get-by-oid",
-		MASTER_SETTING_DEPARTMENT_SAVE_PATH: "/v1/master/setting/department/save",
-		MASTER_SETTING_DEPARTMENT_UPDATE_PATH: "/v1/master/setting/department/update",
+		MASTER_SETTING_DEPARTMENT_SAVE_UPDATE_PATH: "/v1/master/setting/department/save-update",
 		MASTER_SETTING_DEPARTMENT_DELETE_PATH: "/v1/master/setting/department/delete",
 
 		MASTER_SETTING_DESIGNATION_GET_LIST_PATH: "/v1/master/setting/designation/get-list",
@@ -198,7 +197,7 @@ module.exports = {
 		GET_FINANCIAL_PERIOD_LIST: "/v1/accounting/get-financial-period-list",
 		ADD_FINANCIAL_PERIOD: "/v1/accounting/financial-period",
 
-		
+
 
 		GET_ACTIVITY_LOG_LIST: "/v1/activity-log/get-list",
 
