@@ -1,9 +1,9 @@
 "use strict"
 
 const Joi = require("@hapi/joi")
-const Dao = require("../../util/dao")
-const log = require("../../util/log")
-const { API, TABLE } = require("../../util/constant")
+const Dao = require("../../../../util/dao")
+const log = require("../../../../util/log")
+const { API, TABLE } = require("../../../../util/constant")
 
 const payload_scheme = Joi.object({
 	oid: Joi.string().trim().min(1).max(128).required(),
@@ -15,7 +15,7 @@ const payload_scheme = Joi.object({
 
 const route_controller = {
 	method: "POST",
-	path: API.CONTEXT + API.DEPARTMENT_UPDATE_PATH,
+	path: API.CONTEXT + API.MASTER_SETTING_DEPARTMENT_UPDATE_PATH,
 	options: {
 		auth: {
 			mode: "required",

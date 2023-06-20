@@ -3,9 +3,9 @@
 const uuid = require("uuid")
 const _ = require("underscore")
 const Joi = require("@hapi/joi")
-const Dao = require("../../util/dao")
-const log = require("../../util/log")
-const { API, TABLE } = require("../../util/constant")
+const Dao = require("../../../util/dao")
+const log = require("../../../util/log")
+const { API, TABLE } = require("../../../util/constant")
 
 const payload_scheme = Joi.object({
 	name: Joi.string().trim().min(1).max(128).required(),
@@ -24,7 +24,7 @@ const payload_scheme = Joi.object({
 
 const route_controller = {
 	method: "POST",
-	path: API.CONTEXT + API.PEOPLE_SAVE_PATH,
+	path: API.CONTEXT + API.MASTER_PEOPLE_SAVE_PATH,
 	options: {
 		auth: {
 			mode: "required",
@@ -60,7 +60,7 @@ const post_data = async (request) => {
     let cols = [ 'oid', 'name', 'status', 'company_oid', 		
 		'created_on', 'created_by' ]
 
-    let params = ['$1', '$2', '$3', '$4', '$5', '$6']
+    let params = [`$${index++}`, `$${index++}`, `$${index++}`, `$${index++}`, `$${index++}`, `$${index++}`]
 
 	let data = [uuid.v4(), request.payload.name, request.payload.status, request.auth.credentials.company_oid, 'now()', request.auth.credentials.login_id ]
 
@@ -94,7 +94,7 @@ const post_data = async (request) => {
 	if(request.payload.people_json){
 		cols.push('people_json')
 		params.push(`$${index++}`)
-		data.push(request.payload.people_json)
+		data.push(`${request.payload.people_json}`)
 	}	
 	if(request.payload.payable_balance){
 		cols.push('payable_balance')
