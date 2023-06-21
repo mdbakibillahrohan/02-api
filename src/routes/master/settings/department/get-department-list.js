@@ -1,6 +1,5 @@
 "use strict"
 
-const _ = require("underscore")
 const Joi = require("@hapi/joi")
 const Dao = require("../../../../util/dao")
 const log = require("../../../../util/log")
@@ -10,7 +9,7 @@ const payload_scheme = Joi.object({
 	offset: Joi.number().optional().allow(null, ""),
 	limit: Joi.number().optional().allow(null, ""),
 	search_text: Joi.string().trim().allow(null, "").optional(),
-	status: Joi.array().items(Joi.string().trim().required().valid('Active', 'Inactive')).optional(),
+	status: Joi.string().trim().valid('Active', 'Inactive').optional(),
 })
 
 const route_controller = {
@@ -61,8 +60,9 @@ const get_count = async (request) => {
 	param.push(request.auth.credentials.company_oid)
 
 	if (request.payload.status && request.payload.status.length > 0) {
-		let status = request.payload.status.map((x) => `'${x}'`).join(", ")
-		query += ` and status in (${status})`
+		let status = request.payload.status //.map((x) => `'${x}'`).join(", ")
+		query += ` and status = $${index++}` //in (${status})`
+		param.push(status)
 	}
 
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
@@ -92,8 +92,9 @@ const get_data = async (request) => {
 	param.push(request.auth.credentials.company_oid)
 
 	if (request.payload.status && request.payload.status.length > 0) {
-		let status = request.payload.status.map((x) => `'${x}'`).join(", ")
-		query += ` and status in (${status})`
+		let status = request.payload.status //.map((x) => `'${x}'`).join(", ")
+		query += ` and status = $${index++}` //in (${status})`
+		param.push(status)
 	}
 
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
