@@ -20,7 +20,11 @@ module.exports = {
 		DEPARTMENT: "department",
 		BANK_ACCOUNT: "bank_account",
 		PASSPORT: "passport",
-		
+		PASSPORT_DETAIL: "passport_detail",
+		PASSPORT_COMMAND: "passport_command",
+		PASSPORT_VISA_INFORMATION: "passport_visa_information",
+		PASSENGER_NOTIFICATION: "passenger_notification",
+
 		LEDGER_GROUP: "ledger_group",
 		LEDGER_SUBGROUP: "ledger_subgroup",
 		LEDGER: "ledger",
@@ -74,35 +78,34 @@ module.exports = {
 		GET_DEPARTMENT_LIST: "/v1/department/get-list",
 		GET_BANK_ACCOUNT_LIST: "/v1/bank-account/get-list",
 
-		DEPARTMENT_GET_LIST_PATH: "/v1/setting/department/get-list",
-		DEPARTMENT_GET_BY_OID_PATH: "/v1/setting/department/get-by-oid",
-		DEPARTMENT_SAVE_PATH: "/v1/setting/department/save",
-		DEPARTMENT_UPDATE_PATH: "/v1/setting/department/update",
-		DEPARTMENT_DELETE_PATH: "/v1/setting/department/delete",
+		MASTER_SETTING_DEPARTMENT_GET_LIST_PATH: "/v1/master/setting/department/get-list",
+		MASTER_SETTING_DEPARTMENT_GET_BY_OID_PATH: "/master/v1/setting/department/get-by-oid",
+		MASTER_SETTING_DEPARTMENT_SAVE_UPDATE_PATH: "/v1/master/setting/department/save-update",
+		MASTER_SETTING_DEPARTMENT_DELETE_PATH: "/v1/master/setting/department/delete",
 
-		DESIGNATION_GET_LIST_PATH: "/v1/setting/designation/get-list",
-		DESIGNATION_GET_BY_OID_PATH: "/v1/setting/designation/get-by-oid",
-		DESIGNATION_SAVE_PATH: "/v1/setting/designation/save",
-		DESIGNATION_UPDATE_PATH: "/v1/setting/designation/update",
-		DESIGNATION_DELETE_PATH: "/v1/setting/designation/delete",
+		MASTER_SETTING_DESIGNATION_GET_LIST_PATH: "/v1/master/setting/designation/get-list",
+		MASTER_SETTING_DESIGNATION_GET_BY_OID_PATH: "/v1/master/setting/designation/get-by-oid",
+		MASTER_SETTING_DESIGNATION_SAVE_PATH: "/v1/master/setting/designation/save",
+		MASTER_SETTING_DESIGNATION_UPDATE_PATH: "/v1/master/setting/designation/update",
+		MASTER_SETTING_DESIGNATION_DELETE_PATH: "/v1/master/setting/designation/delete",
 
-		BANK_ACCOUNT_GET_LIST_PATH: "/v1/setting/bank-account/get-list",
-		BANK_ACCOUNT_GET_BY_OID_PATH: "/v1/setting/bank-account/get-by-oid",
-		BANK_ACCOUNT_SAVE_PATH: "/v1/setting/bank-account/save",
-		BANK_ACCOUNT_UPDATE_PATH: "/v1/setting/bank-account/update",
-		BANK_ACCOUNT_DELETE_PATH: "/v1/setting/bank-account/delete",
+		MASTER_BANK_ACCOUNT_GET_LIST_PATH: "/v1/master/bank-account/get-list",
+		MASTER_BANK_ACCOUNT_GET_BY_OID_PATH: "/v1/master/bank-account/get-by-oid",
+		MASTER_BANK_ACCOUNT_SAVE_PATH: "/v1/master/bank-account/save",
+		MASTER_BANK_ACCOUNT_UPDATE_PATH: "/v1/master/bank-account/update",
+		MASTER_BANK_ACCOUNT_DELETE_PATH: "/v1/master/bank-account/delete",
 
-		PEOPLE_GET_LIST_PATH: "/v1/setting/people/get-list",
-		PEOPLE_GET_BY_OID_PATH: "/v1/setting/people/get-by-oid",
-		PEOPLE_SAVE_PATH: "/v1/setting/people/save",
-		PEOPLE_UPDATE_PATH: "/v1/setting/people/update",
-		PEOPLE_DELETE_PATH: "/v1/setting/people/delete",
+		MASTER_PEOPLE_GET_LIST_PATH: "/v1/master/people/get-list",
+		MASTER_PEOPLE_GET_BY_OID_PATH: "/v1/master/people/get-by-oid",
+		MASTER_PEOPLE_SAVE_PATH: "/v1/master/people/save",
+		MASTER_PEOPLE_UPDATE_PATH: "/v1/master/people/update",
+		MASTER_PEOPLE_DELETE_PATH: "/v1/master/people/delete",
 
-		PASSPORT_GET_LIST_PATH: "/v1/setting/passport/get-list",
-		PASSPORT_GET_BY_OID_PATH: "/v1/setting/passport/get-by-oid",
-		PASSPORT_SAVE_PATH: "/v1/setting/passport/save",
-		PASSPORT_UPDATE_PATH: "/v1/setting/passport/update",
-		PASSPORT_DELETE_PATH: "/v1/setting/passport/delete",
+		MASTER_PASSPORT_GET_LIST_PATH: "/v1/master/passport/get-list",
+		MASTER_PASSPORT_GET_BY_OID_PATH: "/v1/master/passport/get-by-oid",
+		MASTER_PASSPORT_SAVE_PATH: "/v1/master/passport/save",
+		MASTER_PASSPORT_UPDATE_PATH: "/v1/master/passport/update",
+		MASTER_PASSPORT_DELETE_PATH: "/v1/master/passport/delete",
 
 		CHANGE_PASSWORD: "/v1/user/change-password",
 		GET_COMPANY_LIST: "/v1/company/get-list",
@@ -194,7 +197,7 @@ module.exports = {
 		GET_FINANCIAL_PERIOD_LIST: "/v1/accounting/get-financial-period-list",
 		ADD_FINANCIAL_PERIOD: "/v1/accounting/financial-period",
 
-		
+
 
 		GET_ACTIVITY_LOG_LIST: "/v1/activity-log/get-list",
 

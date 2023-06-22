@@ -3,7 +3,7 @@
 @TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9M2RkMTY3MDAtOGQxYi00NWY5LWJiNjYtNGIwMTIxNzQ5N2NhIiwiaWF0IjoxNjg3MTU4MTA2LCJleHAiOjE2ODcyNDQ1MDZ9.EqE0PycF5W3Jr-taGJNay9JETxZXyVAvUmFOm6vFKkQ
 
 ###
-POST {{API_URL}}/v1/setting/designation/get-list
+POST {{API_URL}}/v1/master/setting/designation/get-list
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
@@ -17,7 +17,7 @@ Authorization: Bearer {{TOKEN}}
 }
 
 ###
-POST {{API_URL}}/v1/setting/designation/get-by-oid
+POST {{API_URL}}/v1/master/setting/designation/get-by-oid
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
@@ -28,7 +28,7 @@ Authorization: Bearer {{TOKEN}}
 }
 
 ###
-POST {{API_URL}}/v1/setting/designation/save
+POST {{API_URL}}/v1/master/setting/designation/save
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
@@ -41,7 +41,7 @@ Authorization: Bearer {{TOKEN}}
 }
 
 ###
-POST {{API_URL}}/v1/setting/designation/update
+POST {{API_URL}}/v1/master/setting/designation/update
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
@@ -54,7 +54,7 @@ Authorization: Bearer {{TOKEN}}
 
 }
 ###
-POST {{API_URL}}/v1/setting/designation/delete
+POST {{API_URL}}/v1/master/setting/designation/delete
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
