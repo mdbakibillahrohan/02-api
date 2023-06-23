@@ -1,0 +1,28 @@
+@API_URL = http://localhost:3000/api
+
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9ZDNmYWY2YzMtMWE0Zi00OGI1LTgzNzQtZWJiNmFhOTZjNzIzIiwiaWF0IjoxNjg3NDI5OTUwLCJleHAiOjE2ODc1MTYzNTB9.DVmBis3dJPw_Y5NetNpFLZaJn72TN1vyd02eLBOy4uo
+
+
+###
+POST {{API_URL}}/v1/inventory/warehouse/save-update
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+    "oid":"RcEuKA",
+    "name":"Hamza is Hamza",
+    "address":"Svar union, Dhaka",
+    "status":"Active"
+}
+
+
+###
+POST {{API_URL}}/v1/inventory/warehouse/get-list
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+    "status":"Active"
+}

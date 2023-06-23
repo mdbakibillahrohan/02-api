@@ -137,10 +137,14 @@ module.exports = {
 		GET_LEDGER_LIST: "/v1/get-ledger-list",
 		GET_LEDGER_BALANCE: "/v1/get-ledger-balance",
 		GET_SUB_LEDGER_BALANCE: "/v1/get-sub-ledger-balance",
-		ADD_WAREHOUSE: "/v1/warehouse/add-warehouse",
-		UPDATE_WAREHOUSE: "/v1/warehouse/update-warehouse",
-		GET_WAREHOUSE_LIST: "/v1/warehouse/get-list",
-		GET_WAREHOUSE_BY_OID: "/v1/warehouse/get-by-oid",
+
+		INVENTORY_WAREHOUSE_SAVE_UPDATE_PATH: "/v1/inventory/warehouse/save-update",
+		INVENTORY_WAREHOUSE_GET_LIST_PATH: "/v1/inventory/warehouse/get-list",
+		INVENTORY_PRODUCT_UNIT_SAVE_UPDATE_PATH: "/v1/inventory/product-unit/save-update",
+		INVENTORY_PRODUCT_UNIT_GET_LIST_PATH: "/v1/inventory/product-unit/get-list",
+		INVENTORY_PRODUCT_CATEGORY_GET_LIST_PATH: "/v1/inventory/product-category/get-list",
+		INVENTORY_PRODUCT_CATEGORY_SAVE_UPDATE_PATH: "/v1/inventory/product-category/save-update",
+
 		GET_PRODUCT_UNIT_LIST: "/v1/product-unit/get-list",
 		ADD_PRODUCT_UNIT: "/v1/product-unit/add-product-unit",
 		UPDATE_PRODUCT_UNIT: "/v1/product-unit/update-product-unit",
