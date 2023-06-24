@@ -28,7 +28,7 @@ Authorization: Bearer {{TOKEN}}
 }
 
 ###
-POST {{API_URL}}/v1/master/setting/designation/save
+POST {{API_URL}}/v1/master/setting/designation/save-update
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}

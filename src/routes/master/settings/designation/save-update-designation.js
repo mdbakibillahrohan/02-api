@@ -14,7 +14,7 @@ const payload_scheme = Joi.object({
 
 const route_controller = {
 	method: "POST",
-	path: API.CONTEXT + API.MASTER_SETTING_DESIGNATION_SAVE_PATH,
+	path: API.CONTEXT + API.MASTER_SETTING_DESIGNATION_SAVE_UPDATE_PATH,
 	options: {
 		auth: {
 			mode: "required",

@@ -85,7 +85,7 @@ module.exports = {
 
 		MASTER_SETTING_DESIGNATION_GET_LIST_PATH: "/v1/master/setting/designation/get-list",
 		MASTER_SETTING_DESIGNATION_GET_BY_OID_PATH: "/v1/master/setting/designation/get-by-oid",
-		MASTER_SETTING_DESIGNATION_SAVE_PATH: "/v1/master/setting/designation/save",
+		MASTER_SETTING_DESIGNATION_SAVE_UPDATE_PATH: "/v1/master/setting/designation/save-update",
 		MASTER_SETTING_DESIGNATION_UPDATE_PATH: "/v1/master/setting/designation/update",
 		MASTER_SETTING_DESIGNATION_DELETE_PATH: "/v1/master/setting/designation/delete",
 
