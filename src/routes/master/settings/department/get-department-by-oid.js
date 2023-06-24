@@ -1,6 +1,5 @@
 "use strict"
 
-const _ = require("underscore")
 const Joi = require("@hapi/joi")
 const log = require("../../../../util/log")
 const Dao = require("../../../../util/dao")

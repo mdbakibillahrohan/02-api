@@ -1,6 +1,6 @@
 @API_URL = http://localhost:3000/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9NTc5YzFjMzMtYzhjYi00NDM5LWFjMDctYWQ1NTBiN2I4OWZjIiwiaWF0IjoxNjg3MjgyMDUwLCJleHAiOjE2ODczNjg0NTB9.sLtx5YPv4UiVatxcCqyP5EhhXMi8pQAHjzSmvOAbPQk
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9MzYwNzFiODEtMzBmYi00NDQxLThmMmQtMGM4NGZmODk2YjgwIiwiaWF0IjoxNjg3MzQ4NjAyLCJleHAiOjE2ODc0MzUwMDJ9.SGRQNrFhbjJ8tz5y1JOGNE0xNwkboaWCygv1VD7Gmf8
 
 ###
 POST {{API_URL}}/v1/master/setting/department/get-list
@@ -34,7 +34,7 @@ Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-    "name": "Supply Chain",
+    "name": "gdf sdf",
     "status": "Active"
 }
 

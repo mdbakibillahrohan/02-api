@@ -1,6 +1,6 @@
 @API_URL = http://localhost:3000/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9M2RkMTY3MDAtOGQxYi00NWY5LWJiNjYtNGIwMTIxNzQ5N2NhIiwiaWF0IjoxNjg3MTU4MTA2LCJleHAiOjE2ODcyNDQ1MDZ9.EqE0PycF5W3Jr-taGJNay9JETxZXyVAvUmFOm6vFKkQ
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9MzYwNzFiODEtMzBmYi00NDQxLThmMmQtMGM4NGZmODk2YjgwIiwiaWF0IjoxNjg3MzQ4NjAyLCJleHAiOjE2ODc0MzUwMDJ9.SGRQNrFhbjJ8tz5y1JOGNE0xNwkboaWCygv1VD7Gmf8
 
 ###
 POST {{API_URL}}/v1/master/setting/designation/get-list
@@ -35,7 +35,6 @@ Authorization: Bearer {{TOKEN}}
 
 { 
     "name": "Save",
-    "sort_order": "10",
     "status": "Active"
 
 }

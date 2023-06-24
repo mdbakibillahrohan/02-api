@@ -50,7 +50,7 @@ const handle_request = async (request) => {
 const get_data = async (request) => {
 	let data = null
 	let sql = {
-		text: `select oid, name, sort_order, status 
+		text: `select oid, name, status 
 			from ${TABLE.DESIGNATION} where oid = $1 and company_oid = $2`,
 		values: [request.payload.oid, request.auth.credentials.company_oid],
 	}
