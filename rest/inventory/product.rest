@@ -1,0 +1,39 @@
+@API_URL = http://localhost:3000/api
+
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9OWJiMDRjNzQtMjNmMi00MjExLTkwNDAtMDMwMDMwNTg1YmQ1IiwiaWF0IjoxNjg3NTg5OTY4LCJleHAiOjE2ODc2NzYzNjh9.hWSq8bbVLPiyNN2W71CQ8-zxep2fhTeviMI6vdtXnPk
+
+
+### Save/Update product unit
+POST {{API_URL}}/v1/inventory/product/save-update
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+    "name":"RRRRR",
+    "status":"Active"
+}
+
+
+### Get the list of product unit
+POST {{API_URL}}/v1/inventory/product/get-list
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+    "search_text":"co",
+    "status":"Active",
+    "limit":10
+}
+
+
+### Get the product by oid
+POST {{API_URL}}/v1/inventory/product/get-by-oid
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+    "oid":"XN7nsK"
+}
