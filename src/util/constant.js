@@ -144,6 +144,9 @@ module.exports = {
 		INVENTORY_PRODUCT_UNIT_GET_LIST_PATH: "/v1/inventory/product-unit/get-list",
 		INVENTORY_PRODUCT_CATEGORY_GET_LIST_PATH: "/v1/inventory/product-category/get-list",
 		INVENTORY_PRODUCT_CATEGORY_SAVE_UPDATE_PATH: "/v1/inventory/product-category/save-update",
+		INVENTORY_PRODUCT_GET_LIST_PATH: "/v1/inventory/product/get-list",
+		INVENTORY_PRODUCT_GET_BY_OID_PATH: "/v1/inventory/product/get-by-oid",
+		INVENTORY_PRODUCT_SAVE_UPDATE_PATH: "/v1/inventory/product/save-update",
 
 		GET_PRODUCT_UNIT_LIST: "/v1/product-unit/get-list",
 		ADD_PRODUCT_UNIT: "/v1/product-unit/add-product-unit",
