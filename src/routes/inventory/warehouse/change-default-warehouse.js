@@ -40,7 +40,7 @@ const handle_request = async (request) => {
 	if (res_data == null) {
 		return { status: false, code: 201, message: `Unable to change default warehouse` }
 	}
-	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - warehouse change default - ${request.payload.name}`)
+	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - warehouse change default - ${request.payload.oid}`)
 	return { status: true, code: 200, message: `Successfully changed default warehouse - ${request.payload.oid}` }
 }
 
