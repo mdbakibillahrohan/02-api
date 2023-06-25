@@ -1,6 +1,6 @@
-@API_URL = http://localhost:3000/api
+@API_URL = http://192.168.1.160:3000/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9MzYwNzFiODEtMzBmYi00NDQxLThmMmQtMGM4NGZmODk2YjgwIiwiaWF0IjoxNjg3MzQ4NjAyLCJleHAiOjE2ODc0MzUwMDJ9.SGRQNrFhbjJ8tz5y1JOGNE0xNwkboaWCygv1VD7Gmf8
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9ZjgwYjVmYjMtMzM2Zi00YjhhLWJhNTUtYjcwZmEzMzM0MTVmIiwiaWF0IjoxNjg3Njg5MTYzLCJleHAiOjE2ODc3NzU1NjN9.cssBwULBSRFVrKVyva2nvyC_WGVl1clx8Ruf9Un6w9M
 
 ###
 POST {{API_URL}}/v1/master/setting/designation/get-list
@@ -9,7 +9,7 @@ Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-    "search_text": "",
+    "search_text": "Engineer",
     "offset": "",
     "limit": "",
     "status": "Active"
@@ -34,7 +34,7 @@ Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-    "name": "Save",
+    "name": "designa",
     "status": "Active"
 
 }

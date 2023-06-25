@@ -1,5 +1,6 @@
 "use strict"
 
+const _ = require("underscore")
 const uuid = require("uuid");
 const Joi = require("@hapi/joi")
 const Dao = require("../../../util/dao")
@@ -18,13 +19,13 @@ const payload_scheme = Joi.object({
 
 const route_controller = {
 	method: "POST",
-	path: API.CONTEXT + API.MASTER_BANK_ACCOUNT_SAVE_PATH,
+	path: API.CONTEXT + API.MASTER_BANK_ACCOUNT_save/update_PATH,
 	options: {
 		auth: {
 			mode: "required",
 			strategy: "jwt",
 		},
-		description: "Save bank account",
+		description: "save/update/update bank account",
 		plugins: { hapiAuthorization: false },
 		validate: {
 			payload: payload_scheme,
@@ -44,29 +45,19 @@ const route_controller = {
 const handle_request = async (request) => {
 	let res_data = await post_data(request)
 	if (res_data == null) {
-		return { status: false, code: 201, message: `Unable to save bank account` }
+		return { status: false, code: 201, message: `Unable to save/update bank account` }
 	}
-	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - bank account save - ${request.payload.account_name}`)
-	return { status: true, code: 200, message: `Successfully save ${request.payload.account_name}` }
+	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - bank account save/update - ${request.payload.account_name}`)
+	return { status: true, code: 200, message: `Successfully save/update ${request.payload.account_name}` }
 	
 }
 
 const post_data = async (request) => {
-    let cols = [ 'oid', 'account_no', 'account_name', 'branch_name', 
-		'status', 'bank_oid', 'company_oid', 'created_on', 'created_by' ]
-
-    let params = ['$1', '$2', '$3', '$4', '$5', '$6', '$7', '$8', '$9']
-
-	let data = [uuid.v4(), request.payload.account_no, request.payload.account_name, request.payload.branch_name, request.payload.status, request.payload.bank_oid, request.auth.credentials.company_oid, 'now()', request.auth.credentials.login_id ]
-
-	let index = 10
-	if(request.payload.initial_balance){
-		cols.push('initial_balance')
-		params.push(`$${index++}`)
-		data.push(request.payload.initial_balance)
-	}
-    let scols = cols.join(', ')
-    let sparams = params.join(', ')
+	let data = null
+	let param = _.clone(request.payload)
+	param = _.extend(param, {
+		created_by: request.auth.credentials.login_id
+	})
     let query = `insert into ${TABLE.BANK_ACCOUNT} (${scols}) values (${sparams})`
 
 	let sql = {

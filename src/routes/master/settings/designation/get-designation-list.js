@@ -54,7 +54,7 @@ const handle_request = async (request) => {
 const get_count = async (request) => {
 	let index = 1
 	let data, param = []
-	let query = `select count(*)::int4 as total from ${TABLE.DEPARTMENT} 
+	let query = `select count(*)::int4 as total from ${TABLE.DESIGNATION} 
 		where 1 = 1 and company_oid = $${index++}`
 	param.push(request.auth.credentials.company_oid)
 
@@ -95,10 +95,13 @@ const get_data = async (request) => {
 		param.push(`%${request.payload.search_text}%`)
 	}
 	query += ` order by sort_order desc`
-	if (request.payload.limit && request.payload.offset) {
-		query += ` limit $${index++} offset $${index++}`
-		param.push(request.payload.limit)
+	if(request.payload.offset) {
+		query += ` offset $${index++}`
 		param.push(request.payload.offset)
+	}
+	if (request.payload.limit) {
+		query += ` limit $${index++}`
+		param.push(request.payload.limit)
 	}
 	let sql = {
 		text: query,

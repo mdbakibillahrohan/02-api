@@ -91,7 +91,7 @@ module.exports = {
 
 		MASTER_BANK_ACCOUNT_GET_LIST_PATH: "/v1/master/bank-account/get-list",
 		MASTER_BANK_ACCOUNT_GET_BY_OID_PATH: "/v1/master/bank-account/get-by-oid",
-		MASTER_BANK_ACCOUNT_SAVE_PATH: "/v1/master/bank-account/save",
+		MASTER_BANK_ACCOUNT_SAVE_UPDATE_PATH: "/v1/master/bank-account/save-update",
 		MASTER_BANK_ACCOUNT_UPDATE_PATH: "/v1/master/bank-account/update",
 		MASTER_BANK_ACCOUNT_DELETE_PATH: "/v1/master/bank-account/delete",
 
