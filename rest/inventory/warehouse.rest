@@ -1,6 +1,6 @@
 @API_URL = http://localhost:3000/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9ZDNmYWY2YzMtMWE0Zi00OGI1LTgzNzQtZWJiNmFhOTZjNzIzIiwiaWF0IjoxNjg3NDI5OTUwLCJleHAiOjE2ODc1MTYzNTB9.DVmBis3dJPw_Y5NetNpFLZaJn72TN1vyd02eLBOy4uo
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9ODIyNDFmM2EtMGE0Mi00MTI3LThlMmMtODNmMmExODFlOGIzIiwiaWF0IjoxNjg3Njc4NDc1LCJleHAiOjE2ODc3NjQ4NzV9.P24QWL9utjHyPvkvhd1GcKTNPxYMJDSSZCNLwWb90t8
 
 
 ###
@@ -25,4 +25,15 @@ Authorization: Bearer {{TOKEN}}
 
 {
     "status":"Active"
+}
+
+
+### change the default warehouse by providing oid 
+POST {{API_URL}}/v1/inventory/warehouse/change-default
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+    "oid":"W-101"
 }
