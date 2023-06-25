@@ -19,7 +19,7 @@ const payload_scheme = Joi.object({
 
 const route_controller = {
 	method: "POST",
-	path: API.CONTEXT + API.MASTER_BANK_ACCOUNT_save/update_PATH,
+	path: API.CONTEXT + API.MASTER_BANK_ACCOUNT_SAVE_UPDATE_PATH,
 	options: {
 		auth: {
 			mode: "required",
@@ -49,7 +49,7 @@ const handle_request = async (request) => {
 	}
 	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - bank account save/update - ${request.payload.account_name}`)
 	return { status: true, code: 200, message: `Successfully save/update ${request.payload.account_name}` }
-	
+
 }
 
 const post_data = async (request) => {
