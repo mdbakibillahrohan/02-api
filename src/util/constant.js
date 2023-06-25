@@ -139,6 +139,7 @@ module.exports = {
 		GET_SUB_LEDGER_BALANCE: "/v1/get-sub-ledger-balance",
 
 		INVENTORY_WAREHOUSE_SAVE_UPDATE_PATH: "/v1/inventory/warehouse/save-update",
+		INVENTORY_WAREHOUSE_CHANGE_DEFAULT_PATH: "/v1/inventory/warehouse/change-default",
 		INVENTORY_WAREHOUSE_GET_LIST_PATH: "/v1/inventory/warehouse/get-list",
 		INVENTORY_PRODUCT_UNIT_SAVE_UPDATE_PATH: "/v1/inventory/product-unit/save-update",
 		INVENTORY_PRODUCT_UNIT_GET_LIST_PATH: "/v1/inventory/product-unit/get-list",
