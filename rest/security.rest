@@ -1,6 +1,6 @@
 @API_URL = http://localhost:3000/api
 
-<<<<<<< rest/security.rest
+
 @TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9OWQ5ZTc3ODktZDYyZS00ZDk2LWIwODgtN2IzZTBiMTIwZTY5IiwiaWF0IjoxNjg3MzUxNTM5LCJleHAiOjE2ODc0Mzc5Mzl9.mGzHMDIfryiKX3OC90BJXPoX-c8poEqs_nIs0KxImCk
 
 
