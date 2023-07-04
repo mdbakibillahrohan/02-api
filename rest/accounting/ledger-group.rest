@@ -1,0 +1,16 @@
+@API_URL = http://localhost:3000/api
+# @API_URL = http://192.168.1.160:3000/api
+
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9OWQ2YzI2ODctODc2MS00N2FjLTgxOTAtZTMzZTQzZjM3MWJlIiwiaWF0IjoxNjg4NDAxMzMwLCJleHAiOjE2ODg0ODc3MzB9.SEnR_0_mVIizsV1DEEEuE4yipKvVCPcfrN81U-QrxSg
+###
+POST {{API_URL}}/v1/accounting/ledger-group/get-list
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "search_text": "ed",
+    "offset": "",
+    "limit": ""
+
+}

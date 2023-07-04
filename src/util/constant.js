@@ -107,6 +107,26 @@ module.exports = {
 		MASTER_PASSPORT_UPDATE_PATH: "/v1/master/passport/update",
 		MASTER_PASSPORT_DELETE_PATH: "/v1/master/passport/delete",
 
+		ACCOUNTING_LEDGER_GET_LIST_PATH: "/v1/accounting/ledger/get-list",
+		ACCOUNTING_LEDGER_GET_BY_OID_PATH: "/v1/accounting/ledger/get-by-oid",
+		ACCOUNTING_LEDGER_SAVE_UPDATE_PATH: "/v1/accounting/ledger/save-update",
+
+		ACCOUNTING_LEDGER_GROUP_GET_LIST_PATH: "/v1/accounting/ledger-group/get-list",
+		ACCOUNTING_LEDGER_GROUP_GET_BY_OID_PATH: "/v1/accounting/ledger-group/get-by-oid",
+		ACCOUNTING_LEDGER_GROUP_SAVE_UPDATE_PATH: "/v1/accounting/ledger-group/save-update",
+
+		ACCOUNTING_LEDGER_SETTING_GET_LIST_PATH: "/v1/accounting/ledger-setting/get-list",
+		ACCOUNTING_LEDGER_SETTING_GET_BY_OID_PATH: "/v1/accounting/ledger-setting/get-by-oid",
+		ACCOUNTING_LEDGER_SETTING_SAVE_UPDATE_PATH: "/v1/accounting/ledger-setting/save-update",
+
+		ACCOUNTING_LEDGER_SUBGROUP_GET_LIST_PATH: "/v1/accounting/ledger-subgroup/get-list",
+		ACCOUNTING_LEDGER_SUBGROUP_GET_BY_OID_PATH: "/v1/accounting/ledger-subgroup/get-by-oid",
+		ACCOUNTING_LEDGER_SUBGROUP_SAVE_UPDATE_PATH: "/v1/accounting/ledger-subgroup/save-update",
+
+		ACCOUNTING_CHART_OF_ACCOUNT_GET_LIST_PATH: "/v1/accounting/chart-of-account/get-list",
+		ACCOUNTING_CHART_OF_ACCOUNT_GET_BY_OID_PATH: "/v1/accounting/chart-of-account/get-by-oid",
+		ACCOUNTING_CHART_OF_ACCOUNT_SAVE_UPDATE_PATH: "/v1/accounting/chart-of-account/save-update",
+
 		CHANGE_PASSWORD: "/v1/user/change-password",
 		GET_COMPANY_LIST: "/v1/company/get-list",
 		GET_DESIGNATION_LIST: "/v1/designation/get-list",
