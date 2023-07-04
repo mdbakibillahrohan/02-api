@@ -11,6 +11,7 @@ const payload_scheme = Joi.object({
 	search_text: Joi.string().trim().allow(null, "").optional(),
 	status: Joi.array().items(Joi.string().trim().required().valid('Active', 'Inactive')).optional(),
 })
+
 const route_controller = {
 	method: "POST",
 	path: API.CONTEXT + API.INVENTORY_PRODUCT_CATEGORY_GET_LIST_PATH,

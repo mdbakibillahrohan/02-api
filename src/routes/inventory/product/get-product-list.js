@@ -11,6 +11,7 @@ const payload_scheme = Joi.object({
 	search_text: Joi.string().trim().allow(null, "").optional(),
 	status: Joi.array().items(Joi.string().trim().required().valid('Active', 'Inactive')).optional(),
 })
+
 const route_controller = {
 	method: "POST",
 	path: API.CONTEXT + API.INVENTORY_PRODUCT_GET_LIST_PATH,
@@ -55,7 +56,6 @@ const get_count = async (request) => {
 	let data, param = []
 	let query = `select count(*)::int4 as total from ${TABLE.PRODUCT} 
 		where 1 = 1 and company_oid = $${index++}`
-
 	param.push(request.auth.credentials.company_oid)
 
 	if (request.payload.status ) {
@@ -84,9 +84,11 @@ const get_count = async (request) => {
 const get_data = async (request) => {
 	let index = 1
 	let data, param = []
-	let query = `select p.oid, p.name, product_type, selling_price, purchase_price, minimum_qty, initial_qty, initial_value, p.status, pu.name as product_unit, pc.name as product_category from ${TABLE.PRODUCT} p
-    LEFT JOIN ${TABLE.PRODUCT_UNIT} pu on pu.oid = p.product_unit_oid 
-    LEFT JOIN ${TABLE.PRODUCT_CATEGORY} pc on pc.oid = p.product_category_oid 
+	let query = `select p.oid, p.name, product_type, selling_price, purchase_price, minimum_qty, initial_qty, initial_value, 
+		p.status, pu.name as product_unit, pc.name as product_category 
+		from ${TABLE.PRODUCT} p
+		LEFT JOIN ${TABLE.PRODUCT_UNIT} pu on pu.oid = p.product_unit_oid 
+		LEFT JOIN ${TABLE.PRODUCT_CATEGORY} pc on pc.oid = p.product_category_oid 
 		where 1 = 1 and p.company_oid = $${index++}`
 
 	param.push(request.auth.credentials.company_oid)
@@ -97,16 +99,18 @@ const get_data = async (request) => {
 	}
 
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
-		query += ` and (lower(p.name) ilike $${index} or lower(p.product_type) ilike $${index} or lower(pc.name) ilike $${index} or lower(pu.name) ilike $${index} or lower(p.status) ilike $${index++})`
+		query += ` and (lower(p.name) ilike $${index} or lower(p.product_type) ilike $${index} 
+			or lower(pc.name) ilike $${index} or lower(pu.name) ilike $${index} 
+			or lower(p.status) ilike $${index++})`
 		param.push(`%${request.payload.search_text}%`)
 	}
 
-    if(request.payload.offset && request.payload.offset>0){
+    if(request.payload.offset && request.payload.offset > 0){
         query += ` offset $${index++}`
 		param.push(request.payload.offset)
     }
 
-	if (request.payload.limit) {
+	if (request.payload.limit && request.payload.limit > 0) {
 		query += ` limit $${index++}`
 		param.push(request.payload.limit)
 	}
