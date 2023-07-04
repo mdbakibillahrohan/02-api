@@ -148,7 +148,8 @@ const insert_api_log = async (request, h) => {
 		(end_time - start_time), created_by, company_oid, '02-gds-api']
 	}
 	try {
-		await Dao.execute_value(request.pg, sql)
+		const a = await Dao.execute_value(request.pg, sql)
+		console.log(a)
 	} catch (e) {
 		log.error(`An exception occurred while inserting api_log : ${e?.message}`)
 	}

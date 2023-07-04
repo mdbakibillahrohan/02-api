@@ -10,7 +10,6 @@ const payload_scheme = Joi.object({
 	oid: Joi.string().trim().min(1).max(128).optional(),
 	ledger_key: Joi.string().trim().min(1).max(128).required(),
 	ledger_name: Joi.string().trim().min(1).max(128).required(),
-	ledger_code: Joi.string().trim().min(1).max(32).required(),
 	ledger_oid: Joi.string().trim().min(1).max(32).required()
 })
 
@@ -44,9 +43,8 @@ const handle_request = async (request) => {
 	if (res_data == null) {
 		return { status: false, code: 201, message: `Unable to save/update ledger setting` }
 	}
-	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - ledger setting save/update - ${request.payload.name}`)
-	return { status: true, code: 200, message: `Successfully executed ledger setting ${request.payload.name}` }
-	
+	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - ledger setting save/update - ${request.payload.ledger_name}`)
+	return { status: true, code: 200, message: `Successfully executed ledger setting ${request.payload.ledger_name}` }
 }
 
 const post_data = async (request) => {
