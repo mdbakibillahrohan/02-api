@@ -1,0 +1,10 @@
+@API_URL = http://localhost:3000/api
+# @API_URL = http://192.168.1.160:3000/api
+
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9YmY1ZmRiN2EtMjU4OS00MjhlLWE2YWMtNzJhZjk2NzI5MGVjIiwiaWF0IjoxNjg4NDcxMzYxLCJleHAiOjE2ODg1NTc3NjF9.8Z5ezusaHuVa7aUTtJQKqMoXqt7aDRY4om43FUikJjM
+###
+POST {{API_URL}}/v1/accounting/chart-of-account/get-list
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+

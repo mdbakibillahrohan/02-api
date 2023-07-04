@@ -5,13 +5,6 @@ const Dao = require("../../../util/dao")
 const log = require("../../../util/log")
 const { API, TABLE } = require("../../../util/constant")
 
-const payload_scheme = Joi.object({
-	offset: Joi.number().optional().allow(null, ""),
-	limit: Joi.number().optional().allow(null, ""),
-	ledger_group_oid: Joi.string().trim().allow(null, "").optional(),
-	search_text: Joi.string().trim().allow(null, "").optional(),
-})
-
 const route_controller = {
 	method: "POST",
 	path: API.CONTEXT + API.ACCOUNTING_CHART_OF_ACCOUNT_GET_LIST_PATH,
@@ -20,20 +13,20 @@ const route_controller = {
 			mode: "required",
 			strategy: "jwt",
 		},
-		description: "get chart of account list",
+		description: "Get chart of account",
 		plugins: { hapiAuthorization: false },
 		validate: {
-			query: payload_scheme,
 			options: {
 				allowUnknown: false,
 			},
 			failAction: async (request, h, err) => {
-				return h.response({ code: 301, status: false, message: err?.message }).takeover()
+				return h
+					.response({ code: 301, status: false, message: err?.message }).takeover()
 			},
 		},
 	},
 	handler: async (request, h) => {
-		log.debug(`Request received - ${JSON.stringify(request.payload)}`)
+		log.debug(`Request received - ${JSON.stringify(request.query)}`)
 		const response = await handle_request(request)
 		log.debug(`Response sent - ${JSON.stringify(response)}`)
 		return h.response(response)
@@ -41,75 +34,24 @@ const route_controller = {
 }
 
 const handle_request = async (request) => {
-	let count = await get_count(request)
 	let data = await get_data(request)
-	if (count == 0) {
-		log.warn(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - no chart of account found`)
-		return { status: false, code: 201, message: `No data found` }
+	if (data.length == 0) {
+		return { status: false, code: 201, message: "No data found" }
 	}
-	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - ${count} chart of account found`)
-	return { status: true, code: 200, message: `Successfully get chart of account list`, total: count, data: data }
-}
-
-const get_count = async (request) => {
-	let index = 1
-	let data, param = []
-	let query = `select count(*)::int4 as total from ${TABLE.LEDGER_SETTING} 
-		where 1 = 1 and company_oid = $${index++}`
-	param.push(request.auth.credentials.company_oid)
-
-	if (request.query.ledger_group_oid) {
-		query += ` and ls.ledger_group_oid = $${index++}`
-		param.push(request.query.ledger_group_oid)
-	}
-	if (request.payload.search_text && request.payload.search_text.length > 0) {
-		query += ` and (lower(ls.ledger_subgroup_name) ilike $${index}) or
-            (lower(ls.ledger_subgroup_name) ilike $${index})
-            or (lower(ledger_subgroup_code) ilike $${index++}) `
-		param.push(`%${request.payload.search_text}%`)
-	}
-	let sql = {
-		text: query,
-		values: param,
-	}
-	try {
-		let data_set = await Dao.get_data(request.pg, sql)
-		data = data_set[0]["total"]
-	} catch (e) {
-		log.error(`An exception occurred while getting chart of account list count : ${e?.message}`)
-	}
-	return data
+	log.info(`Chart of account data found`)
+	return { status: true, code: 200, message: "Successfully get chart of account", data: data }
 }
 
 const get_data = async (request) => {
-	let index = 1
-	let data, param = []
-	let query = `select ls.oid, ls.ledger_subgroup_code, ls.ledger_subgroup_name, 
-        ls.ledger_subgroup_type,  ls.balance_sheet_item, lg.ledger_group_name
-		from ${TABLE.LEDGER_SUBGROUP} ls 
-        left join ${TABLE.LEDGER_GROUP} lg on lg.oid = ls.ledger_group_oid
-        where 1 = 1 and ls.company_oid = $${index++}`
-	param.push(request.auth.credentials.company_oid)
-
-	if (request.query.ledger_group_oid) {
-		query += ` and ls.ledger_group_oid = $${index++}`
-		param.push(request.query.ledger_group_oid)
-	}
-	if (request.payload.search_text && request.payload.search_text.length > 0) {
-		query += ` and (lower(ls.ledger_subgroup_name) ilike $${index}) or
-            (lower(ls.ledger_subgroup_name) ilike $${index})
-            or (lower(ledger_subgroup_code) ilike $${index++}) `
-		param.push(`%${request.payload.search_text}%`)
-	}
-	query += ` order by lg.ledger_group_code, ls.ledger_subgroup_code`
-	if(request.payload.offset) {
-		query += ` offset $${index++}`
-		param.push(request.payload.offset)
-	}
-	if (request.payload.limit) {
-		query += ` limit $${index++}`
-		param.push(request.payload.limit)
-	}
+	let data = []
+	let param = [request.auth.credentials.company_oid]
+	let query = `select json_build_object('ledger_group_name', lg.ledger_group_name, 'children', 
+	(select json_agg(json_build_object('ledger_subgroup_name', lsg.ledger_subgroup_name, 'children', 
+	(select json_agg(json_build_object('ledger_name', l.ledger_name, 'oid', l.oid, 'ledger_code',l.ledger_code,'ledger_balance', l.ledger_balance)) from ledger l where l.ledger_subgroup_oid = lsg.oid)
+	)) from ${TABLE.LEDGER_SUBGROUP} lsg where lsg.ledger_group_oid = lg.oid)
+	)  as data
+	from ${TABLE.LEDGER_GROUP} lg
+	where company_oid = $1;`
 	let sql = {
 		text: query,
 		values: param,
@@ -117,7 +59,7 @@ const get_data = async (request) => {
 	try {
 		data = await Dao.get_data(request.pg, sql)
 	} catch (e) {
-		log.error(`An exception occurred while getting chart of account list : ${e?.message}`)
+		log.error(`An exception occurred while getting chart of account data: ${e?.message}`)
 	}
 	return data
 }

@@ -169,8 +169,6 @@ module.exports = {
 		INVENTORY_PRODUCT_GET_BY_OID_PATH: "/v1/inventory/product/get-by-oid",
 		INVENTORY_PRODUCT_SAVE_UPDATE_PATH: "/v1/inventory/product/save-update",
 
-		ACCOUNTING_CHART_OF_ACCOUNT_LIST_PATH: "v1/accounting/chart-of-accounting/get-list",
-
 		GET_PRODUCT_UNIT_LIST: "/v1/product-unit/get-list",
 		ADD_PRODUCT_UNIT: "/v1/product-unit/add-product-unit",
 		UPDATE_PRODUCT_UNIT: "/v1/product-unit/update-product-unit",
