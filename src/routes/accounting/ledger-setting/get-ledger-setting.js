@@ -58,7 +58,8 @@ const get_count = async (request) => {
 	param.push(request.auth.credentials.company_oid)
 
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
-		query += ` and (lower(ledger_name) ilike $${index}) or (lower(ledger_code) ilike $${index})
+		query += ` and (lower(ledger_name) ilike $${index}) or
+		 	(lower (ledger_code) ilike $${index})
             or (lower(ledger_key) ilike $${index++}) `
 		param.push(`%${request.payload.search_text}%`)
 	}
@@ -86,7 +87,7 @@ const get_data = async (request) => {
 
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
 		query += ` and (lower(ls.ledger_name) ilike $${index}) or 
-            (ls.lower(ledger_code) ilike $${index}) or
+            (lower(ls.ledger_code) ilike $${index}) or
             (lower(ls.ledger_key) ilike $${index++}) `
 		param.push(`%${request.payload.search_text}%`)
 	}

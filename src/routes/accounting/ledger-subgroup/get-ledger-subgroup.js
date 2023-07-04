@@ -54,7 +54,7 @@ const handle_request = async (request) => {
 const get_count = async (request) => {
 	let index = 1
 	let data, param = []
-	let query = `select count(*)::int4 as total from ${TABLE.LEDGER_SETTING} 
+	let query = `select count(*)::int4 as total from ${TABLE.LEDGER_SUBGROUP} 
 		where 1 = 1 and company_oid = $${index++}`
 	param.push(request.auth.credentials.company_oid)
 
@@ -63,8 +63,7 @@ const get_count = async (request) => {
 		param.push(request.query.ledger_group_oid)
 	}
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
-		query += ` and (lower(ls.ledger_subgroup_name) ilike $${index}) or
-            (lower(ls.ledger_subgroup_name) ilike $${index})
+		query += ` and (lower(ledger_subgroup_name) ilike $${index}) 
             or (lower(ledger_subgroup_code) ilike $${index++}) `
 		param.push(`%${request.payload.search_text}%`)
 	}
@@ -96,9 +95,8 @@ const get_data = async (request) => {
 		param.push(request.query.ledger_group_oid)
 	}
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
-		query += ` and (lower(ls.ledger_subgroup_name) ilike $${index}) or
-            (lower(ls.ledger_subgroup_name) ilike $${index})
-            or (lower(ledger_subgroup_code) ilike $${index++}) `
+		query += ` and (lower(ls.ledger_subgroup_name) ilike $${index}) 
+            or (lower(ls.ledger_subgroup_code) ilike $${index++}) `
 		param.push(`%${request.payload.search_text}%`)
 	}
 	query += ` order by lg.ledger_group_code, ls.ledger_subgroup_code`
