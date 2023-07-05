@@ -58,15 +58,17 @@ const get_count = async (request) => {
 		where 1 = 1 and company_oid = $${index++}`
 	param.push(request.auth.credentials.company_oid)
 
-	if (request.query.ledger_group_oid) {
-		query += ` and ls.ledger_group_oid = $${index++}`
-		param.push(request.query.ledger_group_oid)
+	if (request.payload.ledger_group_oid && request.payload.ledger_group_oid.length > 0) {
+		query += ` and ledger_group_oid = $${index++}`
+		param.push(request.payload.ledger_group_oid)
+		console.log(request.payload.ledger_group_oid)
 	}
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
 		query += ` and (lower(ledger_subgroup_name) ilike $${index}) 
             or (lower(ledger_subgroup_code) ilike $${index++}) `
 		param.push(`%${request.payload.search_text}%`)
 	}
+	
 	let sql = {
 		text: query,
 		values: param,
@@ -90,9 +92,9 @@ const get_data = async (request) => {
         where 1 = 1 and ls.company_oid = $${index++}`
 	param.push(request.auth.credentials.company_oid)
 
-	if (request.query.ledger_group_oid) {
+	if (request.payload.ledger_group_oid && request.payload.ledger_group_oid.length > 0 ) {
 		query += ` and ls.ledger_group_oid = $${index++}`
-		param.push(request.query.ledger_group_oid)
+		param.push(request.payload.ledger_group_oid)
 	}
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
 		query += ` and (lower(ls.ledger_subgroup_name) ilike $${index}) 
