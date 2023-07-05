@@ -10,7 +10,7 @@ const payload_scheme = Joi.object({
 	offset: Joi.number().optional().allow(null, ""),
 	limit: Joi.number().optional().allow(null, ""),
 	search_text: Joi.string().trim().allow(null, "").optional(),
-	status: Joi.string().trim().allow(null, '').valid('Active', 'Inactive').optional(),
+	status: Joi.array().items(Joi.string().trim().allow(null, '').valid('Active', 'Inactive').required()).optional(),
 	people_type: Joi.array().items(Joi.string().trim().optional().allow(null, '').valid('Employee', 'Customer', 'Supplier')).optional(),
 })
 const route_controller = {
@@ -58,12 +58,11 @@ const get_count = async (request) => {
 	let query = `select count(*)::int4 as total from ${TABLE.PEOPLE} 
 		where 1 = 1 and company_oid = $${index++}`
 
-	param.push(request.auth.credentials.company_oid)
-
-	if (request.payload.status ) {
-		query += ` and status = $${index++}`
-		param.push(request.payload.status)
+	if (request.payload.status && request.payload.status.length > 0) {
+		let status = request.payload.status.map((x) => `'${x}'`).join(", ")
+		query += ` and status in (${status})`
 	}
+
 
 	if (request.payload.people_type && request.payload.people_type.length > 0) {
 		let people_type = request.payload.people_type.map((x) => `people_type::text ilike '%${x}%'`).join(' or ')
@@ -105,9 +104,9 @@ const get_data = async (request) => {
 
 	param.push(request.auth.credentials.company_oid)
 
-	if (request.payload.status ) {
-		query += ` and p.status = $${index++}`
-		param.push(request.payload.status)
+	if (request.payload.status && request.payload.status.length > 0) {
+		let status = request.payload.status.map((x) => `'${x}'`).join(", ")
+		query += ` and status in (${status})`
 	}
 
 	if (request.payload.people_type && request.payload.people_type.length > 0 ) {
