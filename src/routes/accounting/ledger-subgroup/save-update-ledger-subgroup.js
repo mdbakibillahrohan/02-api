@@ -55,11 +55,12 @@ const post_data = async (request) => {
 		created_by: request.auth.credentials.login_id
 	})
 	let sql = {
-		text: `select save_update_designation($1) as data`,
+		text: `select uuid() as data`,
 		values: [param],
 	}
 	try {
 		let data_set = await Dao.execute_value(request.pg, sql)
+		console.log(data_set)
 		data = data_set.length > 0 ? data_set['data'] : null
 	} catch (e) {
 		log.error(`An exception occurred while saving ledger subgroup : ${e?.message}`)

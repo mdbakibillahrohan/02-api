@@ -53,13 +53,14 @@ const post_data = async (request) => {
 	param = _.extend(param, {
 		created_by: request.auth.credentials.login_id
 	})
+	
 	let sql = {
-		text: `select save_update_designation($1) as data`,
+		text: `select save_update_ledger_setting($1) as data`,
 		values: [param],
 	}
 	try {
-		let data_set = await Dao.execute_value(request.pg, sql)
-		data = data_set.length > 0 ? data_set['data'] : null
+		let data_set = await Dao.get_data(request.pg, sql)
+		data = data_set.length > 0 ? data_set[0]['data'] : null
 	} catch (e) {
 		log.error(`An exception occurred while saving ledger setting : ${e?.message}`)
 	}

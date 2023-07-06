@@ -1,7 +1,8 @@
 @API_URL = http://localhost:3000/api
 # @API_URL = http://192.168.1.160:3000/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9OWFlNTkwNmEtNWJmMi00NmU0LTk4NmYtOWVkYjFiZGI5Yjk1IiwiaWF0IjoxNjg4NTUxNDgzLCJleHAiOjE2ODg2Mzc4ODN9.-zP4odiruwllARYh6912au9dzTp7FbbqGlJRY24m6dw
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9ZTM1M2M1YjctZTFkMi00YmZmLWI2OWMtYjhiNWI3OTFhNDgyIiwiaWF0IjoxNjg4NjUyMDk0LCJleHAiOjE2ODg3Mzg0OTR9.gbM3cxFCL2H5AhjJybksqsq5YyylDMWGIJKjghCu6OM
+
 ###
 POST {{API_URL}}/v1/accounting/ledger-setting/get-list
 Content-Type: application/json
@@ -27,37 +28,19 @@ Authorization: Bearer {{TOKEN}}
 }
 
 ###
-POST {{API_URL}}/v1/master/bank-account/save
+POST {{API_URL}}/v1/accounting/ledger-setting/save-update
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
 { 
-      "account_no": "3784762188",
-      "account_name": "Demo2",
-      "branch_name": "Shaymoli Branch2",
-      "initial_balance": "1.00",
-      "status": "Active",
-      "bank_oid": "Bank-1017"
+
+    "ledger_key": "rest",
+    "ledger_name": "rest-1",
+    "ledger_oid": "lg-demo-0504006"
 
 }
 
-###
-POST {{API_URL}}/v1/master/bank-account/update
-Content-Type: application/json
-Accept: application/json
-Authorization: Bearer {{TOKEN}}
-
-{ 
-    "oid": "2135171f-1919-4e63-b31c-4b2e3c2ca5f4",
-    "account_no": "3784762188",
-    "account_name": "Demo2",
-    "branch_name": "Shaymoli Branch2",
-    "initial_balance": "10.00",
-    "status": "Active",
-    "bank_oid": "Bank-1017"
-
-}
 ###
 POST {{API_URL}}/v1/master/bank-account/delete
 Content-Type: application/json
