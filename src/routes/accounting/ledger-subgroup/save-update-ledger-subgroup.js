@@ -8,20 +8,21 @@ const { API, TABLE } = require("../../../util/constant")
 
 const payload_scheme = Joi.object({
 	oid: Joi.string().trim().min(1).max(128).optional(),
-	ledger_key: Joi.string().trim().min(1).max(128).required(),
-	ledger_name: Joi.string().trim().min(1).max(128).required(),
-	ledger_oid: Joi.string().trim().min(1).max(32).required()
+	ledger_subgroup_name: Joi.string().trim().min(1).max(128).required(),
+	ledger_subgroup_type: Joi.string().trim().min(1).max(128).required(),
+	balance_sheet_item: Joi.string().trim().min(1).max(8).required(),
+	ledger_group_oid: Joi.string().trim().min(1).max(128).required(),
 })
 
 const route_controller = {
 	method: "POST",
-	path: API.CONTEXT + API.ACCOUNTING_LEDGER_SETTING_SAVE_UPDATE_PATH,
+	path: API.CONTEXT + API.ACCOUNTING_LEDGER_SUBGROUP_SAVE_UPDATE_PATH,
 	options: {
 		auth: {
 			mode: "required",
 			strategy: "jwt",
 		},
-		description: "save/update ledger setting",
+		description: "save/update ledger subgroup",
 		plugins: { hapiAuthorization: false },
 		validate: {
 			payload: payload_scheme,
@@ -41,10 +42,10 @@ const route_controller = {
 const handle_request = async (request) => {
 	let res_data = await post_data(request)
 	if (res_data == null) {
-		return { status: false, code: 201, message: `Unable to save/update ledger setting` }
+		return { status: false, code: 201, message: `Unable to save/update ledger subgroup` }
 	}
-	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - ledger setting save/update - ${request.payload.ledger_name}`)
-	return { status: true, code: 200, message: `Successfully executed ledger setting ${request.payload.ledger_name}` }
+	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - ledger subgroup save/update - ${request.payload.ledger_name}`)
+	return { status: true, code: 200, message: `Successfully executed ledger subgroup ${request.payload.ledger_name}` }
 }
 
 const post_data = async (request) => {
@@ -53,16 +54,16 @@ const post_data = async (request) => {
 	param = _.extend(param, {
 		created_by: request.auth.credentials.login_id
 	})
-	
 	let sql = {
-		text: `select save_update_ledger_setting($1) as data`,
+		text: `select uuid() as data`,
 		values: [param],
 	}
 	try {
-		let data_set = await Dao.get_data(request.pg, sql)
-		data = data_set.length > 0 ? data_set[0]['data'] : null
+		let data_set = await Dao.execute_value(request.pg, sql)
+		console.log(data_set)
+		data = data_set.length > 0 ? data_set['data'] : null
 	} catch (e) {
-		log.error(`An exception occurred while saving ledger setting : ${e?.message}`)
+		log.error(`An exception occurred while saving ledger subgroup : ${e?.message}`)
 	}
 	return data
 }

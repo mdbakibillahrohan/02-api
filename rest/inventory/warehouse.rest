@@ -1,6 +1,6 @@
 @API_URL = http://localhost:3000/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9Y2Y2YzM2YmEtYTM5NS00NzEyLWJlMGMtYzRhNjk0OTUyNDBlIiwiaWF0IjoxNjg4NDg5MDc2LCJleHAiOjE2ODg1NzU0NzZ9.XBR6uauB-O39ENjXUfJXg1oB1L52PPRyMZbUV3k8aAM
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9OWFlNTkwNmEtNWJmMi00NmU0LTk4NmYtOWVkYjFiZGI5Yjk1IiwiaWF0IjoxNjg4NTUxNDgzLCJleHAiOjE2ODg2Mzc4ODN9.-zP4odiruwllARYh6912au9dzTp7FbbqGlJRY24m6dw
 
 
 ###
@@ -23,8 +23,8 @@ Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
-{
-    "status": ["Inactive", "Active"]
+{   
+    "status":["Active", "Inactive"]
 }
 
 

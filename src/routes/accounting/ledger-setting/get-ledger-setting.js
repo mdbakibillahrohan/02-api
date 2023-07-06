@@ -79,7 +79,8 @@ const get_count = async (request) => {
 const get_data = async (request) => {
 	let index = 1
 	let data, param = []
-	let query = `select ls.oid, ls.ledger_key, ls.ledger_name as name, ls.ledger_code, ld.ledger_name
+	let query = `select ls.oid, ls.ledger_key, ls.ledger_name as name, 
+		ls.ledger_code, ld.ledger_name, ls.ledger_oid
 		from ${TABLE.LEDGER_SETTING} ls 
         left join ${TABLE.LEDGER} ld on ld.oid = ls.ledger_oid
         where 1 = 1 and ls.company_oid = $${index++}`
