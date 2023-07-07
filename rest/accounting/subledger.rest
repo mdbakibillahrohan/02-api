@@ -1,0 +1,18 @@
+
+@API_URL = http://localhost:3000/api
+# @API_URL = http://192.168.1.160:3000/api
+
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9MzFiZGU1NzItZmUyNy00NDJkLWE4NDgtMTAwZDdmNWNiZGU5IiwiaWF0IjoxNjg4NzM1NTM4LCJleHAiOjE2ODg4MjE5Mzh9.wUihYfoZsQ7Q_DWBx9IY7FG2aC3h-T5zerAKqzuH0R8
+
+###
+POST {{API_URL}}/v1/accounting/subledger/save-update
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+    "oid":"59f0e60a-4295-4639-9997-a7fc5a6be6d0", 
+    "subledger_name":"Updated info",
+    "ledger_oid":"8e19a52f-59a8-485b-9c81-3c44f1e7611e",
+    "initial_balance":121321561
+}
