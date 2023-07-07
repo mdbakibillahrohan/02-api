@@ -11,7 +11,8 @@ const payload_scheme = Joi.object({
     ledger_name: Joi.string().trim().min(1).max(128).required(),
     mnemonic: Joi.string().trim().min(1).max(128).required(),
     ledger_subgroup_oid: Joi.string().trim().min(1).max(128).required(),
-    initial_balance: Joi.number().required()
+    initial_balance: Joi.number().required(),
+	status: Joi.string().valid("Active", "Inactive").required(),
 })
 
 const route_controller = {

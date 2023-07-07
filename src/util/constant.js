@@ -129,6 +129,10 @@ module.exports = {
 		ACCOUNTING_CHART_OF_ACCOUNT_GET_BY_OID_PATH: "/v1/accounting/chart-of-account/get-by-oid",
 		ACCOUNTING_CHART_OF_ACCOUNT_SAVE_UPDATE_PATH: "/v1/accounting/chart-of-account/save-update",
 
+		ACCOUNTING_LEDGER_SUBGROUP_BY_GROUP_GET_LIST_PATH: "/v1/accounting/ledger-subgroup-by-group/get-list",
+		ACCOUNTING_LEDGER_BY_SUBGROUP_GET_LIST_PATH: "/v1/accounting/ledger-by-subgroup/get-list",
+		ACCOUNTING_LEDGER_GROUP_FOR_DROP_DOWN_GET_LIST_PATH: "/v1/accounting/ledger-group-for-dropdown/get-list",
+
 		CHANGE_PASSWORD: "/v1/user/change-password",
 		GET_COMPANY_LIST: "/v1/company/get-list",
 		GET_DESIGNATION_LIST: "/v1/designation/get-list",
