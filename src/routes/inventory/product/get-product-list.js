@@ -10,6 +10,12 @@ const payload_scheme = Joi.object({
 	limit: Joi.number().optional().allow(null, ""),
 	search_text: Joi.string().trim().allow(null, "").optional(),
 	status: Joi.array().items(Joi.string().trim().required().valid('Active', 'Inactive')).optional(),
+	filter_array: Joi.array().items(
+		Joi.object({
+			filter_by: Joi.string().valid("product_category_oid").required(),
+			value: Joi.array().items(Joi.string().trim().min(1).max(128)).required(),
+		})
+	).optional(),
 })
 
 const route_controller = {
@@ -68,6 +74,14 @@ const get_count = async (request) => {
 		param.push(`%${request.payload.search_text}%`)
 	}
 
+	if(request.payload.filter_array && request.payload.filter_array.length>0){
+		request.payload.filter_array.map((filter)=>{
+			if(filter.value.length>0){
+				query += ` and ${filter.filter_by} in (${filter.value.map((x)=>`'${x}'`).join(', ')})`
+			}
+		})
+	}
+
 	let sql = {
 		text: query,
 		values: param,
@@ -103,6 +117,14 @@ const get_data = async (request) => {
 			or lower(pc.name) ilike $${index} or lower(pu.name) ilike $${index} 
 			or lower(p.status) ilike $${index++})`
 		param.push(`%${request.payload.search_text}%`)
+	}
+
+	if(request.payload.filter_array && request.payload.filter_array.length>0){
+		request.payload.filter_array.map((filter)=>{
+			if(filter.value.length>0){
+				query += ` and ${filter.filter_by} in (${filter.value.map((x)=>`'${x}'`).join(', ')})`
+			}
+		})
 	}
 
     if(request.payload.offset && request.payload.offset > 0){
