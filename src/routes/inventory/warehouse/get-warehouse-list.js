@@ -54,7 +54,7 @@ const handle_request = async (request) => {
 const get_count = async (request) => {
 	let index = 1
 	let data, param = []
-	let query = `select count(*)::int4 as total from ${TABLE.WAREHOUSE} 
+	let query = `select count(*)::int4 as total from ${TABLE.WAREHOUSE}
 		where 1 = 1 and company_oid = $${index++}`
 
 	param.push(request.auth.credentials.company_oid)
@@ -85,7 +85,7 @@ const get_count = async (request) => {
 const get_data = async (request) => {
 	let index = 1
 	let data, param = []
-	let query = `select oid, name, address, is_default, status from ${TABLE.WAREHOUSE} 
+	let query = `select oid, name, address, is_default, status from ${TABLE.WAREHOUSE}
 		where 1 = 1 and company_oid = $${index++}`
 
 	param.push(request.auth.credentials.company_oid)
@@ -99,6 +99,7 @@ const get_data = async (request) => {
 		query += ` and (lower(name) ilike $${index} or lower(address) ilike $${index} or lower(status) ilike $${index++})`
 		param.push(`%${request.payload.search_text}%`)
 	}
+	query += ` order by name asc`
 
 	if (request.payload.limit && request.payload.limit.length > 0){
 		query += ` limit $${index++} `
@@ -108,7 +109,6 @@ const get_data = async (request) => {
 		query += ` offset $${index++}`
 		param.push(request.payload.offset)
 	}
-	query += ` order by is_default desc`
 
 	let sql = {
 		text: query,
