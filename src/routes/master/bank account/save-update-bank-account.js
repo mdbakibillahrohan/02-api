@@ -66,7 +66,6 @@ const post_data = async (request) => {
 	}
 	try {
 		const data_set =  await Dao.execute_value(request.pg, sql)
-		console.log(data_set)
 		return data_set['rowCount'] >= 0 ? data_set['rowCount'] : null
 	} catch (e) {
 		log.error(`An exception occurred while saving bank account : ${e?.message}`)

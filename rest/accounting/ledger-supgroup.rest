@@ -1,7 +1,7 @@
 @API_URL = http://localhost:3000/api
 # @API_URL = http://192.168.1.160:3000/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9OWFlNTkwNmEtNWJmMi00NmU0LTk4NmYtOWVkYjFiZGI5Yjk1IiwiaWF0IjoxNjg4NTUxNDgzLCJleHAiOjE2ODg2Mzc4ODN9.-zP4odiruwllARYh6912au9dzTp7FbbqGlJRY24m6dw
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9YjkxZjg2OTItZTVlZi00OThiLTgyMjktODFhYTY4ZDkzNDc2IiwiaWF0IjoxNjg4OTc2NDI3LCJleHAiOjE2ODkwNjI4Mjd9._u9ureJ4hNfz-srYFzgOCUCyencw-2enGdXvu3o20Aw
 ###
 POST {{API_URL}}/v1/accounting/ledger-subgroup/get-list
 Content-Type: application/json
@@ -12,7 +12,8 @@ Authorization: Bearer {{TOKEN}}
     "search_text": "",
     "offset": "",
     "limit": "",
-    "ledger_group_oid": "lg-demo-05"
+    "ledger_group_oid": "",
+    "ledger_subgroup_name": "Operating Expenses - Financial"
 }
 
 ###
@@ -23,4 +24,15 @@ Authorization: Bearer {{TOKEN}}
 
 { 
     "oid": "lsg-demo-0501"
+}
+###
+POST {{API_URL}}/v1/accounting/ledger-subgroup/save-update
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    
+    "ledger_subgroup_name": "Operating 2",
+    "ledger_group_oid": "lg-demo-05"
 }

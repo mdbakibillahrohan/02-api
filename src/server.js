@@ -149,7 +149,6 @@ const insert_api_log = async (request, h) => {
 	}
 	try {
 		const a = await Dao.execute_value(request.pg, sql)
-		console.log(a)
 	} catch (e) {
 		log.error(`An exception occurred while inserting api_log : ${e?.message}`)
 	}

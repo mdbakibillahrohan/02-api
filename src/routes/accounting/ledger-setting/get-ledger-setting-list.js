@@ -9,6 +9,7 @@ const payload_scheme = Joi.object({
 	offset: Joi.number().optional().allow(null, ""),
 	limit: Joi.number().optional().allow(null, ""),
 	search_text: Joi.string().trim().allow(null, "").optional(),
+	ledger_key: Joi.string().trim().allow(null, "").optional(),
 })
 
 const route_controller = {
@@ -63,6 +64,10 @@ const get_count = async (request) => {
             or (lower(ledger_key) ilike $${index++}) `
 		param.push(`%${request.payload.search_text}%`)
 	}
+	if (request.payload.ledger_key && request.payload.ledger_key.length > 0) {
+		query += ` and ledger_key = $${index++}`
+		param.push(`${ request.payload.ledger_key.toLowerCase()  }`)
+	}
 	let sql = {
 		text: query,
 		values: param,
@@ -79,18 +84,21 @@ const get_count = async (request) => {
 const get_data = async (request) => {
 	let index = 1
 	let data, param = []
-	let query = `select ls.oid, ls.ledger_key, ls.ledger_name as name, 
-		ls.ledger_code, ld.ledger_name, ls.ledger_oid
-		from ${TABLE.LEDGER_SETTING} ls 
-        left join ${TABLE.LEDGER} ld on ld.oid = ls.ledger_oid
-        where 1 = 1 and ls.company_oid = $${index++}`
+	let query = `select oid, ledger_key, ledger_name , 
+		ledger_code, ledger_oid
+		from ${TABLE.LEDGER_SETTING} 
+        where 1 = 1 and company_oid = $${index++}`
 	param.push(request.auth.credentials.company_oid)
 
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
-		query += ` and (lower(ls.ledger_name) ilike $${index}) or 
-            (lower(ls.ledger_code) ilike $${index}) or
-            (lower(ls.ledger_key) ilike $${index++}) `
+		query += ` and (lower(ledger_name) ilike $${index}) or 
+            (lower(ledger_code) ilike $${index}) or
+            (lower(ledger_key) ilike $${index++}) `
 		param.push(`%${request.payload.search_text}%`)
+	}
+	if (request.payload.ledger_key && request.payload.ledger_key.length > 0) {
+		query += ` and ledger_key = $${index++}`
+		param.push(`${ request.payload.ledger_key.toLowerCase()  }`)
 	}
 	query += ` order by ledger_code desc`
 	if(request.payload.offset) {

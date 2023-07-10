@@ -9,6 +9,7 @@ const payload_scheme = Joi.object({
 	offset: Joi.number().optional().allow(null, ""),
 	limit: Joi.number().optional().allow(null, ""),
 	ledger_group_oid: Joi.string().trim().allow(null, "").optional(),
+	ledger_subgroup_name: Joi.string().trim().allow(null, "").optional(),
 	search_text: Joi.string().trim().allow(null, "").optional(),
 })
 
@@ -61,7 +62,11 @@ const get_count = async (request) => {
 	if (request.payload.ledger_group_oid && request.payload.ledger_group_oid.length > 0) {
 		query += ` and ledger_group_oid = $${index++}`
 		param.push(request.payload.ledger_group_oid)
-		console.log(request.payload.ledger_group_oid)
+	}
+	if (request.payload.ledger_subgroup_name && request.payload.ledger_subgroup_name.length > 0 ) {
+		query += ` and (lower(ledger_subgroup_name)) = $${index++}`
+		let subgroup_name = request.payload.ledger_subgroup_name.toLowerCase() 
+		param.push(`${ subgroup_name}`)
 	}
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
 		query += ` and (lower(ledger_subgroup_name) ilike $${index}) 
@@ -86,15 +91,20 @@ const get_data = async (request) => {
 	let index = 1
 	let data, param = []
 	let query = `select ls.oid, ls.ledger_subgroup_code, ls.ledger_subgroup_name, 
-        ls.ledger_subgroup_type,  ls.balance_sheet_item, lg.ledger_group_name
+        ls.ledger_subgroup_type, ls.ledger_group_oid, ls.balance_sheet_item, lg.ledger_group_name
 		from ${TABLE.LEDGER_SUBGROUP} ls 
         left join ${TABLE.LEDGER_GROUP} lg on lg.oid = ls.ledger_group_oid
         where 1 = 1 and ls.company_oid = $${index++}`
 	param.push(request.auth.credentials.company_oid)
 
-	if (request.payload.ledger_group_oid && request.payload.ledger_group_oid.length > 0 ) {
+	if (request.payload.ledger_group_oid && request.payload.ledger_group_oid.length > 0) {
 		query += ` and ls.ledger_group_oid = $${index++}`
 		param.push(request.payload.ledger_group_oid)
+	}
+	if (request.payload.ledger_subgroup_name && request.payload.ledger_subgroup_name.length > 0 ) {
+		query += ` and (lower(ls.ledger_subgroup_name)) = $${index++}`
+		let subgroup_name = request.payload.ledger_subgroup_name.toLowerCase() 
+		param.push(`${ subgroup_name}`)
 	}
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
 		query += ` and (lower(ls.ledger_subgroup_name) ilike $${index}) 

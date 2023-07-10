@@ -1,8 +1,7 @@
 @API_URL = http://localhost:3000/api
 # @API_URL = http://192.168.1.160:3000/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9ZTM1M2M1YjctZTFkMi00YmZmLWI2OWMtYjhiNWI3OTFhNDgyIiwiaWF0IjoxNjg4NjUyMDk0LCJleHAiOjE2ODg3Mzg0OTR9.gbM3cxFCL2H5AhjJybksqsq5YyylDMWGIJKjghCu6OM
-
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9YjkxZjg2OTItZTVlZi00OThiLTgyMjktODFhYTY4ZDkzNDc2IiwiaWF0IjoxNjg4OTc2NDI3LCJleHAiOjE2ODkwNjI4Mjd9._u9ureJ4hNfz-srYFzgOCUCyencw-2enGdXvu3o20Aw
 ###
 POST {{API_URL}}/v1/accounting/ledger-setting/get-list
 Content-Type: application/json
@@ -12,8 +11,8 @@ Authorization: Bearer {{TOKEN}}
 { 
     "search_text": "",
     "offset": "",
-    "limit": ""
-
+    "limit": "",
+    "ledger_key": "rest-1"
 }
 
 ###
@@ -35,8 +34,7 @@ Authorization: Bearer {{TOKEN}}
 
 { 
 
-    "ledger_key": "rest",
-    "ledger_name": "rest-1",
+    "ledger_key": "rest-1",
     "ledger_oid": "lg-demo-0504006"
 
 }
