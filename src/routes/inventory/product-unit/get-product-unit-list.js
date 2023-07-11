@@ -56,14 +56,13 @@ const get_count = async (request) => {
 	let data, param = []
 	let query = `select count(*)::int4 as total from ${TABLE.PRODUCT_UNIT} 
 		where 1 = 1 and company_oid = $${index++}`
-
+		
 	param.push(request.auth.credentials.company_oid)
 
-	if (request.payload.status ) {
-		query += ` and status = $${index++}`
-        param.push(request.payload.status)
+	if (request.payload.status && request.payload.status.length > 0) {
+		let status = request.payload.status.map((x) => `'${x}'`).join(", ")
+		query += ` and status in (${status})`
 	}
-
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
 		query += ` and (lower(name) ilike $${index} or lower(status) ilike $${index++})`
 		param.push(`%${request.payload.search_text}%`)
@@ -90,9 +89,9 @@ const get_data = async (request) => {
 
 	param.push(request.auth.credentials.company_oid)
 
-	if (request.payload.status) {
-		query += ` and status = $${index++}`
-        param.push(request.payload.status)
+	if (request.payload.status && request.payload.status.length > 0) {
+		let status = request.payload.status.map((x) => `'${x}'`).join(", ")
+		query += ` and status in (${status})`
 	}
 
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
@@ -100,7 +99,6 @@ const get_data = async (request) => {
 
 		param.push(`%${request.payload.search_text}%`)
 	}
-
 
     if(request.payload.offset && request.payload.offset>0){
         query += ` offset $${index++}`

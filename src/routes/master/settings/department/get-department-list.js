@@ -63,7 +63,6 @@ const get_count = async (request) => {
 	if (request.payload.status && request.payload.status.length > 0) {
 		let status = request.payload.status.map((x) => `'${x}'`).join(", ")
 		query += ` and status in (${status})`
-		param.push(status)
 	}
 
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
@@ -101,8 +100,8 @@ const get_data = async (request) => {
 		query += ` and (lower(name) ilike $${index++})`
 		param.push(`%${request.payload.search_text}%`)
 	}
-
-
+	query += ` order by sort_order desc`
+	
 	if (request.payload.limit ) {
 		query += ` limit $${index++}`
 		param.push(request.payload.limit)
@@ -111,7 +110,6 @@ const get_data = async (request) => {
 		query += `  offset $${index++}`
 		param.push(request.payload.offset)
 	}
-	query += ` order by sort_order desc`
 
 	let sql = {
 		text: query,

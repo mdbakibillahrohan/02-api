@@ -57,8 +57,9 @@ const post_data = async (request) => {
 		values: [param],
 	}
 	try {
-		let data_set = await Dao.execute_value(request.pg, sql)
-		data = data_set.length > 0 ? data_set['data'] : null
+		let data_set = await Dao.get_data(request.pg, sql)
+		data = data_set.length > 0 ? data_set[0]['data'] : null
+		console.log(data_set)
 	} catch (e) {
 		log.error(`An exception occurred while saving/updating department : ${e?.message}`)
 	}

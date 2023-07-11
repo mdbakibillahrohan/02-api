@@ -96,6 +96,8 @@ const get_data = async (request) => {
 		query += ` and (lower(name) ilike $${index++})`
 		param.push(`%${request.payload.search_text}%`)
 	}
+	query += ` order by sort_order desc`
+
 	if(request.payload.offset) {
 		query += ` offset $${index++}`
 		param.push(request.payload.offset)
@@ -104,7 +106,6 @@ const get_data = async (request) => {
 		query += ` limit $${index++}`
 		param.push(request.payload.limit)
 	}
-	query += ` order by sort_order desc`
 	
 	let sql = {
 		text: query,
