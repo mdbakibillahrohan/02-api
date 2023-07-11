@@ -10,7 +10,6 @@ const payload_scheme = Joi.object({
 	limit: Joi.number().optional().allow(null, ""),
 	search_text: Joi.string().trim().allow(null, "").optional(),
 	status: Joi.array().items(Joi.string().trim().required().valid('Active', 'Inactive')).optional(),
-
 })
 const route_controller = {
 	method: "POST",
@@ -59,9 +58,9 @@ const get_count = async (request) => {
 
 	param.push(request.auth.credentials.company_oid)
 
-	if (request.payload.status ) {
-		query += ` and status = $${index++}`
-        param.push(request.payload.status)
+	if (request.payload.status && request.payload.status.length > 0) {
+		let status = request.payload.status.map((x) => `'${x}'`).join(", ")
+		query += ` and status in (${status})`
 	}
 
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
@@ -90,9 +89,9 @@ const get_data = async (request) => {
 
 	param.push(request.auth.credentials.company_oid)
 
-	if (request.payload.status) {
-		query += ` and status = $${index++}`
-        param.push(request.payload.status)
+	if (request.payload.status && request.payload.status.length > 0) {
+		let status = request.payload.status.map((x) => `'${x}'`).join(", ")
+		query += ` and status in (${status})`
 	}
 
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
