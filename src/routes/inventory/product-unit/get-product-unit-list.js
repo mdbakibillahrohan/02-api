@@ -10,7 +10,6 @@ const payload_scheme = Joi.object({
 	limit: Joi.number().optional().allow(null, ""),
 	search_text: Joi.string().trim().allow(null, "").optional(),
 	status: Joi.array().items(Joi.string().trim().required().valid('Active', 'Inactive')).optional(),
-
 })
 const route_controller = {
 	method: "POST",
