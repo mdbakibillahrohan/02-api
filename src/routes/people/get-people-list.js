@@ -2,9 +2,9 @@
 
 const _ = require("underscore")
 const Joi = require("@hapi/joi")
-const Dao = require("../../../util/dao")
-const log = require("../../../util/log")
-const { API, TABLE } = require("../../../util/constant")
+const Dao = require("../../util/dao")
+const log = require("../../util/log")
+const { API, TABLE } = require("../../util/constant")
 
 const payload_scheme = Joi.object({
 	offset: Joi.number().optional().allow(null, ""),
@@ -15,7 +15,7 @@ const payload_scheme = Joi.object({
 })
 const route_controller = {
 	method: "POST",
-	path: API.CONTEXT + API.MASTER_PEOPLE_GET_LIST_PATH,
+	path: API.CONTEXT + API.PEOPLE_GET_LIST_PATH,
 	options: {
 		auth: {
 			mode: "required",
@@ -57,7 +57,7 @@ const get_count = async (request) => {
 	let data, param = []
 	let query = `select count(*)::int4 as total from ${TABLE.PEOPLE} 
 		where 1 = 1 and company_oid = $${index++}`
-
+		param.push(request.auth.credentials.company_oid)
 	if (request.payload.status && request.payload.status.length > 0) {
 		let status = request.payload.status.map((x) => `'${x}'`).join(", ")
 		query += ` and status in (${status})`
@@ -106,7 +106,7 @@ const get_data = async (request) => {
 
 	if (request.payload.status && request.payload.status.length > 0) {
 		let status = request.payload.status.map((x) => `'${x}'`).join(", ")
-		query += ` and status in (${status})`
+		query += ` and p.status in (${status})`
 	}
 
 	if (request.payload.people_type && request.payload.people_type.length > 0 ) {
