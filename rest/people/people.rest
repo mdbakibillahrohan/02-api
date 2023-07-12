@@ -1,0 +1,49 @@
+@API_URL = http://localhost:3000/api
+
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9N2U1ODNkMDYtNDIyNC00ZWRkLTk4MmMtNTJjNDI3NTdjNzU5IiwiaWF0IjoxNjg5MTYwODMwLCJleHAiOjE2ODkyNDcyMzB9.G-s02iy3jhb-iQDFKg2a7UDklToBYepLHXkCk4MrRAc
+
+
+### Save/Update product unit
+POST {{API_URL}}/v1/people/save-update
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "name": "Rohan ", 
+    "mobile_no":"0191281770",
+    "email": "rohan@gmail.com", 
+    "people_type": ["Customer"],  
+    "receivable_balance": 500, 
+    "status": "Active" 
+}
+
+
+### Get the list of product unit
+POST {{API_URL}}/v1/inventory/product/get-list
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+    "search_text":"",
+    "status":"Active",
+    "limit":10,
+    "filter_array": [
+        {
+            "filter_by":"product_category_oid",
+            "value":["PC-102","PC-101"]
+        }
+    ]
+}
+
+
+### Get the product by oid
+POST {{API_URL}}/v1/inventory/product/get-by-oid
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+    "oid":"XN7nsK"
+}

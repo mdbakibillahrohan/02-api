@@ -2,9 +2,9 @@
 
 const _ = require("underscore")
 const Joi = require("@hapi/joi")
-const log = require("../../../util/log")
-const Dao = require("../../../util/dao")
-const { API, TABLE } = require("../../../util/constant")
+const log = require("../../util/log")
+const Dao = require("../../util/dao")
+const { API, TABLE } = require("../../util/constant")
 
 const payload_scheme = Joi.object({
 	oid: Joi.string().trim().min(1).max(128).required()

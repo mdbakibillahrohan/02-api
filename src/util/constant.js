@@ -95,12 +95,6 @@ module.exports = {
 		MASTER_BANK_ACCOUNT_UPDATE_PATH: "/v1/master/bank-account/update",
 		MASTER_BANK_ACCOUNT_DELETE_PATH: "/v1/master/bank-account/delete",
 
-		MASTER_PEOPLE_GET_LIST_PATH: "/v1/master/people/get-list",
-		MASTER_PEOPLE_GET_BY_OID_PATH: "/v1/master/people/get-by-oid",
-		MASTER_PEOPLE_SAVE_PATH: "/v1/master/people/save",
-		MASTER_PEOPLE_UPDATE_PATH: "/v1/master/people/update",
-		MASTER_PEOPLE_DELETE_PATH: "/v1/master/people/delete",
-
 		MASTER_PASSPORT_GET_LIST_PATH: "/v1/master/passport/get-list",
 		MASTER_PASSPORT_GET_BY_OID_PATH: "/v1/master/passport/get-by-oid",
 		MASTER_PASSPORT_SAVE_PATH: "/v1/master/passport/save",
@@ -132,6 +126,10 @@ module.exports = {
 		ACCOUNTING_LEDGER_SUBGROUP_BY_GROUP_GET_LIST_PATH: "/v1/accounting/ledger-subgroup-by-group/get-list",
 		ACCOUNTING_LEDGER_BY_SUBGROUP_GET_LIST_PATH: "/v1/accounting/ledger-by-subgroup/get-list",
 		ACCOUNTING_LEDGER_GROUP_FOR_DROP_DOWN_GET_LIST_PATH: "/v1/accounting/ledger-group-for-dropdown/get-list",
+
+		PEOPLE_GET_LIST_PATH: "/v1/people/get-list",
+		PEOPLE_GET_BY_OID_PATH: "/v1/people/get-by-oid",
+		PEOPLE_SAVE_UPDATE_PATH: "/v1/people/save-update",
 
 		CHANGE_PASSWORD: "/v1/user/change-password",
 		GET_COMPANY_LIST: "/v1/company/get-list",
