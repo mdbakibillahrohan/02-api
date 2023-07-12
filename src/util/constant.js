@@ -133,6 +133,11 @@ module.exports = {
 		ACCOUNTING_LEDGER_BY_SUBGROUP_GET_LIST_PATH: "/v1/accounting/ledger-by-subgroup/get-list",
 		ACCOUNTING_LEDGER_GROUP_FOR_DROP_DOWN_GET_LIST_PATH: "/v1/accounting/ledger-group-for-dropdown/get-list",
 
+		ACCOUNTING_MANUAL_JOURNAL_GET_LIST_PATH: "/v1/accounting/manual-journal/get-list",
+		ACCOUNTING_MANUAL_JOURNAL_GET_BY_OID_PATH: "/v1/accounting/manual-journal/get-by-oid",
+		ACCOUNTING_MANUAL_JOURNAL_SAVE_UPDATE_PATH: "/v1/accounting/manual-journal/save-update",
+
+
 		CHANGE_PASSWORD: "/v1/user/change-password",
 		GET_COMPANY_LIST: "/v1/company/get-list",
 		GET_DESIGNATION_LIST: "/v1/designation/get-list",

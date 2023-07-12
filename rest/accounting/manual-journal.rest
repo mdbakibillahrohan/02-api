@@ -1,0 +1,88 @@
+@API_URL = http://localhost:3000/api
+# @API_URL = http://192.168.1.160:3000/api
+
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9YmMzOGFjOTItMzRhOS00YTI5LWFhMjQtMjg1NDA5ZWY1YTNmIiwiaWF0IjoxNjg5MTUwNTI4LCJleHAiOjE2ODkyMzY5Mjh9.pKj5nfp51dgNCQeokT2dA5HuLc3h65q52tJsEaZVBUI
+
+
+
+###
+POST {{API_URL}}/v1/accounting/manual-journal/save-update
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+    "oid":"f06647f8-9856-4f61-b025-7380bdf88e96", 
+    "ledger_name":"From api 2 Updated",
+    "mnemonic":"fa",
+    "ledger_subgroup_oid":"lsg-demo-0101",
+    "initial_balance":121321561
+}
+
+
+###
+POST {{API_URL}}/v1/accounting/manual-journal/get-list
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "search_text": "05",
+    "offset": "",
+    "limit": ""
+
+}
+
+###
+POST {{API_URL}}/v1/accounting/ledger-setting/get-by-oid
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "oid": "ls-demo-0504006"
+
+}
+
+###
+POST {{API_URL}}/v1/master/bank-account/save
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+      "account_no": "3784762188",
+      "account_name": "Demo2",
+      "branch_name": "Shaymoli Branch2",
+      "initial_balance": "1.00",
+      "status": "Active",
+      "bank_oid": "Bank-1017"
+
+}
+
+###
+POST {{API_URL}}/v1/master/bank-account/update
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "oid": "2135171f-1919-4e63-b31c-4b2e3c2ca5f4",
+    "account_no": "3784762188",
+    "account_name": "Demo2",
+    "branch_name": "Shaymoli Branch2",
+    "initial_balance": "10.00",
+    "status": "Active",
+    "bank_oid": "Bank-1017"
+
+}
+###
+POST {{API_URL}}/v1/master/bank-account/delete
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "oid": "7ff1c6c4-ff6e-4316-8799-cc0afe1e60cf"
+
+}
