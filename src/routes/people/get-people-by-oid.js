@@ -12,7 +12,7 @@ const payload_scheme = Joi.object({
 
 const route_controller = {
 	method: "POST",
-	path: API.CONTEXT + API.MASTER_PEOPLE_GET_BY_OID_PATH,
+	path: API.CONTEXT + API.PEOPLE_GET_BY_OID_PATH,
 	options: {
 		auth: {
 			mode: "required",

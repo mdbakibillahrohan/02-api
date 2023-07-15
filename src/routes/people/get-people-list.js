@@ -121,9 +121,13 @@ const get_data = async (request) => {
 	}
 
 	query += ` order by p.created_on desc`
-	if (request.payload.limit && request.payload.offset) {
-		query += ` limit $${index++} offset $${index++}`
+	if (request.payload.limit) {
+		query += ` limit $${index++}`
 		param.push(request.payload.limit)
+	}
+
+	if(request.payload.offset && request.payload.offset>0){
+		query += ` offset $${index++}`
 		param.push(request.payload.offset)
 	}
 
