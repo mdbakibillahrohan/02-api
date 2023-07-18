@@ -16,12 +16,13 @@ const payload_scheme = Joi.object({
 	status: Joi.string().valid("Active", "Inactive").required(),
 
     receivable_balance: Joi.number().optional(),
-    discount_type: Joi.string().valid("Pct", "Fixed").optional(),
 
     payable_balance: Joi.number().optional(),
 
     department_oid:Joi.string().trim().min(1).max(128).optional(),
     designation_oid: Joi.string().trim().min(1).max(128).optional(),
+
+	people_json: Joi.object().optional(),
 })
 
 const route_controller = {
@@ -60,12 +61,20 @@ const handle_request = async (request) => {
 
 const post_data = async (request) => {
 	let data = null
+	let query = null
 	let param = _.clone(request.payload)
 	param = _.extend(param, {
 		created_by: request.auth.credentials.login_id
 	})
+	
+	if(request.payload.oid){
+		query = "select update_people($1) as data"
+	}else{
+		query = "select save_people($1) as data"
+	}
+
 	let sql = {
-		text: `select save_update_people($1) as data`,
+		text: query,
 		values: [param],
 	}
 	try {

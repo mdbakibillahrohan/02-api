@@ -1,6 +1,6 @@
 @API_URL = http://localhost:3000/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9MmU4ZmJiMDItMTE0YS00MDgyLWE3MmItZTUyZDM0OTQwZGQyIiwiaWF0IjoxNjg5Mzk4ODM0LCJleHAiOjE2ODk0ODUyMzR9.zNfmVEeWle4aadydlvaX270n287pMofOWD6t4SiXBUE
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9MGFjNGRmN2EtZWZkMy00MmIxLTkyZGUtMmM2MjZlN2NkMzRhIiwiaWF0IjoxNjg5Njc5ODIzLCJleHAiOjE2ODk3NjYyMjN9.klE_5IjtVhC5YENQImp_nio0NXzuOcgwur1c4Lx6y3g
 
 
 ### Save/Update people
@@ -9,13 +9,18 @@ Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{TOKEN}}
 
-{ 
-    "name": "Rohan ", 
+{
+    "oid":"213a1f23-4f60-441d-Be42-66994337b387", 
+    "name": "Nazimuddin", 
     "mobile_no":"0191281770",
     "email": "rohan@gmail.com", 
     "people_type": ["Customer"],  
     "receivable_balance": 500, 
-    "status": "Active" 
+    "status": "Active", 
+    "people_json": {
+        "discount_type":"Pct",
+        "discount":15000
+    } 
 }
 
 
