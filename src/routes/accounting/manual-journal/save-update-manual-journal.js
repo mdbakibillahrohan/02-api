@@ -8,8 +8,16 @@ const { API, TABLE } = require("../../../util/constant")
 
 const payload_scheme = Joi.object({
 	oid: Joi.string().trim().min(1).max(128).optional(),
-	ledger_subgroup_name: Joi.string().trim().min(1).max(128).required(),
-	ledger_group_oid: Joi.string().trim().min(1).max(128).required(),
+	description: Joi.string().trim().min(1).max(128).required(),
+	amount: Joi.number().min(1).allow(null, "").optional(),
+	reference_no: Joi.string().trim().allow(null, "").optional(),
+	journal_list:  Joi.array().items(Joi.object({
+		ledger_oid: Joi.string().trim().min(1).max(128).required(),
+		description: Joi.string().trim().min(1).max(128).required(),
+		subLedger_oid: Joi.string().trim().allow(null, "").optional(),
+		debited_amount: Joi.number().allow(null, "").max(128).optional(),
+		credited_amount: Joi.number().allow(null, "").max(128).optional()
+	}))
 })
 
 const route_controller = {
@@ -53,7 +61,7 @@ const post_data = async (request) => {
 		created_by: request.auth.credentials.login_id
 	})
 	let sql = {
-		text: `select save_update_ledger_subgroup($1) as data`,
+		text: `select post_journal($1) as data`,
 		values: [param],
 	}
 	try {
