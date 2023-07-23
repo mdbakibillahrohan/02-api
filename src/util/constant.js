@@ -129,6 +129,10 @@ module.exports = {
 		ACCOUNTING_LEDGER_BY_SUBGROUP_GET_LIST_PATH: "/v1/accounting/ledger-by-subgroup/get-list",
 		ACCOUNTING_LEDGER_GROUP_FOR_DROP_DOWN_GET_LIST_PATH: "/v1/accounting/ledger-group-for-dropdown/get-list",
 
+		ACCOUNTING_FINANCIAL_PERIOD_GET_LIST_PATH: "/v1/accounting/financial-period/get-list",
+		ACCOUNTING_FINANCIAL_PERIOD_GET_BY_OID_PATH: "/v1/accounting/financial-period/get-by-oid",
+		ACCOUNTING_FINANCIAL_PERIOD_SAVE_UPDATE_PATH: "/v1/accounting/financial-period/save-update",
+		
 		PEOPLE_GET_LIST_PATH: "/v1/people/get-list",
 		PEOPLE_GET_BY_OID_PATH: "/v1/people/get-by-oid",
 		PEOPLE_SAVE_UPDATE_PATH: "/v1/people/save-update",

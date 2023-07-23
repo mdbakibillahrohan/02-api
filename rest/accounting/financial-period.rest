@@ -1,0 +1,27 @@
+@API_URL = http://localhost:3000/api
+# @API_URL = http://192.168.1.160:3000/api
+
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9YzViMTU2NTktM2Y2Zi00ZjRjLWIwNWMtMmIxZDM1OTNmNTMwIiwiaWF0IjoxNjkwMTA0ODU2LCJleHAiOjE2OTAxOTEyNTZ9.WhnJ_rVoOJ0MrsMB1d1KPXAxz7R6gm9GSnGQ_ZHSY5c
+
+###
+POST {{API_URL}}/v1/accounting/financial-period/get-list
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "search_text": "",
+    "offset": "",
+    "limit": ""
+
+}
+###
+POST {{API_URL}}/v1/accounting/financial-period/get-by-oid
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "oid": "fp-2023-2024"
+
+}
