@@ -56,7 +56,7 @@ const post_data = async (request) => {
 		created_by: request.auth.credentials.login_id
 	})
 	let sql = {
-		text: `select save_update_ledger($1) as data`,
+		text: `select save_update_financial_period($1) as data`,
 		values: [param],
 	}
 	try {

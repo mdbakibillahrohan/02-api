@@ -14,9 +14,9 @@ const payload_scheme = Joi.object({
 	journal_list:  Joi.array().items(Joi.object({
 		ledger_oid: Joi.string().trim().min(1).max(128).required(),
 		description: Joi.string().trim().min(1).max(128).required(),
-		subledger_oid: Joi.string().trim().allow(null, "").optional(),
-		debited_amount: Joi.number().allow(null, "").optional(),
-		credited_amount: Joi.number().allow(null, "").optional()
+		subLedger_oid: Joi.string().trim().allow(null, "").optional(),
+		debited_amount: Joi.number().allow(null, "").max(128).optional(),
+		credited_amount: Joi.number().allow(null, "").max(128).optional()
 	}))
 })
 
@@ -51,23 +51,17 @@ const handle_request = async (request) => {
 		return { status: false, code: 201, message: `Unable to save/update manual journal ` }
 	}
 	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - manual journal  save/update - ${request.payload.ledger_subgroup_name}`)
-	return { status: true, code: 200, message: `Successfully executed manual journal  ${request.payload.reference_no}` }
+	return { status: true, code: 200, message: `Successfully executed manual journal  ${request.payload.ledger_subgroup_name}` }
 }
 
 const post_data = async (request) => {
 	let data = null
-	for(let journal of request.payload.journal_list) {
-		if(journal.subledger_oid.length == 0) {
-			delete journal.subledger_oid
-		}
-	}
-	console.log(request.payload)
 	let param = _.clone(request.payload)
 	param = _.extend(param, {
 		created_by: request.auth.credentials.login_id
 	})
 	let sql = {
-		text: `select save_update_financial_period($1) as data`,
+		text: `select post_journal($1) as data`,
 		values: [param],
 	}
 	try {
