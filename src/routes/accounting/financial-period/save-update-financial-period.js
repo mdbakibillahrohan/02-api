@@ -45,8 +45,8 @@ const handle_request = async (request) => {
 	if (res_data == null) {
 		return { status: false, code: 201, message: `Unable to save/update financial period` }
 	}
-	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - financial period save/update - ${request.payload.ledger_name}`)
-	return { status: true, code: 200, message: `Successfully executed financial period - ${request.payload.ledger_name}` }
+	log.info(`[${request.auth.credentials.company_oid}/${request.auth.credentials.login_id}] - financial period save/update - ${request.payload.financial_period_name}`)
+	return { status: true, code: 200, message: `Successfully executed financial period - ${request.payload.financial_period_name}` }
 }
 
 const post_data = async (request) => {

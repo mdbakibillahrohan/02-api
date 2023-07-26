@@ -9,6 +9,8 @@ const payload_scheme = Joi.object({
 	offset: Joi.number().optional().allow(null, ""),
 	limit: Joi.number().optional().allow(null, ""),
 	search_text: Joi.string().trim().allow(null, "").optional(),
+	ledger_oid: Joi.string().trim().max(128).allow(null, "").optional(),
+	
 })
 
 const route_controller = {
@@ -62,6 +64,10 @@ const get_count = async (request) => {
 		 	(lower (subledger_code) ilike $${index++}) `
 		param.push(`%${request.payload.search_text}%`)
 	}
+	if (request.payload.ledger_oid && request.payload.ledger_oid.length > 0) {
+		query +=` and ledger_oid = $${index++}`
+		param.push(request.payload.ledger_oid)
+	}
 	let sql = {
 		text: query,
 		values: param,
@@ -88,6 +94,10 @@ const get_data = async (request) => {
 		query += ` and (lower (ledger_name) ilike $${index}) or 
             (lower (ledger_code) ilike $${index++}) `
 		param.push(`%${request.payload.search_text}%`)
+	}
+	if (request.payload.ledger_oid && request.payload.ledger_oid.length > 0) {
+		query +=` and ledger_oid = $${index++}`
+		param.push(request.payload.ledger_oid)
 	}
 	query += ` order by subledger_code desc`
 	if(request.payload.offset) {
