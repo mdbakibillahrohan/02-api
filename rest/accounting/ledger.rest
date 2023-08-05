@@ -1,7 +1,7 @@
 @API_URL = http://localhost:3000/api
 # @API_URL = http://192.168.1.160:3000/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9MzFiZGU1NzItZmUyNy00NDJkLWE4NDgtMTAwZDdmNWNiZGU5IiwiaWF0IjoxNjg4NzM1NTM4LCJleHAiOjE2ODg4MjE5Mzh9.wUihYfoZsQ7Q_DWBx9IY7FG2aC3h-T5zerAKqzuH0R8
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9ZDVmNWQwOWYtMzIwZC00YzdkLWFhMTctZjVlNzZlN2YxZTY4IiwiaWF0IjoxNjkxMjM3MTEyLCJleHAiOjE2OTEzMjM1MTJ9.8TpDtERPhgDR2oAaatFix6E7Mm1aQPicB-nednNxpD8
 
 
 
@@ -30,6 +30,17 @@ Authorization: Bearer {{TOKEN}}
     "search_text": "05",
     "offset": "",
     "limit": ""
+
+}
+###
+POST {{API_URL}}/v1/accounting/ledger/update
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "ledger_code": "0101005",
+    "ledger_name": "current 3"
 
 }
 

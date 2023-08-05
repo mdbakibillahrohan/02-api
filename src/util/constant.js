@@ -104,6 +104,7 @@ module.exports = {
 		ACCOUNTING_LEDGER_GET_LIST_PATH: "/v1/accounting/ledger/get-list",
 		ACCOUNTING_LEDGER_GET_BY_OID_PATH: "/v1/accounting/ledger/get-by-oid",
 		ACCOUNTING_LEDGER_SAVE_UPDATE_PATH: "/v1/accounting/ledger/save-update",
+		ACCOUNTING_LEDGER_UPDATE_PATH: "/v1/accounting/ledger/update",
 
 		ACCOUNTING_SUBLEDGER_GET_LIST_PATH: "/v1/accounting/subledger/get-list",
 		ACCOUNTING_SUBLEDGER_GET_BY_OID_PATH: "/v1/accounting/subledger/get-by-oid",
