@@ -1,7 +1,7 @@
 @API_URL = http://localhost:3000/api
 # @API_URL = http://192.168.1.160:3000/api
 
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9NTMyZWRjNGUtYTZjMS00NWE0LTgwMDgtOGE4OTk3YWFkYjJhIiwiaWF0IjoxNjg5NzQ3NTYxLCJleHAiOjE2ODk4MzM5NjF9.5vKnV1zMV-uQMlFJnI5Mwib2CoeyrLm_-jCRp8pmf3s
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY29tcGFueV9vaWQiOiJDLURFTU8iLCJ0aW1lIjoiZnVuY3Rpb24gaG9va3MoKSB7XG4gICAgICAgIHJldHVybiBob29rQ2FsbGJhY2suYXBwbHkobnVsbCwgYXJndW1lbnRzKTtcbiAgICB9ZGE0YjkxMDMtZTZiMC00MDkyLWFkZWQtZWYwMzg0MzAyZDU4IiwiaWF0IjoxNjkxMzAyNzAwLCJleHAiOjE2OTEzODkxMDB9._ANL4DzuO1D-emwSzf2gmQLWjuY-myjCllRwRsAElps
 
 
 ###
@@ -42,6 +42,16 @@ Authorization: Bearer {{TOKEN}}
     "search_text": "",
     "offset": "",
     "limit": ""
+
+}
+###
+POST {{API_URL}}/v1/accounting/journal-list/get-by-oid
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{TOKEN}}
+
+{ 
+    "oid": "0092ffd0-9361-4d1b-8089-a44b433e6f7d"
 
 }
 

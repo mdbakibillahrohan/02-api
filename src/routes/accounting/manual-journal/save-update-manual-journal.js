@@ -9,14 +9,14 @@ const { API, TABLE } = require("../../../util/constant")
 const payload_scheme = Joi.object({
 	oid: Joi.string().trim().min(1).max(128).optional(),
 	description: Joi.string().trim().min(1).max(128).required(),
-	amount: Joi.number().min(1).allow(null, "").optional(),
+	amount: Joi.number().min(1).allow(null, 0).optional(),
 	reference_no: Joi.string().trim().allow(null, "").optional(),
 	journal_list:  Joi.array().items(Joi.object({
 		ledger_oid: Joi.string().trim().min(1).max(128).required(),
 		description: Joi.string().trim().min(1).max(128).required(),
-		subLedger_oid: Joi.string().trim().allow(null, "").optional(),
-		debited_amount: Joi.number().allow(null, "").max(128).optional(),
-		credited_amount: Joi.number().allow(null, "").max(128).optional()
+		subledger_oid: Joi.string().trim().allow(null, "").optional(),
+		debited_amount: Joi.number().min(1).allow(null, 0).optional(),
+		credited_amount: Joi.number().min(1).allow(null, 0).optional()
 	}))
 })
 

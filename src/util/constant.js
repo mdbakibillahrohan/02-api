@@ -43,6 +43,7 @@ module.exports = {
 		PRODUCT: "product",
 		META_PROPERTY: "meta_property",
 		JOURNAL_SUMMARY: "journal_summary",
+		JOURNAL: "journal",
 		ACTIVITY_LOG: "activity_log",
 		FINANCIAL_PERIOD: "financial_period",
 		CREDIT_NOTE: "credit_note",
@@ -133,6 +134,7 @@ module.exports = {
 		ACCOUNTING_FINANCIAL_PERIOD_GET_LIST_PATH: "/v1/accounting/financial-period/get-list",
 		ACCOUNTING_FINANCIAL_PERIOD_GET_BY_OID_PATH: "/v1/accounting/financial-period/get-by-oid",
 		ACCOUNTING_FINANCIAL_PERIOD_SAVE_UPDATE_PATH: "/v1/accounting/financial-period/save-update",
+		ACCOUNTING_CLOSE_FINANCIAL_PERIOD_PATH: "/v1/accounting/financial-period/close",
 		
 		PEOPLE_GET_LIST_PATH: "/v1/people/get-list",
 		PEOPLE_GET_BY_OID_PATH: "/v1/people/get-by-oid",
@@ -140,6 +142,7 @@ module.exports = {
 
 		ACCOUNTING_MANUAL_JOURNAL_GET_LIST_PATH: "/v1/accounting/manual-journal/get-list",
 		ACCOUNTING_MANUAL_JOURNAL_GET_BY_OID_PATH: "/v1/accounting/manual-journal/get-by-oid",
+		ACCOUNTING_JOURNAL_LIST_GET_BY_OID_PATH: "/v1/accounting/journal-list/get-by-oid",
 		ACCOUNTING_MANUAL_JOURNAL_SAVE_UPDATE_PATH: "/v1/accounting/manual-journal/save-update",
 
 
