@@ -63,7 +63,7 @@ const get_count = async (request) => {
 		query += ` and status in (${status})`
 	}
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
-		query += ` and (lower(name) ilike $${index} or lower(status) ilike $${index++})`
+		query += ` and (lower(name) ilike $${index++})`
 		param.push(`%${request.payload.search_text}%`)
 	}
 
@@ -94,7 +94,7 @@ const get_data = async (request) => {
 	}
 
 	if (request.payload.search_text && request.payload.search_text.length > 0) {
-		query += ` and (lower(name) ilike $${index} or lower(status) ilike $${index++})`
+		query += ` and (lower(name) ilike $${index++})`
 
 		param.push(`%${request.payload.search_text}%`)
 	}
